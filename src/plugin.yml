@@ -1,0 +1,96 @@
+name: JedCore
+main: com.jedk1.jedcore.JedCore
+version: 2.0.0
+authors: ['jedk1']
+depend: ['ProjectKorra']
+
+permissions:
+  #OP permissions
+  jedcore.admin:
+    default: op
+    description: Access to abilities and commands.
+    children:
+      jedcore.admin.notify: true
+      bending.ability.SwiftStream: true
+      bending.ability.BloodPuppet: true
+      bending.ability.PlantDrain: true
+      bending.ability.Fissure: true
+      bending.ability.LavaFlux: true
+      bending.ability.FireBreath.RainbowBreath: true
+      bending.ability.ElementSphere: true
+      bending.ability.ElementSphere.Air: true
+      bending.ability.ElementSphere.Earth: true
+      bending.ability.ElementSphere.Fire: true
+      bending.ability.ElementSphere.Water: true
+      bending.ability.ElementSphere.Stream: true
+      bending.ability.Maelstrom: true
+      bending.ability.SpiritBeam: true
+  #Player Permissions
+  jedcore.commands:
+    default: true
+    description: Access to player commands.
+    children:
+      bending.command.jedcore: true
+      bending.command.scoreboard: true
+  jedcore.passive:
+    default: true
+    description: Access to passive abilities.
+    children:
+      bending.ability.WallRun: true
+  jedcore.air:
+    default: true
+    description: Access to air abilities.
+    children:
+      bending.ability.AirBlade: true
+      bending.ability.AirBreath: true
+      bending.ability.AirPunch: true
+      bending.ability.AirGlide: true
+      bending.ability.Meditate: true
+      bending.ability.SonicBlast: true
+      bending.ability.AirSlam: true
+  jedcore.water:
+    default: true
+    description: Access to water abilities.
+    children:
+      bending.ability.FrostBreath: true
+      bending.ability.IceClaws: true
+      bending.ability.IceWall: true
+      bending.ability.Drain: true
+      bending.ability.WakeFishing: true
+      bending.ability.WaterFlow: true
+      bending.ability.WaterGimbal: true
+  jedcore.earth:
+    default: true
+    description: Access to earth abilities.
+    children:
+      bending.ability.Crevice: true
+      bending.ability.EarthKick: true
+      bending.ability.EarthLine: true
+      bending.ability.EarthPillar: true
+      bending.ability.EarthShard: true
+      bending.ability.EarthSurf: true
+      bending.ability.LavaDisc: true
+      bending.ability.LavaThrow: true
+      bending.ability.MagnetShield: true
+      bending.ability.MetalFragments: true
+      bending.ability.MetalHook: true
+      bending.ability.MetalShred: true
+      bending.ability.MudSurge: true
+      bending.ability.SandBlast: true
+      bending.ability.MagmaBlast: true
+  jedcore.fire:
+    default: true
+    description: Access to fire abilities.
+    children:
+      bending.ability.Dishcarge: true
+      bending.ability.FireBall: true
+      bending.ability.FireBreath: true
+      bending.ability.FirePunch: true
+      bending.ability.FireShots: true
+      bending.ability.LightningBurst: true
+  jedcore.chi:
+    default: true
+    description: Access to chi abilities.
+    children:
+      bending.ability.Backstab: true
+      bending.ability.DaggerThrow: true

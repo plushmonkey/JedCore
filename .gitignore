@@ -1,3 +1,38 @@
+#################
+## Eclipse
+#################
+
+*.pydevproject
+.project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+# We want this so we can have synchronized testing environment
+#*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+#################
+## Other
+#################
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
