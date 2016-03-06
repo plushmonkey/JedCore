@@ -61,7 +61,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 
 	public BloodPuppet(Player player) {
 		super(player);
-		if (!isEligible(player)) {
+		if (!isEligible(player, true)) {
 			return;
 		}
 
@@ -84,8 +84,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.BloodPuppet.Cooldown");
 	}
 
-	public boolean isEligible(Player player) {
-		if (!bPlayer.canBend(this) || !bPlayer.canBloodbend() || hasAbility(player, BloodPuppet.class)) {
+	public boolean isEligible(Player player, boolean hasAbility) {
+		if (!bPlayer.canBend(this) || !bPlayer.canBloodbend() || (hasAbility && hasAbility(player, BloodPuppet.class))) {
 			return false;
 		}
 		if (nightOnly && !isNight(player.getWorld()) && !bPlayer.canBloodbendAtAnytime()) {
@@ -367,7 +367,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 			remove();
 			return;
 		}
-		if (!isEligible(player)) {
+		if (!isEligible(player, false)) {
 			remove();
 			return;
 		}

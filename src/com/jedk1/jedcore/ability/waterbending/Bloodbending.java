@@ -49,7 +49,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	
 	public Bloodbending(Player player) {
 		super(player);
-		if (!isEligible(player)) {
+		if (!isEligible(player, true)) {
 			return;
 		}
 		setFields();
@@ -70,8 +70,8 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.Bloodbending.Cooldown");
 	}
 
-	public boolean isEligible(Player player) {
-		if (!bPlayer.canBend(this) || !bPlayer.canBloodbend() || hasAbility(player, Bloodbending.class)) {
+	public boolean isEligible(Player player, boolean hasAbility) {
+		if (!bPlayer.canBend(this) || !bPlayer.canBloodbend() || (hasAbility && hasAbility(player, Bloodbending.class))) {
 			return false;
 		}
 		if (nightOnly && !isNight(player.getWorld()) && !bPlayer.canBloodbendAtAnytime()) {
@@ -174,7 +174,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 
 	@Override
 	public void progress() {
-		if (!isEligible(player)) {
+		if (!isEligible(player, false)) {
 			remove();
 			return;
 		}
