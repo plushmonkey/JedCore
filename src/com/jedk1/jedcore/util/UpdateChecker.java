@@ -32,8 +32,8 @@ public class UpdateChecker {
 	
 	public static void fetch() {
 		if (!JedCore.plugin.getConfig().getBoolean("Settings.Updater.Check")) {
-			JedCore.log.info("JedCore update checker is disabled, skipping compatibility checks!");
-			JedCore.log.info("Please enable the update checker to ensure your JedCore version is compatible with the ProjectKorra version you are running!");
+			JedCore.log.info("JedCore update checker is disabled, skipping compatibility checks.");
+			JedCore.log.info("Please enable the update checker to ensure your JedCore version is compatible with the ProjectKorra version you are running.");
 			return;
 		}
 		fetch(new Callback<Result>() {
@@ -43,13 +43,13 @@ public class UpdateChecker {
 					JedCore.log.info("No updates found.");
 				}
 				if (response.equals(Result.NOT_SUITABLE)) {
-					JedCore.log.info("Warning: JedCore version is not compatible with this version of ProjectKorra! "
+					JedCore.log.info("Warning: JedCore version is not compatible with this version of ProjectKorra. "
 							+ "Disabling JedCore...");
 					JedCore.plugin.getServer().getPluginManager().disablePlugin(JedCore.plugin);
 					return;
 				}
 				if (response.equals(Result.NOT_SUITABLE_UPDATE)) {
-					JedCore.log.info("Warning: JedCore version is not compatible with this version of ProjectKorra! "
+					JedCore.log.info("Warning: JedCore version is not compatible with this version of ProjectKorra. "
 							+ "Disabling JedCore...");
 					JedCore.log.info("Update: An update is available for JedCore!");
 					JedCore.log.info("http://projectkorra.com/resources/jedcore.125/");

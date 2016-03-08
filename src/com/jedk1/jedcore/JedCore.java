@@ -40,7 +40,7 @@ public class JedCore extends JavaPlugin {
 		}
 		
 		if (!isSpigot()) {
-			log.info("Bukkit detected, JedCore will not function properly!");
+			log.info("Bukkit detected, JedCore will not function properly.");
 		}
 		
 		dev = this.getDescription().getAuthors().toString().replace("[", "").replace("]", "");
@@ -59,8 +59,9 @@ public class JedCore extends JavaPlugin {
 		try {
 	        MetricsLite metrics = new MetricsLite(this);
 	        metrics.start();
+	        log.info("Initialized Metrics.");
 	    } catch (IOException e) {
-	        log.info("Failed to submit statistics for MetricsLite");
+	        log.info("Failed to submit statistics for MetricsLite.");
 	    }
 	}
 	
