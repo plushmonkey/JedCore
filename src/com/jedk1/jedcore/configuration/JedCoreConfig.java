@@ -428,6 +428,19 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireBreath.RainbowBreath.DisabledMessage", "You have split your bond of color and light.");
 		config.addDefault("Abilities.Fire.FireBreath.RainbowBreath.NoAccess", "You don't possess the power to bond light with fire.");
 		
+		config.addDefault("Abilities.Fire.FireComet.Enabled", true);
+		config.addDefault("Abilities.Fire.FireComet.Cooldown", 45000);
+		config.addDefault("Abilities.Fire.FireComet.ChargeUp", 7000);
+		config.addDefault("Abilities.Fire.FireComet.Damage", 6.0);
+		config.addDefault("Abilities.Fire.FireComet.BlastRadius", 3.0);
+		config.addDefault("Abilities.Fire.FireComet.SozinsComet.Cooldown", 30000);
+		config.addDefault("Abilities.Fire.FireComet.SozinsComet.ChargeUp", 5000);
+		config.addDefault("Abilities.Fire.FireComet.SozinsComet.Damage", 12.0);
+		config.addDefault("Abilities.Fire.FireComet.SozinsComet.BlastRadius", 5.0);
+		config.addDefault("Abilities.Fire.FireComet.Range", 50);
+		config.addDefault("Abilities.Fire.FireComet.RegenDelay", 15000);
+		config.addDefault("Abilities.Fire.FireComet.SozinsCometOnly", true);
+		
 		config.addDefault("Abilities.Fire.FirePunch.Enabled", true);
 		config.addDefault("Abilities.Fire.FirePunch.Description", "This basic ability allows a Firebender to channel their energies into a "
 				+ "single punch, igniting and damaging the victim.");

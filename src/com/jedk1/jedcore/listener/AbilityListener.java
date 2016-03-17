@@ -31,6 +31,7 @@ import com.jedk1.jedcore.ability.earthbending.combo.MagmaBlast;
 import com.jedk1.jedcore.ability.firebending.Discharge;
 import com.jedk1.jedcore.ability.firebending.FireBall;
 import com.jedk1.jedcore.ability.firebending.FireBreath;
+import com.jedk1.jedcore.ability.firebending.FireComet;
 import com.jedk1.jedcore.ability.firebending.FirePunch;
 import com.jedk1.jedcore.ability.firebending.FireShots;
 import com.jedk1.jedcore.ability.firebending.FireSki;
@@ -352,6 +353,9 @@ public class AbilityListener implements Listener {
 				}
 				if (abil.equalsIgnoreCase("firebreath")) {
 					new FireBreath(player);
+				}
+				if (abil.equalsIgnoreCase("firecomet")) {
+					new FireComet(player);
 				}
 				if (abil.equalsIgnoreCase("firejet")) {
 					new FireSki(player);

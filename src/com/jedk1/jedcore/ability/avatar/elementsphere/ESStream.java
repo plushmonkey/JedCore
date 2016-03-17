@@ -134,6 +134,7 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 			List<BlockState> blocks = new ArrayList<BlockState>();
 			for (Location loc : GeneralMethods.getCircle(stream, (int) radius, 0, false, true, 0)) {
 				if (JCMethods.isUnbreakable(loc.getBlock())) continue;
+				if (GeneralMethods.isRegionProtectedFromBuild(this, loc)) continue;
 				blocks.add(loc.getBlock().getState());
 				new RegenTempBlock(loc.getBlock(), Material.AIR, (byte) 0, regen, false);
 			}
