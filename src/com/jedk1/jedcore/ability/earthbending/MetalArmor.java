@@ -44,6 +44,11 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 			return;
 		}
 		EarthArmor ea = (EarthArmor) getAbility(player, EarthArmor.class);
+		if (!bPlayer.isToggled()) {
+			remove();
+			ea.remove();
+			return;
+		}
 		if (ea.isFormed()) {
 			if (isMetal(head)) {
 				ItemStack[] armors = { new ItemStack(Material.CHAINMAIL_BOOTS, 1),
