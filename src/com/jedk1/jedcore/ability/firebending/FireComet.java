@@ -87,6 +87,9 @@ public class FireComet extends FireAbility implements AddonAbility {
 			if (!isFired()) {
 				if (!player.isSneaking()) {
 					vector = player.getLocation().getDirection();
+					if (location == null) {
+						location = GeneralMethods.getTargetedLocation(player, 6);
+					}
 					launchLoc = location.clone();
 					setFired(true);
 				} else {
