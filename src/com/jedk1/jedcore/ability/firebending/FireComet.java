@@ -31,6 +31,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 	private double damage;
 	private double blastRadius;
 	private boolean cometOnly;
+	private boolean avatarBypass;
 	private Location location;
 	private Location launchLoc;
 	private Vector vector;
@@ -50,7 +51,9 @@ public class FireComet extends FireAbility implements AddonAbility {
 		setFields();
 		if (!isSozinsComet(player.getWorld())) {
 			if (GeneralMethods.hasRPG() && getSozinsCometOnly()) {
-				return;
+				if (!(bPlayer.isAvatarState() && avatarBypass)) {
+					return;
+				}
 			}
 		}
 		start();
@@ -70,6 +73,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 		}
 		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireComet.Range");
 		cometOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.SozinsCometOnly");
+		avatarBypass = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.AvatarStateBypassComet");
 		time = System.currentTimeMillis();
 	}
 
@@ -151,8 +155,10 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 			x = (rand.nextBoolean()) ? -x : x;
 			z = (rand.nextBoolean()) ? -z : z;
-
-			new TempFallingBlock(block.getLocation(), block.getType(), block.getData().getData(), vector.clone().add(new Vector(x, 0, z)).normalize().multiply(-1), this);
+			
+			if (rand.nextInt(5) == 0) {
+				new TempFallingBlock(block.getLocation(), block.getType(), block.getData().getData(), vector.clone().add(new Vector(x, 0, z)).normalize().multiply(-1), this);
+			}
 		}
 	}
 	

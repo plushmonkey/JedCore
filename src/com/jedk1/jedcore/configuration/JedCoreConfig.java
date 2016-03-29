@@ -429,6 +429,10 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireBreath.RainbowBreath.NoAccess", "You don't possess the power to bond light with fire.");
 		
 		config.addDefault("Abilities.Fire.FireComet.Enabled", true);
+		config.addDefault("Abilities.Fire.FireComet.Description", "Harnessing the power of Sozin's Comet, a firebender can create a great "
+				+ "ball of fire, with much destructive power. Only useable during Sozin's Comet or while in the AvatarState, hold Sneak (Default: Shift) "
+				+ "to start charging the ability up. Once the ability is charged, a large mass of particles will follow your cursor, until you release sneak, "
+				+ "launching the great ball of fire in the direction you are looking.");
 		config.addDefault("Abilities.Fire.FireComet.Cooldown", 45000);
 		config.addDefault("Abilities.Fire.FireComet.ChargeUp", 7000);
 		config.addDefault("Abilities.Fire.FireComet.Damage", 6.0);
@@ -440,6 +444,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireComet.Range", 50);
 		config.addDefault("Abilities.Fire.FireComet.RegenDelay", 15000);
 		config.addDefault("Abilities.Fire.FireComet.SozinsCometOnly", true);
+		config.addDefault("Abilities.Fire.FireComet.AvatarStateBypassComet", true);
 		
 		config.addDefault("Abilities.Fire.FirePunch.Enabled", true);
 		config.addDefault("Abilities.Fire.FirePunch.Description", "This basic ability allows a Firebender to channel their energies into a "
