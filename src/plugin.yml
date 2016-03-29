@@ -85,6 +85,7 @@ permissions:
       bending.ability.Dishcarge: true
       bending.ability.FireBall: true
       bending.ability.FireBreath: true
+      bending.ability.FireComet: true
       bending.ability.FirePunch: true
       bending.ability.FireShots: true
       bending.ability.LightningBurst: true
