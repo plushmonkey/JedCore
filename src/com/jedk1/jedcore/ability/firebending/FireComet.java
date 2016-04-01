@@ -51,7 +51,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 		setFields();
 		if (!isSozinsComet(player.getWorld())) {
 			if (GeneralMethods.hasRPG() && getSozinsCometOnly()) {
-				if (!(bPlayer.isAvatarState() && avatarBypass)) {
+				if (!(bPlayer.isAvatarState() && getAvatarBypassComet())) {
 					return;
 				}
 			}
@@ -243,6 +243,10 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 	public boolean getSozinsCometOnly() {
 		return cometOnly;
+	}
+	
+	public boolean getAvatarBypassComet() {
+		return avatarBypass;
 	}
 
 	@Override
