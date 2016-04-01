@@ -60,7 +60,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		if (isSozinsComet(player.getWorld())) {
+		if (isSozinsComet(player.getWorld()) || bPlayer.isAvatarState()) {
 			cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.SozinsComet.Cooldown");
 			charge = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.SozinsComet.ChargeUp");
 			damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.SozinsComet.Damage");
