@@ -152,6 +152,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 		ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
 		location.getWorld().playSound(location, (rand.nextBoolean()) ? Sound.FIREWORK_LARGE_BLAST : Sound.FIREWORK_LARGE_BLAST2, 5f, 1f);
 		location.getWorld().playSound(location, Sound.EXPLODE, 5f, 0.8f);
+		int i = 0;
 		for (BlockState block : blocks) {
 			double x = rand.nextDouble() / 3;
 			double z = rand.nextDouble() / 3;
@@ -159,7 +160,8 @@ public class FireComet extends FireAbility implements AddonAbility {
 			x = (rand.nextBoolean()) ? -x : x;
 			z = (rand.nextBoolean()) ? -z : z;
 			
-			if (rand.nextInt(5) == 0) {
+			i++;
+			if (i % 2 == 0) {
 				new TempFallingBlock(block.getLocation(), block.getType(), block.getData().getData(), vector.clone().add(new Vector(x, 0, z)).normalize().multiply(-1), this);
 			}
 		}
