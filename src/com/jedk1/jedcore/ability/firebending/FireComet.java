@@ -36,11 +36,14 @@ public class FireComet extends FireAbility implements AddonAbility {
 	private Location launchLoc;
 	private Vector vector;
 
+	//Charging Animation
+	private int angle;
+
 	private boolean fire;
 	private long time;
 
 	private int point;
-	
+
 	Random rand = new Random();
 
 	public FireComet(Player player) {
@@ -112,6 +115,8 @@ public class FireComet extends FireAbility implements AddonAbility {
 				remove();
 				return;
 			}
+			location = GeneralMethods.getTargetedLocation(player, 6);
+			displayChargingAnim();
 		}
 	}
 
@@ -159,14 +164,46 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 			x = (rand.nextBoolean()) ? -x : x;
 			z = (rand.nextBoolean()) ? -z : z;
-			
+
 			i++;
 			if (i % 2 == 0) {
 				new TempFallingBlock(block.getLocation(), block.getType(), block.getData().getData(), vector.clone().add(new Vector(x, 0, z)).normalize().multiply(-1), this);
 			}
 		}
 	}
-	
+
+	public void displayChargingAnim() {
+		this.angle+=10;
+		Location location = this.location.clone();
+		double angle = (this.angle * Math.PI / 180);
+		double xRotation = 3.141592653589793D / 3 * 2.1;
+		Vector v = new Vector(Math.cos(angle + point), Math.sin(angle), 0.0D).multiply(2.2);
+		Vector v1 = v.clone();
+		rotateAroundAxisX(v, xRotation);
+		rotateAroundAxisY(v, -((location.getYaw() * Math.PI / 180) - 1.575));
+		rotateAroundAxisX(v1, -xRotation);
+		rotateAroundAxisY(v1, -((location.getYaw() * Math.PI / 180) - 1.575));
+
+		ParticleEffect.FLAME.display(0f, 0f, 0f, 0.02f, 1, location.clone().add(v), 257D);
+		ParticleEffect.LARGE_SMOKE.display(0f, 0f, 0f, 0.02f, 1, location.clone().add(v), 257D);
+		ParticleEffect.FLAME.display(0f, 0f, 0f, 0.01f, 1, location.clone().add(v1), 257D);
+		ParticleEffect.LARGE_SMOKE.display(0f, 0f, 0f, 0.02f, 1, location.clone().add(v1), 257D);
+		if (this.angle == 360) {
+			this.angle = 0;
+		}
+		long init = getTime() + getCharge();
+		int percentage = (int) (((init - System.currentTimeMillis()) * 100)/getCharge());
+		double size = (float) (1-(percentage/100.0f))*1.5;
+		for (int i = 0; i < 360; i+=45) {
+			for (Location l : JCMethods.getVerticalCirclePoints(location.clone().subtract(0, size, 0), 45, size, i)) {
+				ParticleEffect.FLAME.display(0f, 0f, 0f, 0.02f, 1, l, 257D);
+			}
+		}
+		if (size == 1.5) {
+			ParticleEffect.LARGE_EXPLODE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.03f, 3, this.location, 257D);
+		}
+	}
+
 	public void displayComet() {
 		for (int angle = 0; angle < 360; angle+=45) {
 			for (Location l : JCMethods.getVerticalCirclePoints(location.clone().subtract(0, 1.5, 0), 45, 1.5, angle)) {
@@ -210,7 +247,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 		double z = v.getX() * -sin + v.getZ() * cos;
 		return v.setX(x).setZ(z);
 	}
-	
+
 	@Override
 	public void remove() {
 		if (player != null && player.isOnline() && isFired()) {
@@ -218,7 +255,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 		}
 		super.remove();
 	}
-	
+
 	public double getDamage() {
 		return damage;
 	}
@@ -226,7 +263,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 	public int getRange() {
 		return range;
 	}
-	
+
 	public void setFired(boolean fire) {
 		this.fire = fire;
 	}
@@ -246,7 +283,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 	public boolean getSozinsCometOnly() {
 		return cometOnly;
 	}
-	
+
 	public boolean getAvatarBypassComet() {
 		return avatarBypass;
 	}
