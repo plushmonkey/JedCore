@@ -107,7 +107,7 @@ public class UpdateChecker {
 						}
 						List<String> versions = Lists.newArrayList(json.keySet());
 						if (versions.indexOf(pkVersion) < (versions.size() - 1)) {
-							result = (result == Result.SUITABLE) ? Result.SUITABE_UPDATE : Result.NOT_SUITABLE_UPDATE;
+							result = (result == Result.SUITABLE || result == Result.NEWER) ? Result.SUITABE_UPDATE : Result.NOT_SUITABLE_UPDATE;
 						}
 						if (result.equals(Result.SUITABLE) && compat.contains(jcVersion) && compat.indexOf(jcVersion) < compat.size() - 1) {
 							result = Result.SUITABE_UPDATE;
