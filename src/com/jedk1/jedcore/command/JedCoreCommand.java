@@ -26,7 +26,7 @@ public class JedCoreCommand extends PKCommand {
 		if (args.size() == 0) {
 			sender.sendMessage(ChatColor.GREEN + "JedCore Version: " + ChatColor.GRAY + JedCore.plugin.getDescription().getVersion());
 			sender.sendMessage(ChatColor.GREEN + "Developed by: " + ChatColor.GRAY + JedCore.plugin.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
-		} else if (args.size() == 1 && isSenderJedCoreDev(sender)) {
+		} else if (args.size() == 1 && (hasPermission(sender, "debug") || isSenderJedCoreDev(sender))) {
 			//Dev commands for debugging etc.
 			if (args.get(0).equalsIgnoreCase("refresh")) {
 				Blacklist.fetch();

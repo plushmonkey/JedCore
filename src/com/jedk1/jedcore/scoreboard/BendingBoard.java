@@ -28,6 +28,7 @@ public class BendingBoard {
 	public static ConcurrentHashMap<Player, BendingBoard> boards = new ConcurrentHashMap<Player, BendingBoard>();
 	public static List<UUID> disabled = new ArrayList<UUID>();
 	public static List<String> worlds = new ArrayList<String>();
+	public static boolean enabled;
 	public static String title;
 	public static String empty;
 	public static String toggleOn;
@@ -50,6 +51,7 @@ public class BendingBoard {
 				}
 			}
 		}
+		setFields();
 	}
 
 	private Player player;
@@ -63,6 +65,7 @@ public class BendingBoard {
 	}
 
 	public static void setFields() {
+		enabled = JedCoreConfig.board.getConfig().getBoolean("Settings.Enabled");
 		title = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.Title"));
 		empty = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.EmptySlot"));
 		combo = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.Combos"));
@@ -89,6 +92,7 @@ public class BendingBoard {
 	}
 
 	public static void toggle(Player player) {
+		if (!enabled) return;
 		List<String> uuids = new ArrayList<String>();
 		uuids.addAll(toggled.getConfig().getStringList("Players"));
 		if (uuids.contains(player.getUniqueId().toString())) {
@@ -111,6 +115,11 @@ public class BendingBoard {
 	}
 
 	public static void update(Player player, int slot) {
+		if (!enabled) { 
+			if (disabled.contains(player.getUniqueId())) return;
+			get(player).remove();
+			return;
+		}
 		if (disabled.contains(player.getUniqueId())) return;
 		if (!disabledworlds && worlds.contains(player.getWorld().getName())) {
 			if (boards.containsKey(player)) {

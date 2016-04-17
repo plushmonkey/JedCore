@@ -28,6 +28,7 @@ import com.jedk1.jedcore.ability.earthbending.MudSurge;
 import com.jedk1.jedcore.ability.earthbending.SandBlast;
 import com.jedk1.jedcore.ability.earthbending.combo.Crevice;
 import com.jedk1.jedcore.ability.earthbending.combo.MagmaBlast;
+import com.jedk1.jedcore.ability.firebending.Combustion;
 import com.jedk1.jedcore.ability.firebending.Discharge;
 import com.jedk1.jedcore.ability.firebending.FireBall;
 import com.jedk1.jedcore.ability.firebending.FireBreath;
@@ -182,6 +183,9 @@ public class AbilityListener implements Listener {
 			if (coreAbil instanceof FireAbility && bPlayer.isElementToggled(Element.FIRE) == true) {
 				if (GeneralMethods.isWeapon(player.getItemInHand().getType()) && !ProjectKorra.plugin.getConfig().getBoolean("Properties.Fire.CanBendWithWeapons")) {
 					return;
+				}
+				if (abil.equalsIgnoreCase("combustion")) {
+					Combustion.combust(player);
 				}
 				if (abil.equalsIgnoreCase("discharge")) {
 					new Discharge(player);
@@ -350,6 +354,9 @@ public class AbilityListener implements Listener {
 			if (coreAbil instanceof FireAbility && bPlayer.isElementToggled(Element.FIRE) == true) {
 				if (GeneralMethods.isWeapon(player.getItemInHand().getType()) && !ProjectKorra.plugin.getConfig().getBoolean("Properties.Fire.CanBendWithWeapons")) {
 					return;
+				}
+				if (abil.equalsIgnoreCase("combustion")) {
+					new Combustion(event.getPlayer());
 				}
 				if (abil.equalsIgnoreCase("firebreath")) {
 					new FireBreath(player);

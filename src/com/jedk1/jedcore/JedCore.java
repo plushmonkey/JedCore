@@ -52,7 +52,6 @@ public class JedCore extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new JCListener(this), this);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new JCManager(this), 0, 1);
 		
-		BendingBoard.setFields();
 		BendingBoard.updateOnline();
 		new Commands();
 		

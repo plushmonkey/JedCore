@@ -1,5 +1,6 @@
 package com.jedk1.jedcore;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
 import com.jedk1.jedcore.util.Blacklist;
 import com.jedk1.jedcore.util.RegenTempBlock;
@@ -251,7 +252,7 @@ public class JCMethods {
 	public static void reload() {
 		JedCore.log.info("JedCore Reloaded.");
 		JedCore.plugin.reloadConfig();
-		JedCore.plugin.saveConfig();
+		JedCoreConfig.board.reloadConfig();
 		CoreAbility.registerPluginAbilities(JedCore.plugin, "com.jedk1.jedcore.ability");
 		combos.clear();
 		getCombos();

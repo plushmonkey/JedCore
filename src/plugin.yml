@@ -1,6 +1,6 @@
 name: JedCore
 main: com.jedk1.jedcore.JedCore
-version: 2.0.1
+version: 2.0.2
 authors: ['jedk1']
 depend: ['ProjectKorra']
 
@@ -82,6 +82,7 @@ permissions:
     default: true
     description: Access to fire abilities.
     children:
+      bending.ability.Combustion: true
       bending.ability.Dishcarge: true
       bending.ability.FireBall: true
       bending.ability.FireBreath: true

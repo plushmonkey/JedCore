@@ -23,6 +23,7 @@ public class JedCoreConfig {
 		FileConfiguration config;
 		config = board.getConfig();
 		
+		config.addDefault("Settings.Enabled", true);
 		config.addDefault("Settings.Title", "&lSlots");
 		config.addDefault("Settings.EmptySlot", "&8&o-- Slot % --");
 		config.addDefault("Settings.Combos", "&fCombos:");
@@ -391,6 +392,22 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.SearchRange", 4);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown", 8000);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ShotCooldown", 1500);
+		
+		config.addDefault("Abilities.Fire.Combustion.Enabled", true);
+		config.addDefault("Abilities.Fire.Combustion.Description", "Hold Shift to focus large amounts of energy into your body, "
+				+ "Release Shift to fire Combustion. Move your mouse to "
+				+ "direct where the beam travels. Left-Click to detonate "
+				+ "the beam manually");
+		config.addDefault("Abilities.Fire.Combustion.Damage", 4.0);
+		config.addDefault("Abilities.Fire.Combustion.FireTick", 100);
+		config.addDefault("Abilities.Fire.Combustion.MisfireModifier", -1);
+		config.addDefault("Abilities.Fire.Combustion.Power", 3);
+		config.addDefault("Abilities.Fire.Combustion.Range", 100);
+		config.addDefault("Abilities.Fire.Combustion.Warmup", 1500);
+		config.addDefault("Abilities.Fire.Combustion.Cooldown", 5000);
+		config.addDefault("Abilities.Fire.Combustion.RegenTime", 10000);
+		config.addDefault("Abilities.Fire.Combustion.DamageBlocks", true);
+		config.addDefault("Abilities.Fire.Combustion.RegenBlocks", true);
 		
 		config.addDefault("Abilities.Fire.Discharge.Enabled", true);
 		config.addDefault("Abilities.Fire.Discharge.Description", "Left-Click to shoot bolts of electricity out "
