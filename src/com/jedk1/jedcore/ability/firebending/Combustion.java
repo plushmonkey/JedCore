@@ -53,6 +53,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	private static int range;
 	private boolean damageBlocks;
 	private boolean regenBlocks;
+	private boolean instantExplodeIfHit;
 
 	public Combustion(Player player) {
 		super(player);
@@ -86,6 +87,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.Combustion.Range");
 		damageBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.DamageBlocks");
 		regenBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.RegenBlocks");
+		instantExplodeIfHit = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.InstantExplodeIfHit");
 	}
 
 	@Override
@@ -112,7 +114,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		if (charged && !hasCollided) {
 			ParticleEffect.LARGE_SMOKE.display(this.player.getLocation(), (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 1);
 		}
-		if (!player.isSneaking() || start) {
+		if (!player.isSneaking() || start || (instantExplodeIfHit && hasBeenHit)) {
 			start = true;
 			if (charged) {
 				direction = this.player.getEyeLocation().getDirection().normalize();
