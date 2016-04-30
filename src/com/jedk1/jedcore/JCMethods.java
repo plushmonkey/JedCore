@@ -7,6 +7,7 @@ import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.ComboManager;
 import com.projectkorra.projectkorra.util.TempBlock;
@@ -16,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -30,15 +32,36 @@ import java.util.List;
 
 public class JCMethods {
 
+	private static List<String> worlds = new ArrayList<String>();
 	private static List<String> combos = new ArrayList<String>();
 
-	public static List<String> getCombos() {
-		if (combos.isEmpty()) {
-			for (String s : ComboManager.getComboAbilities().keySet()) {
-				combos.add(s);
+	public static List<String> getDisabledWorlds() {
+		return JCMethods.worlds;
+	}
+
+	public static void registerDisabledWorlds() {
+		worlds.clear();
+		List<String> registeredworlds = ProjectKorra.plugin.getConfig().getStringList("Properties.DisabledWorlds");
+		if (registeredworlds != null && !registeredworlds.isEmpty()) {
+			for (String s : registeredworlds) {
+				worlds.add(s);
 			}
 		}
-		return combos;
+	}
+	
+	public static boolean isDisabledWorld(World world) {
+		return getDisabledWorlds().contains(world.getName());
+	}
+
+	public static List<String> getCombos() {
+		return JCMethods.combos;
+	}
+
+	public static void registerCombos() {
+		combos.clear();
+		for (String s : ComboManager.getComboAbilities().keySet()) {
+			combos.add(s);
+		}
 	}
 
 	/**
@@ -254,8 +277,8 @@ public class JCMethods {
 		JedCore.plugin.reloadConfig();
 		JedCoreConfig.board.reloadConfig();
 		CoreAbility.registerPluginAbilities(JedCore.plugin, "com.jedk1.jedcore.ability");
-		combos.clear();
-		getCombos();
+		registerDisabledWorlds();
+		registerCombos();
 		UpdateChecker.fetch();
 		Blacklist.fetch();
 		RegenTempBlock.revertAll();

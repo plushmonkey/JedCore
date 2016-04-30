@@ -408,6 +408,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.Combustion.RegenTime", 10000);
 		config.addDefault("Abilities.Fire.Combustion.DamageBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.RegenBlocks", true);
+		config.addDefault("Abilities.Fire.Combustion.InstantExplodeIfHit", true);
 		
 		config.addDefault("Abilities.Fire.Discharge.Enabled", true);
 		config.addDefault("Abilities.Fire.Discharge.Description", "Left-Click to shoot bolts of electricity out "
@@ -680,7 +681,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed", 3);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.PlantSource", true);
 		
-		config.addDefault("Abilities.Water.Ice.Passive.SkateSpeedFactor", 4);
+		config.addDefault("Abilities.Water.Ice.Passove.Skate.Enabled", true);
+		config.addDefault("Abilities.Water.Ice.Passive.Skate.SpeedFactor", 4);
 		
 		config.addDefault("Abilities.Chi.Backstab.Enabled", true);
 		config.addDefault("Abilities.Chi.Backstab.Description", "Strike your foe in the back with a hard jab, temporariliy blocking their Chi, and "

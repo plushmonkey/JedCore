@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.waterbending;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
@@ -14,13 +15,15 @@ import org.bukkit.potion.PotionEffectType;
 
 public class IcePassive {
 
-	private static int speedFactor = JedCore.plugin.getConfig().getInt("Abilities.Water.Ice.Passive.SkateSpeedFactor");
+	private static int speedFactor = JedCore.plugin.getConfig().getInt("Abilities.Water.Ice.Passive.Skate.SpeedFactor");
+	private static boolean enabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Ice.Passive.Skate.Enabled");
 
 	@SuppressWarnings("deprecation")
 	public static void handleSkating() {
+		if (!enabled) return;
 		for (Player player: Bukkit.getServer().getOnlinePlayers()) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null && bPlayer.canIcebend() && bPlayer.isElementToggled(Element.WATER) == true && bPlayer.hasElement(Element.WATER)) {
+			if (bPlayer != null && bPlayer.canIcebend() && bPlayer.isElementToggled(Element.WATER) == true && bPlayer.hasElement(Element.WATER) && !JCMethods.isDisabledWorld(player.getWorld())) {
 				if (player.isSprinting() && IceAbility.isIce(player.getLocation().getBlock().getRelative(BlockFace.DOWN)) && player.isOnGround()) {
 					ParticleEffect.SNOW_SHOVEL.display((float) Math.random()/2, (float) Math.random()/2, (float) Math.random()/2, 0F, 15, player.getLocation().clone().add(0, 0.2, 0), 257D);
 					player.removePotionEffect(PotionEffectType.SPEED);

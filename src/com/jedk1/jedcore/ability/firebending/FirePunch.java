@@ -31,6 +31,7 @@ public class FirePunch extends FireAbility implements AddonAbility {
 	}
 
 	public static void display(Server server) {
+		if (!getEnabled()) return;
 		for (Player player : server.getOnlinePlayers()) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			if (bPlayer != null && bPlayer.canBend(getAbility("FirePunch"))) {
@@ -48,6 +49,7 @@ public class FirePunch extends FireAbility implements AddonAbility {
 	}
 
 	public static boolean punch(Player player, LivingEntity target) {
+		if (!getEnabled()) return false;
 		if (player == null || player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -68,6 +70,10 @@ public class FirePunch extends FireAbility implements AddonAbility {
 		return false;
 	}
 
+	public static boolean getEnabled() {
+		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FirePunch.Enabled");
+	}
+	
 	public static double getDamage() {
 		return JedCore.plugin.getConfig().getDouble("Abilities.Fire.FirePunch.Damage");
 	}

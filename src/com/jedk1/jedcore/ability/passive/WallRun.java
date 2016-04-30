@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.passive;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -23,6 +24,8 @@ public class WallRun extends ChiAbility implements AddonAbility {
 	private long cooldown;
 	private long duration;
 
+	private boolean enabled;
+	
 	private boolean particles;
 	private boolean air;
 	private boolean earth;
@@ -38,7 +41,9 @@ public class WallRun extends ChiAbility implements AddonAbility {
 
 	public WallRun(Player player) {
 		super(player);
-
+		
+		if (!enabled) return;
+		
 		if (bPlayer.isOnCooldown("WallRun")) return;
 		
 		if (hasAbility(player, WallRun.class)) {
@@ -53,12 +58,13 @@ public class WallRun extends ChiAbility implements AddonAbility {
 		setFields();
 		time = System.currentTimeMillis();
 
-		if (isEligible()) {
+		if (isEligible() && !JCMethods.isDisabledWorld(player.getWorld())) {
 			start();
 		}
 	}
 	
 	public void setFields() {
+		enabled = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Enabled");
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Passives.WallRun.Cooldown");
 		duration = JedCore.plugin.getConfig().getLong("Abilities.Passives.WallRun.Duration");
 		particles = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Particles");

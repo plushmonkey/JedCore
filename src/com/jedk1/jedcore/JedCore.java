@@ -46,6 +46,8 @@ public class JedCore extends JavaPlugin {
 		dev = this.getDescription().getAuthors().toString().replace("[", "").replace("]", "");
 		version = this.getDescription().getVersion();
 		
+		JCMethods.registerCombos();
+		JCMethods.registerDisabledWorlds();
 		CoreAbility.registerPluginAbilities(plugin, "com.jedk1.jedcore.ability");
 		getServer().getPluginManager().registerEvents(new AbilityListener(this), this);
 		getServer().getPluginManager().registerEvents(new CommandListener(this), this);
