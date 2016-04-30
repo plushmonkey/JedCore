@@ -27,6 +27,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 	private long cooldown;
 	private long charge;
+	private long regen;
 	private int range;
 	private double damage;
 	private double blastRadius;
@@ -74,6 +75,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 			damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.Damage");
 			blastRadius = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.BlastRadius");
 		}
+		regen = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.RegenDelay");
 		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireComet.Range");
 		cometOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.SozinsCometOnly");
 		avatarBypass = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.AvatarStateBypassComet");
@@ -141,7 +143,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 			if (JCMethods.isUnbreakable(loc.getBlock())) continue;
 			if (GeneralMethods.isRegionProtectedFromBuild(this, loc)) continue;
 			blocks.add(loc.getBlock().getState());
-			new RegenTempBlock(loc.getBlock(), Material.AIR, (byte) 0, 10000, false);
+			new RegenTempBlock(loc.getBlock(), Material.AIR, (byte) 0, getRegenDelay(), false);
 		}
 		for (Entity e : GeneralMethods.getEntitiesAroundPoint(location, blastRadius)) {
 			if (e instanceof Player && ((Player) e) == player) {
@@ -286,6 +288,10 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 	public boolean getAvatarBypassComet() {
 		return avatarBypass;
+	}
+	
+	public long getRegenDelay() {
+		return regen;
 	}
 
 	@Override
