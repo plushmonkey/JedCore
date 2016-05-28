@@ -681,7 +681,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed", 3);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.PlantSource", true);
 		
-		config.addDefault("Abilities.Water.Ice.Passove.Skate.Enabled", true);
+		config.addDefault("Abilities.Water.Ice.Passive.Skate.Enabled", true);
 		config.addDefault("Abilities.Water.Ice.Passive.Skate.SpeedFactor", 4);
 		
 		config.addDefault("Abilities.Chi.Backstab.Enabled", true);

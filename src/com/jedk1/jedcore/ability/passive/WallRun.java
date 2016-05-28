@@ -41,7 +41,8 @@ public class WallRun extends ChiAbility implements AddonAbility {
 
 	public WallRun(Player player) {
 		super(player);
-		
+
+		setFields();
 		if (!enabled) return;
 		
 		if (bPlayer.isOnCooldown("WallRun")) return;
@@ -55,7 +56,6 @@ public class WallRun extends ChiAbility implements AddonAbility {
 			return;
 		}
 
-		setFields();
 		time = System.currentTimeMillis();
 
 		if (isEligible() && !JCMethods.isDisabledWorld(player.getWorld())) {
