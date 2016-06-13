@@ -72,6 +72,7 @@ public class BendingBoard {
 	}
 
 	public static void updateOnline() {
+		if (!enabled) return;
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (disabled.contains(player.getUniqueId())) continue;
 			if (!disabledworlds && JCMethods.getDisabledWorlds().contains(player.getWorld().getName())) continue;
@@ -105,6 +106,7 @@ public class BendingBoard {
 	public static void update(Player player, int slot) {
 		if (!enabled) { 
 			if (disabled.contains(player.getUniqueId())) return;
+			if (!boards.containsKey(player)) return;
 			get(player).remove();
 			return;
 		}
@@ -119,6 +121,7 @@ public class BendingBoard {
 	}
 
 	public static BendingBoard get(Player player) {
+		if (!enabled) return null;
 		if (boards.containsKey(player)) {
 			return boards.get(player);
 		} else {
@@ -141,6 +144,7 @@ public class BendingBoard {
 	}
 
 	public void update(final int slot) {
+		if (!enabled) return;
 		new BukkitRunnable() {
 			public void run() {
 				int x = slot;

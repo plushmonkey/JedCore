@@ -1,6 +1,6 @@
 name: JedCore
 main: com.jedk1.jedcore.JedCore
-version: 2.0.3
+version: 2.0.4
 authors: ['jedk1']
 depend: ['ProjectKorra']
 
