@@ -1,6 +1,5 @@
 package com.jedk1.jedcore.util;
 
-import com.google.common.collect.Lists;
 import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.ProjectKorra;
 
@@ -52,13 +51,13 @@ public class UpdateChecker {
 					JedCore.log.info("Warning: JedCore version is not compatible with this version of ProjectKorra. "
 							+ "Disabling JedCore...");
 					JedCore.log.info("Update: An update is available for JedCore!");
-					JedCore.log.info("http://projectkorra.com/resources/jedcore.125/");
+					JedCore.log.info("https://github.com/jedk1/JedCoreDownload");
 					JedCore.plugin.getServer().getPluginManager().disablePlugin(JedCore.plugin);
 					return;
 				}
 				if (response.equals(Result.SUITABE_UPDATE)) {
 					JedCore.log.info("Update: An update is available for JedCore!");
-					JedCore.log.info("http://projectkorra.com/resources/jedcore.125/");
+					JedCore.log.info("https://github.com/jedk1/JedCoreDownload");
 					hasUpdate = true;
 					return;
 				}
@@ -105,7 +104,7 @@ public class UpdateChecker {
 								result = Result.NOT_SUITABLE;
 							}
 						}
-						List<String> versions = Lists.newArrayList(json.keySet());
+						List<String> versions = (List<String>) json.get("ID");
 						if (versions.indexOf(pkVersion) < (versions.size() - 1)) {
 							result = (result == Result.SUITABLE || result == Result.NEWER) ? Result.SUITABE_UPDATE : Result.NOT_SUITABLE_UPDATE;
 						}

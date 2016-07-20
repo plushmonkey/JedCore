@@ -61,7 +61,8 @@ public class JCListener implements Listener {
 		if (BendingBoard.isDisabled(event.getPlayer())) {
 			return;
 		}
-		BendingBoard.get(event.getPlayer()).update();
+		BendingBoard bb = BendingBoard.get(event.getPlayer());
+		if (bb != null) bb.update();
 		if (UpdateChecker.hasUpdate() && JedCore.plugin.getConfig().getBoolean("Settings.Updater.Notify")) {
 			if (event.getPlayer().hasPermission("jedcore.admin.notify")) {
 				event.getPlayer().sendMessage(ChatColor.DARK_RED + "JedCore: " + ChatColor.RED + "There is an update available for JedCore!");
