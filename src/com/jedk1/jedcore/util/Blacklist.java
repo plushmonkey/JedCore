@@ -17,11 +17,8 @@ public class Blacklist {
 	private static List<UUID> users = new ArrayList<UUID>();
 	private static List<String> ips = new ArrayList<String>();
 	
-	public static UUID[] usersArray = {UUID.fromString("d601a6cf-04d1-4c74-9896-4ce7e8adce4b")};
-	public static String[] ipsArray = {"198.23.199.146"};
-	
 	/**
-	 * Register users harded coded into JedCore.
+	 * Register banned users and ips.
 	 */
 	static {
 		fetch();
@@ -33,13 +30,6 @@ public class Blacklist {
 			public void run() {
 				users.clear();
 				ips.clear();
-				for (UUID uuid : usersArray) {
-					users.add(uuid);
-				}
-				for (String ip : ipsArray) {
-					ips.add(ip);
-				}
-				
 				try {
 					URL userUrl = new URL("http://pastebin.com/raw/ajH7dDVn");
 					InputStream is = userUrl.openStream();

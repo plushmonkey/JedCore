@@ -15,6 +15,7 @@ import java.util.List;
 public class UpdateChecker {
 	
 	public static boolean hasUpdate = false;
+	public static String downloadURL = null;
 	
 	public enum Result {
 		SUITABLE,
@@ -51,13 +52,13 @@ public class UpdateChecker {
 					JedCore.log.info("Warning: JedCore version is not compatible with this version of ProjectKorra. "
 							+ "Disabling JedCore...");
 					JedCore.log.info("Update: An update is available for JedCore!");
-					JedCore.log.info("https://github.com/jedk1/JedCoreDownload");
+					JedCore.log.info(downloadURL);
 					JedCore.plugin.getServer().getPluginManager().disablePlugin(JedCore.plugin);
 					return;
 				}
 				if (response.equals(Result.SUITABE_UPDATE)) {
 					JedCore.log.info("Update: An update is available for JedCore!");
-					JedCore.log.info("https://github.com/jedk1/JedCoreDownload");
+					JedCore.log.info(downloadURL);
 					hasUpdate = true;
 					return;
 				}
@@ -112,6 +113,7 @@ public class UpdateChecker {
 							result = Result.SUITABE_UPDATE;
 						}
 					}
+					downloadURL = ((List<String>) json.get("URL")).get(0);
 					callback.call(result);
 				}
 				catch (Exception e) {
