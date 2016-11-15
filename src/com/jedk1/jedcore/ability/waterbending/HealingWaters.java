@@ -134,7 +134,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 	}
 
 	private static boolean hasWaterSupply(Player player){
-		ItemStack heldItem = player.getItemInHand();
+		ItemStack heldItem = player.getInventory().getItemInMainHand();
 		if(heldItem.getType() == Material.POTION)
 			return true;
 		else if(heldItem.getType() == Material.WATER_BUCKET)
@@ -143,9 +143,9 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 	}
 
 	private static void drainWaterSupply(Player player){
-		ItemStack heldItem = player.getItemInHand();
+		ItemStack heldItem = player.getInventory().getItemInMainHand();
 		if(heldItem.getType() == Material.POTION)
-			player.setItemInHand(new ItemStack(Material.GLASS_BOTTLE, 1));
+			player.getInventory().setItemInMainHand(new ItemStack(Material.GLASS_BOTTLE, 1));
 		else if(heldItem.getType() == Material.BUCKET);
 	}
 

@@ -157,8 +157,8 @@ public class FireComet extends FireAbility implements AddonAbility {
 		ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
 		ParticleEffect.FIREWORKS_SPARK.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
 		ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
-		location.getWorld().playSound(location, (rand.nextBoolean()) ? Sound.FIREWORK_LARGE_BLAST : Sound.FIREWORK_LARGE_BLAST2, 5f, 1f);
-		location.getWorld().playSound(location, Sound.EXPLODE, 5f, 0.8f);
+		location.getWorld().playSound(location, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_BLAST : Sound.ENTITY_FIREWORK_BLAST_FAR, 5f, 1f);
+		location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 5f, 0.8f);
 		int i = 0;
 		for (BlockState block : blocks) {
 			double x = rand.nextDouble() / 3;

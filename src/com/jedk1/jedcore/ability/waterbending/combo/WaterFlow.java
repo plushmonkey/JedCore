@@ -172,6 +172,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void progress() {
 		if (player.isDead() || !player.isOnline()) {

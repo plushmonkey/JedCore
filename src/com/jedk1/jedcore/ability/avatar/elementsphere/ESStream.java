@@ -152,8 +152,8 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 			ParticleEffect.FIREWORKS_SPARK.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, stream, 257D);
 			ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, stream, 257D);
 			ParticleEffect.EXPLOSION_HUGE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 5, stream, 257D);
-			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.FIREWORK_LARGE_BLAST : Sound.FIREWORK_LARGE_BLAST2, 1f, 1f);
-			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.FIREWORK_TWINKLE : Sound.FIREWORK_TWINKLE2, 1f, 1f);
+			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_BLAST : Sound.ENTITY_FIREWORK_BLAST_FAR, 1f, 1f);
+			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_TWINKLE : Sound.ENTITY_FIREWORK_TWINKLE_FAR, 1f, 1f);
 			for (BlockState block : blocks) {
 				double x = rand.nextDouble() / 3;
 				double z = rand.nextDouble() / 3;

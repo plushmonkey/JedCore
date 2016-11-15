@@ -1,14 +1,8 @@
 package com.jedk1.jedcore.ability.earthbending;
 
-import com.jedk1.jedcore.JedCore;
-import com.jedk1.jedcore.util.TempFallingBlock;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.projectkorra.projectkorra.ability.AddonAbility;
-import com.projectkorra.projectkorra.ability.EarthAbility;
-import com.projectkorra.projectkorra.util.DamageHandler;
-import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
-import com.projectkorra.projectkorra.util.TempBlock;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,9 +14,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.TempFallingBlock;
+import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.util.DamageHandler;
+import com.projectkorra.projectkorra.util.ParticleEffect;
+import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
+import com.projectkorra.projectkorra.util.TempBlock;
 
 public class EarthShard extends EarthAbility implements AddonAbility {
 
@@ -50,9 +50,12 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 		}
 
 		if (hasAbility(player, EarthShard.class)) {
-			EarthShard es = (EarthShard) getAbility(player, EarthShard.class);
-			es.select();
-			return;
+			for (EarthShard es : EarthShard.getAbilities(player, EarthShard.class)) {
+				if (!es.isThrown) {
+					es.select();
+					return;
+				}
+			}
 		}
 
 		setFields();
@@ -99,7 +102,8 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 				playEarthbendingSound(block.getLocation());
 			}
 
-			new TempFallingBlock(block.getLocation(), getCorrectType(block), block.getData(), new Vector(0, 0.8, 0), this);
+			Location loc = block.getLocation().add(0.5, 0, 0.5);
+			new TempFallingBlock(loc, getCorrectType(block), block.getData(), new Vector(0, 0.8, 0), this);
 			TempBlock tb = new TempBlock(block, Material.AIR, (byte) 0);
 			tblockTracker.add(tb);
 		}
@@ -136,6 +140,11 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			}
 			for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
 				FallingBlock fb = tfb.getFallingBlock();
+				if (fb.isDead()) {
+					TempBlock tb = new TempBlock(fb.getLocation().getBlock(), fb.getMaterial(), fb.getBlockData());
+					readyBlocksTracker.add(tb);
+					tfb.remove();
+				}
 				if (fb.getLocation().getBlockY() == origin.getBlockY() + 2) {
 					TempBlock tb = new TempBlock(fb.getLocation().getBlock(), fb.getMaterial(), fb.getBlockData());
 					readyBlocksTracker.add(tb);
@@ -167,7 +176,12 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 
 	public static void throwShard(Player player) {
 		if (hasAbility(player, EarthShard.class)) {
-			((EarthShard) getAbility(player, EarthShard.class)).throwShard();
+			for (EarthShard es : EarthShard.getAbilities(player, EarthShard.class)) {
+				if (!es.isThrown) {
+					es.throwShard();
+					break;
+				}
+			}
 		}
 	}
 

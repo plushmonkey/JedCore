@@ -1,16 +1,9 @@
 package com.jedk1.jedcore;
 
-import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.scoreboard.BendingBoard;
-import com.jedk1.jedcore.util.Blacklist;
-import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.UpdateChecker;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.projectkorra.projectkorra.ProjectKorra;
-import com.projectkorra.projectkorra.ability.CoreAbility;
-import com.projectkorra.projectkorra.ability.util.ComboManager;
-import com.projectkorra.projectkorra.util.TempBlock;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,10 +18,16 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.jedk1.jedcore.scoreboard.BendingBoard;
+import com.jedk1.jedcore.util.RegenTempBlock;
+import com.jedk1.jedcore.util.TempFallingBlock;
+import com.jedk1.jedcore.util.UpdateChecker;
+import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.ProjectKorra;
+import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.ability.util.ComboManager;
+import com.projectkorra.projectkorra.util.TempBlock;
 
 public class JCMethods {
 
@@ -280,7 +279,6 @@ public class JCMethods {
 		registerDisabledWorlds();
 		registerCombos();
 		UpdateChecker.fetch();
-		Blacklist.fetch();
 		RegenTempBlock.revertAll();
 		TempFallingBlock.removeAllFallingBlocks();
 		BendingBoard.setFields();

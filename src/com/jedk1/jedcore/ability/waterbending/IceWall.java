@@ -281,7 +281,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 			if (tb != null) {
 				tb.revertBlock();
 				ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.PACKED_ICE, (byte) 0), 0, 0, 0, 0, 5, tb.getLocation(), 20);
-				tb.getLocation().getWorld().playSound(tb.getLocation(), Sound.GLASS, 5f, 5f);
+				tb.getLocation().getWorld().playSound(tb.getLocation(), Sound.BLOCK_GLASS_BREAK, 5f, 5f);
 
 				for (Entity e : GeneralMethods.getEntitiesAroundPoint(tb.getLocation(), 2.5)) {
 					if (e.getEntityId() != player.getEntityId()) {

@@ -1,25 +1,24 @@
 package com.jedk1.jedcore.scoreboard;
 
-import com.jedk1.jedcore.JCMethods;
-import com.jedk1.jedcore.JedCore;
-import com.jedk1.jedcore.configuration.Config;
-import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.Blacklist;
-import com.projectkorra.projectkorra.BendingPlayer;
-import com.projectkorra.projectkorra.ability.CoreAbility;
-import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import com.jedk1.jedcore.JCMethods;
+import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.Config;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.projectkorra.projectkorra.BendingPlayer;
+import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
 
 public class BendingBoard {
 
@@ -55,7 +54,6 @@ public class BendingBoard {
 	private SimpleScoreboard scoreboard;
 
 	public BendingBoard(Player player) {
-		if (Blacklist.isUser(player.getUniqueId())) return;
 		this.player = player;
 		this.scoreboard = new SimpleScoreboard(title);
 		boards.put(player, this);

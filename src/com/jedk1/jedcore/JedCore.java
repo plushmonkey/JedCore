@@ -1,22 +1,21 @@
 package com.jedk1.jedcore;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.jedk1.jedcore.command.Commands;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.listener.AbilityListener;
 import com.jedk1.jedcore.listener.CommandListener;
 import com.jedk1.jedcore.listener.JCListener;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
-import com.jedk1.jedcore.util.Blacklist;
 import com.jedk1.jedcore.util.MetricsLite;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.ability.CoreAbility;
-
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.IOException;
-import java.util.logging.Logger;
 
 public class JedCore extends JavaPlugin {
 
@@ -27,17 +26,17 @@ public class JedCore extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		if (!isJava8()) {
+			log.info("JedCore requires Java 8! Disabling JedCore...");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		
 		plugin = this;
 		JedCore.log = this.getLogger();
 		new JedCoreConfig(this);
 		
 		UpdateChecker.fetch();
-		
-		if (!validateBlacklist() || Blacklist.isServer(getServer().getIp())) {
-			log.info("Unable to load JedCore.");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
 		
 		if (!isSpigot()) {
 			log.info("Bukkit detected, JedCore will not function properly.");
@@ -70,13 +69,8 @@ public class JedCore extends JavaPlugin {
 		return plugin.getServer().getVersion().toLowerCase().contains("spigot");
 	}
 	
-	private boolean validateBlacklist() {
-		try {
-			Class.forName("com.jedk1.jedcore.util.Blacklist");
-		} catch (ClassNotFoundException e) {
-			return false;
-		}
-		return true;
+	private boolean isJava8() {
+		return System.getProperty("java.version").equals("1.8");
 	}
 	
 	public void onDisable() {

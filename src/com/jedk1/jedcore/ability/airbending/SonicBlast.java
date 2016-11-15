@@ -123,7 +123,7 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 			}
 			location = location.add(direction.clone().multiply(0.2));
 		}
-		location.getWorld().playSound(location, Sound.EXPLODE, 1, 0);
+		location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1, 0);
 	}
 	
 	@Override

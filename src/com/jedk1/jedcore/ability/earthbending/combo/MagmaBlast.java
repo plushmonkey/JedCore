@@ -185,8 +185,8 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 		ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
 		ParticleEffect.FIREWORKS_SPARK.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
 		ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
-		location.getWorld().playSound(location, (mb.rand.nextBoolean()) ? Sound.FIREWORK_LARGE_BLAST : Sound.FIREWORK_LARGE_BLAST2, 1f, 1f);
-		location.getWorld().playSound(location, (mb.rand.nextBoolean()) ? Sound.FIREWORK_TWINKLE : Sound.FIREWORK_TWINKLE2, 1f, 1f);
+		location.getWorld().playSound(location, (mb.rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_BLAST : Sound.ENTITY_FIREWORK_BLAST_FAR, 1f, 1f);
+		location.getWorld().playSound(location, (mb.rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_TWINKLE : Sound.ENTITY_FIREWORK_TWINKLE_FAR, 1f, 1f);
 	}
 	
 	public double getDamage() {

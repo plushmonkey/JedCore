@@ -29,7 +29,7 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 		}
 		this.useIronArmor = false;
 		this.strength = 3;
-		this.head = ((EarthArmor) getAbility(player, EarthArmor.class)).getHeadType();
+		this.head = ((EarthArmor) getAbility(player, EarthArmor.class)).getHeadBlock().getType();
 		start();
 	}
 
@@ -69,7 +69,7 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 							new ItemStack(Material.GOLD_HELMET, 1) };
 				}
 				player.getInventory().setArmorContents(armors);
-				PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) ea.getDuration() / 50, strength - 1);
+				PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) 40, strength - 1);
 				new TempPotionEffect(player, resistance);
 			}
 			remove();

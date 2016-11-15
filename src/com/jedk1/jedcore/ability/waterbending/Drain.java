@@ -28,19 +28,13 @@ public class Drain extends WaterAbility implements AddonAbility {
 	//private static Integer[] plantIds = { 6, 18, 31, 32, 37, 38, 39, 40, 59, 81, 83, 86, 99, 100, 103, 104, 105, 106, 111, 161, 175 };
 	Biome[] invalidBiomes = { 
 			Biome.DESERT, 
-			Biome.DESERT_HILLS, 
-			Biome.DESERT_MOUNTAINS, 
+			Biome.DESERT_HILLS,
 			Biome.HELL, 
 			Biome.MESA,
-			Biome.MESA_BRYCE,
-			Biome.MESA_PLATEAU,
-			Biome.MESA_PLATEAU_FOREST,
-			Biome.MESA_PLATEAU_FOREST_MOUNTAINS,
-			Biome.MESA_PLATEAU_MOUNTAINS,
+			Biome.MESA_CLEAR_ROCK,
+			Biome.MESA_ROCK,
 			Biome.SAVANNA, 
-			Biome.SAVANNA_MOUNTAINS, 
-			Biome.SAVANNA_PLATEAU, 
-			Biome.SAVANNA_PLATEAU_MOUNTAINS
+			Biome.SAVANNA_ROCK
 	};
 
 	private long regenDelay;

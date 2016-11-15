@@ -138,7 +138,7 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 		Location tempLoc = location.clone();
 		location = location.add(direction.multiply(1));
 		playEarthbendingSound(tempLoc);
-		location.getWorld().playSound(location, Sound.ZOMBIE_WOOD, (float) 0.5, (float) 0.5);
+		location.getWorld().playSound(location, Sound.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, (float) 0.5, (float) 0.5);
 		if (skip) {
 			return;
 		}

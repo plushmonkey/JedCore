@@ -136,6 +136,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void blockMove(Location l, Player p) {
 		List<String> abilityNames = new ArrayList<String>();
 		abilityNames.add("FireBlast");

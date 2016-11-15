@@ -151,6 +151,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		hasClicked = b.booleanValue();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void advanceLocation() {
 		if (location == null) {
 			Location origin = player.getEyeLocation().clone();
@@ -162,7 +163,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 			ParticleEffect.FLAME.display(location, 0.0F, 0.0F, 0.0F, 0.03F, 1);
 			ParticleEffect.LARGE_SMOKE.display(location, 0.0F, 0.0F, 0.0F, 0.06F, 1);
 			ParticleEffect.FIREWORKS_SPARK.display(location, 0.0F, 0.0F, 0.0F, 0.06F, 1);
-			location.getWorld().playSound(location, Sound.FIREWORK_BLAST, 1.0F, 0.01F);
+			location.getWorld().playSound(location, Sound.ENTITY_FIREWORK_BLAST, 1.0F, 0.01F);
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 1.6D)) {
 				if ((entity instanceof LivingEntity) && (entity.getEntityId() != player.getEntityId())) {
@@ -213,7 +214,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		ParticleEffect.FIREWORKS_SPARK.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, loc, 257D);
 		ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, loc, 257D);
 		ParticleEffect.EXPLOSION_HUGE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 5, loc, 257D);
-		loc.getWorld().playSound(loc, Sound.EXPLODE, 1f, 1f);
+		loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
 	}
 
 	private void playParticleRing(int points, float size, int speed) {

@@ -127,7 +127,7 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 			}
 
 			if(rand.nextInt(3) == 0) {
-				location.getWorld().playSound(location, Sound.CREEPER_HISS, 1, 0);
+				location.getWorld().playSound(location, Sound.ENTITY_CREEPER_PRIMED, 1, 0);
 			}
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2)) {

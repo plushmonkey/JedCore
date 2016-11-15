@@ -89,7 +89,7 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 		Player player = es.getPlayer();
 
 		ParticleEffect.SMOKE_LARGE.display(fb.getLocation(), 0, 0, 0, 0.3F, 25);
-		fb.getWorld().playSound(fb.getLocation(), Sound.EXPLODE, 2f, 0.5f);
+		fb.getWorld().playSound(fb.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 2f, 0.5f);
 
 		for (Location l : GeneralMethods.getCircle(fb.getLocation(), es.impactSize, 1, false, true, 0)) {
 			//if (TempBlock.isTempBlock(l.getBlock())) {

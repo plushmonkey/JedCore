@@ -37,19 +37,13 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 			Material.AIR };
 	Biome[] invalidBiomes = { 
 			Biome.DESERT, 
-			Biome.DESERT_HILLS, 
-			Biome.DESERT_MOUNTAINS, 
+			Biome.DESERT_HILLS,
 			Biome.HELL, 
 			Biome.MESA,
-			Biome.MESA_BRYCE,
-			Biome.MESA_PLATEAU,
-			Biome.MESA_PLATEAU_FOREST,
-			Biome.MESA_PLATEAU_FOREST_MOUNTAINS,
-			Biome.MESA_PLATEAU_MOUNTAINS,
+			Biome.MESA_CLEAR_ROCK,
+			Biome.MESA_ROCK,
 			Biome.SAVANNA, 
-			Biome.SAVANNA_MOUNTAINS, 
-			Biome.SAVANNA_PLATEAU, 
-			Biome.SAVANNA_PLATEAU_MOUNTAINS
+			Biome.SAVANNA_ROCK
 	};
 	Random rand = new Random();
 

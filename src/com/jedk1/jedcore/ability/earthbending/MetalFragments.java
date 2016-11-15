@@ -137,7 +137,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 				source.getWorld().spawnFallingBlock(source.getLocation(), source.getType(), source.getData());
 				TempBlock.get(source).revertBlock();
 				sources.remove(source);
-				source.getWorld().playSound(source.getLocation(), Sound.ITEM_BREAK, 10, 5);
+				source.getWorld().playSound(source.getLocation(), Sound.ENTITY_ITEM_BREAK, 10, 5);
 			} else {
 				counters.put(source, count);
 			}
