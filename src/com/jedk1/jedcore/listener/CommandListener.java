@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.event.PKCommandEvent;
 import com.jedk1.jedcore.event.PKCommandEvent.CommandType;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
+import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.command.PKCommand;
 
 import org.bukkit.Bukkit;
@@ -24,14 +25,7 @@ public class CommandListener implements Listener {
 	String[] cmdaliases = {"/bending", "/bend", "/b", "/pk", "/projectkorra", "/korra", "/mtla", "/tla"};
 	String[] developers = {
 			"4eb6315e-9dd1-49f7-b582-c1170e497ab0", //jedk1
-			"d57565a5-e6b0-44e3-a026-979d5de10c4d" //RockMC
-	};
-	String[] contributors = {
-			"7bb267eb-cf0b-4fb9-a697-27c2a913ed92", //Finn
-			"c00ae8aa-499e-418c-b31f-c8cde4dec384" //Vectrix
-	};
-	String[] conceptdesigners = {
-			"15d1a5a7-76ef-49c3-b193-039b27c47e30" //Kiam
+			"d57565a5-e6b0-44e3-a026-979d5de10c4d" //s3xi
 	};
 
 	public CommandListener(JedCore plugin) {
@@ -72,14 +66,14 @@ public class CommandListener implements Listener {
 								if (Arrays.asList(developers).contains(uuid.toString())) {
 									event.getSender().sendMessage(ChatColor.DARK_AQUA + "JedCore Developer");
 								}
-								if (Arrays.asList(contributors).contains(uuid.toString())) {
-									event.getSender().sendMessage(ChatColor.AQUA + "JedCore Contributor");
-								}
-								if (Arrays.asList(conceptdesigners).contains(uuid.toString())) {
-									event.getSender().sendMessage(ChatColor.AQUA + "JedCore Concept Designer");
-								}
 							}
 						}
+						return;
+					}
+					if (event.getType().equals(CommandType.VERSION) && event.getSender().hasPermission("bending.command.version")) {
+						event.getSender().sendMessage(ChatColor.GRAY + "Running JedCore Build: " + ChatColor.RED + JedCore.plugin.getDescription().getVersion());
+						event.getSender().sendMessage(ChatColor.GRAY + "Developed by: " + ChatColor.RED + JedCore.plugin.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+						event.getSender().sendMessage(ChatColor.GRAY + "URL: " + ChatColor.RED + ChatColor.ITALIC + UpdateChecker.downloadURL);
 						return;
 					}
 				}

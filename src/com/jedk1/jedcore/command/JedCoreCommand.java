@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.command.PKCommand;
 
 public class JedCoreCommand extends PKCommand {
@@ -23,8 +24,9 @@ public class JedCoreCommand extends PKCommand {
 			return;
 		}
 		if (args.size() == 0) {
-			sender.sendMessage(ChatColor.GREEN + "JedCore Version: " + ChatColor.GRAY + JedCore.plugin.getDescription().getVersion());
-			sender.sendMessage(ChatColor.GREEN + "Developed by: " + ChatColor.GRAY + JedCore.plugin.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+			sender.sendMessage(ChatColor.GRAY + "Running JedCore Build: " + ChatColor.RED + JedCore.plugin.getDescription().getVersion());
+			sender.sendMessage(ChatColor.GRAY + "Developed by: " + ChatColor.RED + JedCore.plugin.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+			sender.sendMessage(ChatColor.GRAY + "URL: " + ChatColor.RED + ChatColor.ITALIC + UpdateChecker.downloadURL);
 		} else if (args.size() == 1 && (hasPermission(sender, "debug") || isSenderJedCoreDev(sender))) {
 			//Dev commands for debugging etc.
 			if (args.get(0).equalsIgnoreCase("refresh")) {

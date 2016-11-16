@@ -4,7 +4,7 @@
 
   <groupId>com.jedk1</groupId>
   <artifactId>jedcore</artifactId>
-  <version>2.X.X-Spigot_1.10.2-PK_1.8.1</version>
+  <version>2.X.X-Spigot1.10.2-PK1.8.1</version>
   <packaging>jar</packaging>
   <name>JedCore</name>
 

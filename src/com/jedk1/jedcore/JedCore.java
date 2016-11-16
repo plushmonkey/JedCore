@@ -26,8 +26,8 @@ public class JedCore extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		if (!isJava8()) {
-			log.info("JedCore requires Java 8! Disabling JedCore...");
+		if (!isJava8orHigher()) {
+			getLogger().info("JedCore requires Java 8+! Disabling JedCore...");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -69,8 +69,8 @@ public class JedCore extends JavaPlugin {
 		return plugin.getServer().getVersion().toLowerCase().contains("spigot");
 	}
 	
-	private boolean isJava8() {
-		return System.getProperty("java.version").equals("1.8");
+	private boolean isJava8orHigher() {
+		return Integer.valueOf(System.getProperty("java.version").substring(2, 3)) >= 8;
 	}
 	
 	public void onDisable() {
