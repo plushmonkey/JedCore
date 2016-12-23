@@ -1,14 +1,9 @@
 package com.jedk1.jedcore.ability.firebending;
 
-import com.jedk1.jedcore.JedCore;
-import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.projectkorra.projectkorra.ability.AddonAbility;
-import com.projectkorra.projectkorra.ability.FireAbility;
-import com.projectkorra.projectkorra.firebending.BlazeArc;
-import com.projectkorra.projectkorra.util.DamageHandler;
-import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.waterbending.PhaseChangeMelt;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,10 +12,16 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import com.jedk1.jedcore.JedCore;
+import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.FireAbility;
+import com.projectkorra.projectkorra.firebending.BlazeArc;
+import com.projectkorra.projectkorra.util.DamageHandler;
+import com.projectkorra.projectkorra.util.ParticleEffect;
+import com.projectkorra.projectkorra.util.TempBlock;
+import com.projectkorra.projectkorra.waterbending.PhaseChange;
 
 public class FireBreath extends FireAbility implements AddonAbility {
 
@@ -140,7 +141,13 @@ public class FireBreath extends FireAbility implements AddonAbility {
 			if (meltEnabled) {
 				for (Block b : GeneralMethods.getBlocksAroundPoint(loc, damageregion)) {
 					if (isIce(b) && rand.nextInt(meltChance) == 0) {
-						PhaseChangeMelt.melt(player, b);
+						if (TempBlock.isTempBlock(b)) {
+							TempBlock temp = TempBlock.get(b);
+							if (PhaseChange.getFrozenBlocksMap().containsKey(temp)) {
+								temp.revertBlock();
+								PhaseChange.getFrozenBlocksMap().remove(temp);
+							}
+						}
 					}
 				}
 			}

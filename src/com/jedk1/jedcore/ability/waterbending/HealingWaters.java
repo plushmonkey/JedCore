@@ -48,6 +48,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void heal(Player player) {
 		if(inWater(player)){
 			if(player.isSneaking()){
@@ -97,6 +98,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void giveHPToEntity(LivingEntity le) {
 		Damageable dLe = (Damageable)le;
 		if (!le.isDead() && dLe.getHealth() < dLe.getMaxHealth()) {
@@ -149,6 +151,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 		else if(heldItem.getType() == Material.BUCKET);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void applyHealing(Player player) {
 		Damageable dP = (Damageable)player;
 		if (!GeneralMethods.isRegionProtectedFromBuild(player, "HealingWaters", player.getLocation()))
@@ -158,6 +161,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 			}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void applyHealingToEntity(LivingEntity le) {
 		Damageable dLe = (Damageable)le;
 		if(dLe.getHealth() < dLe.getMaxHealth()) {
