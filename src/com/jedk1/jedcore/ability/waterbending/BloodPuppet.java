@@ -164,7 +164,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 		if (!(e instanceof LivingEntity))
 			return false;
 
-		if (!undeadMobs && com.projectkorra.projectkorra.waterbending.Bloodbending.isUndead(e))
+		if (!undeadMobs && com.projectkorra.projectkorra.waterbending.blood.Bloodbending.isUndead(e))
 			return false;
 
 		if ((e instanceof Player) && !canBeBloodbent((Player) e)) {

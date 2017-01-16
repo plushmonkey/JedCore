@@ -21,7 +21,7 @@ import com.projectkorra.projectkorra.firebending.BlazeArc;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
-import com.projectkorra.projectkorra.waterbending.PhaseChange;
+import com.projectkorra.projectkorra.waterbending.ice.PhaseChange;
 
 public class FireBreath extends FireAbility implements AddonAbility {
 

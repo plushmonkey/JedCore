@@ -1,16 +1,16 @@
 package com.jedk1.jedcore.ability.chiblocking;
 
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+
 import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ChiAbility;
-import com.projectkorra.projectkorra.chiblocking.ChiPassive;
-
-import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import com.projectkorra.projectkorra.chiblocking.passive.ChiPassive;
 
 public class Backstab extends ChiAbility implements AddonAbility {
 
