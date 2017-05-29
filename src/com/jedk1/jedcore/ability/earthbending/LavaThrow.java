@@ -30,6 +30,7 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 	private int sourceRange;
 	private long sourceRegen;
 	private int shotMax;
+	private int fireTicks;
 
 	private Location location;
 	private int shots;
@@ -66,6 +67,7 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 		sourceRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaThrow.SourceGrabRange");
 		sourceRegen = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaThrow.SourceRegenDelay");
 		shotMax = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaThrow.MaxShots");
+		fireTicks = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaThrow.FireTicks");
 	}
 
 	@Override
@@ -129,17 +131,23 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 			head = head.add(head.getDirection().multiply(1));
 			new RegenTempBlock(l.getBlock(), Material.STATIONARY_LAVA, (byte) 0, 200);
 			ParticleEffect.LAVA.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0f, 1, head, 257D);
-			
-			for(Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.0D)){
+
+			boolean hit = false;
+
+			for(Entity entity : GeneralMethods.getEntitiesAroundPoint(l, 2.0D)){
 				if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()){
 					DamageHandler.damageEntity(entity, damage, this);
 					blasts.remove(l);
-					continue;
+
+					hit = true;
+					entity.setFireTicks(this.fireTicks);
 				}
 			}
-			
-			blasts.remove(l);
-			blasts.put(head, origin);
+
+			if (!hit) {
+				blasts.remove(l);
+				blasts.put(head, origin);
+			}
 		}
 	}
 
