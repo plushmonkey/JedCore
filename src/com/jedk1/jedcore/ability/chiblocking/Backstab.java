@@ -20,7 +20,7 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 	public static boolean punch(Player player, LivingEntity target) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer.canBend(getAbility("Backstab"))) {
+		if (bPlayer != null && bPlayer.canBend(getAbility("Backstab"))) {
 			BlockFace playerFace = GeneralMethods.getCardinalDirection(player.getLocation().getDirection());
 			Location temp = target.getLocation();
 			BlockFace targetFace = GeneralMethods.getCardinalDirection(temp.getDirection());
