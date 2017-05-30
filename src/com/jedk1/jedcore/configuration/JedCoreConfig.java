@@ -174,6 +174,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.SonicBlast.Effects.NauseaDuration", 5000);
 		config.addDefault("Abilities.Air.SonicBlast.Cooldown", 6000);
 		config.addDefault("Abilities.Air.SonicBlast.Range", 20);
+		config.addDefault("Abilities.Air.SonicBlast.ChargeSwapping", true);
 		
 		config.addDefault("Abilities.Air.AirCombo.AirSlam.Enabled", true);
 		config.addDefault("Abilities.Air.AirCombo.AirSlam.Description", "Kick your enemy up into the air then blast them away!");

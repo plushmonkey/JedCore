@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
+import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
@@ -26,14 +27,13 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 	private boolean isCharged;
 	private int travelled;
 
-	Random rand = new Random();
-
 	private double damage;
 	private double range;
 	private long cooldown;
 	private long warmup;
 	private int nauseaDur;
 	private int blindDur;
+	private boolean chargeSwapping;
 
 	public SonicBlast(Player player) {
 		super(player);
@@ -49,6 +49,7 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 		range = JedCore.plugin.getConfig().getDouble("Abilities.Air.SonicBlast.Range");
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.SonicBlast.Cooldown");
 		warmup = JedCore.plugin.getConfig().getLong("Abilities.Air.SonicBlast.ChargeTime");
+		chargeSwapping = JedCore.plugin.getConfig().getBoolean("Abilities.Air.SonicBlast.ChargeSwapping");
 		nauseaDur = JedCore.plugin.getConfig().getInt("Abilities.Air.SonicBlast.Effects.NauseaDuration");
 		blindDur = JedCore.plugin.getConfig().getInt("Abilities.Air.SonicBlast.Effects.BlindnessDuration");
 		time = System.currentTimeMillis();
@@ -60,6 +61,14 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 			remove();
 			return;
 		}
+
+		CoreAbility boundAbility = bPlayer.getBoundAbility();
+
+		if (!this.chargeSwapping && this.travelled == 0 && !(boundAbility instanceof SonicBlast)) {
+			remove();
+			return;
+		}
+
 		if (player.isSneaking() && travelled == 0) {
 			direction = player.getEyeLocation().getDirection().normalize();
 			if (isCharged) {
@@ -118,6 +127,7 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 					LivingEntity lE = (LivingEntity) entity;
 					lE.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, nauseaDur/50, 1));
 					lE.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, blindDur/50, 1));
+					remove();
 					return;
 				}
 			}
