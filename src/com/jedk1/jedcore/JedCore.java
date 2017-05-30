@@ -16,6 +16,7 @@ import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.ability.CoreAbility;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class JedCore extends JavaPlugin {
 
@@ -44,8 +45,7 @@ public class JedCore extends JavaPlugin {
 		
 		dev = this.getDescription().getAuthors().toString().replace("[", "").replace("]", "");
 		version = this.getDescription().getVersion();
-		
-		JCMethods.registerCombos();
+
 		JCMethods.registerDisabledWorlds();
 		CoreAbility.registerPluginAbilities(plugin, "com.jedk1.jedcore.ability");
 		getServer().getPluginManager().registerEvents(new AbilityListener(this), this);
@@ -55,6 +55,13 @@ public class JedCore extends JavaPlugin {
 		
 		BendingBoard.updateOnline();
 		new Commands();
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				JCMethods.registerCombos();
+			}
+		}.runTaskLater(this, 1);
 		
 		try {
 	        MetricsLite metrics = new MetricsLite(this);
