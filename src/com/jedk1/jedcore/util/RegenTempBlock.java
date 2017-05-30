@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.util;
 
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.TempBlock;
 
 import org.bukkit.Material;
@@ -35,6 +36,9 @@ public class RegenTempBlock {
 	 */
 	@SuppressWarnings("deprecation")
 	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp) {
+		if (EarthPassive.isPassiveSand(block)) {
+			EarthPassive.revertSand(block);
+		}
 		if (blocks.containsKey(block)) {
 			blocks.replace(block, System.currentTimeMillis() + delay);
 			block.setType(material);

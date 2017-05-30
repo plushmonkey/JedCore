@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import java.util.List;
 
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -253,6 +254,9 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 		if (!GeneralMethods.isRegionProtectedFromBuild(player, "LavaDisc", l)) {
 
 			if (!TempBlock.isTempBlock(l.getBlock()) && (isEarthbendable(player, l.getBlock()) || isMetal(l.getBlock()) || meltable.contains(l.getBlock().getType().name()))) {
+				if (EarthPassive.isPassiveSand(l.getBlock())) {
+					EarthPassive.revertSand(l.getBlock());
+				}
 
 				if (lavaTrail)
 					new RegenTempBlock(l.getBlock(), Material.LAVA, (byte) 4, regen);

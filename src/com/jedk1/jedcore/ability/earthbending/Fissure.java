@@ -5,6 +5,7 @@ import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LavaAbility;
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
 
@@ -207,6 +208,9 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	private void addTempBlock(Block block, Material material) {
 		ParticleEffect.LAVA.display(block.getLocation(), 0, 0, 0, 0, 1);
 		playEarthbendingSound(block.getLocation());
+		if (EarthPassive.isPassiveSand(block)) {
+			EarthPassive.revertSand(block);
+		}
 		new TempBlock(block, material, (byte) 0);
 		blocks.add(block);
 	}

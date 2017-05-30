@@ -6,6 +6,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -172,6 +173,10 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 			Location locationYUP = location.clone().add(0.0D, 0.1D, 0.0D);
 
 			playEarthbendingSound(location);
+
+			if (EarthPassive.isPassiveSand(location.getBlock())) {
+				EarthPassive.revertSand(location.getBlock());
+			}
 
 			new RegenTempBlock(location.getBlock(), Material.AIR, (byte) 0, 700L);
 

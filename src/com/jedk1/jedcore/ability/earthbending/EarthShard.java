@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -102,8 +103,15 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 				playEarthbendingSound(block.getLocation());
 			}
 
+			Material material = getCorrectType(block);
+			byte data = block.getData();
+
+			if (EarthPassive.isPassiveSand(block)) {
+				EarthPassive.revertSand(block);
+			}
+
 			Location loc = block.getLocation().add(0.5, 0, 0.5);
-			new TempFallingBlock(loc, getCorrectType(block), block.getData(), new Vector(0, 0.8, 0), this);
+			new TempFallingBlock(loc, material, data, new Vector(0, 0.8, 0), this);
 			TempBlock tb = new TempBlock(block, Material.AIR, (byte) 0);
 			tblockTracker.add(tb);
 		}
