@@ -299,6 +299,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 		tempBlocks.clear();
 
 		isWallDoneFor = true;
+		remove();
 	}
 
 	public void remove() {
@@ -311,6 +312,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 		tempBlocks.clear();
 
 		instances.remove(this);
+		super.remove();
 	}
 
 	public static void removeDeadInstances() {
