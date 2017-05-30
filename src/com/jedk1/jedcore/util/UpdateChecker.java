@@ -31,12 +31,13 @@ public class UpdateChecker {
 	}
 	
 	public static void fetch() {
-		if (!JedCore.plugin.getConfig().getBoolean("Settings.Updater.Check")) {
+		//if (!JedCore.plugin.getConfig().getBoolean("Settings.Updater.Check")) {
 			JedCore.log.info("JedCore update checker is disabled, skipping compatibility checks.");
-			JedCore.log.info("Please enable the update checker to ensure your JedCore version is compatible with the ProjectKorra version you are running.");
-			return;
-		}
-		fetch(new Callback<Result>() {
+			//JedCore.log.info("Please enable the update checker to ensure your JedCore version is compatible with the ProjectKorra version you are running.");
+		downloadURL = "https://github.com/plushmonkey/JedCore";
+		//	return;
+		//}
+		/*fetch(new Callback<Result>() {
 			@Override
 			public void call(Result response) {
 				if (response.equals(Result.SUITABLE)) {
@@ -72,7 +73,7 @@ public class UpdateChecker {
 					return;
 				}
 			}
-		});
+		});*/
 	}
 	
 	public interface Callback<T> {

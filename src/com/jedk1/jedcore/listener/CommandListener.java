@@ -73,6 +73,7 @@ public class CommandListener implements Listener {
 					if (event.getType().equals(CommandType.VERSION) && event.getSender().hasPermission("bending.command.version")) {
 						event.getSender().sendMessage(ChatColor.GRAY + "Running JedCore Build: " + ChatColor.RED + JedCore.plugin.getDescription().getVersion());
 						event.getSender().sendMessage(ChatColor.GRAY + "Developed by: " + ChatColor.RED + JedCore.plugin.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+						event.getSender().sendMessage(ChatColor.GRAY + "Modified by: " + ChatColor.RED + "plushmonkey");
 						event.getSender().sendMessage(ChatColor.GRAY + "URL: " + ChatColor.RED + ChatColor.ITALIC + UpdateChecker.downloadURL);
 						return;
 					}
