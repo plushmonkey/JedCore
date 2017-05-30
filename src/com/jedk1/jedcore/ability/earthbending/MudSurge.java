@@ -29,6 +29,8 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	private int prepareRange;
 	private int blindChance;
+	private int blindTicks;
+	private boolean multipleHits;
 	private int damage;
 	private int waves;
 	private int waterSearchRadius;
@@ -53,6 +55,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	private ListIterator<Block> mudAreaItr;
 	private List<TempBlock> mudBlocks = new ArrayList<TempBlock>();
 	private List<Player> blind = new ArrayList<Player>();
+	private List<Entity> affectedEntities = new ArrayList<>();
 
 	//private List<FallingBlock> surgingMud = new ArrayList<FallingBlock>();
 	
@@ -79,7 +82,6 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 		if (getSource()) {
 			loadMudPool();
 			start();
-			bPlayer.addCooldown(this);
 		}
 	}
 	
@@ -91,6 +93,8 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 		waterSearchRadius = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.WaterSearchRadius");
 		wetSource = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MudSurge.WetSourceOnly");
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.MudSurge.Cooldown");
+		blindTicks = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.BlindTicks");
+		multipleHits = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MudSurge.MultipleHits");
 	}
 
 	private boolean getSource() {
@@ -125,6 +129,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	private void startSurge() {
 		started = true;
+		this.bPlayer.addCooldown(this);
 	}
 
 	private boolean hasStarted() {
@@ -272,13 +277,19 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 				}
 
 				if (e instanceof LivingEntity) {
-					DamageHandler.damageEntity(e, damage, this);
+					if (this.multipleHits || !this.affectedEntities.contains(e)) {
+						DamageHandler.damageEntity(e, damage, this);
+						if (!this.multipleHits) {
+							this.affectedEntities.add(e);
+						}
+					}
+
 					if (e instanceof Player) {
 						if (e.getEntityId() == player.getEntityId())
 							continue;
 
 						if (rand.nextInt(100) < blindChance && !blind.contains((Player) e)) {
-							((Player) e).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 2));
+							((Player) e).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, this.blindTicks, 2));
 						}
 
 						blind.add((Player) e);

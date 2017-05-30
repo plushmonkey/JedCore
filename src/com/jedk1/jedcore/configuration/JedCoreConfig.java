@@ -361,12 +361,14 @@ public class JedCoreConfig {
 				+ "of blinding the target. To use, select "
 				+ "a source of earth and click in any direction.");
 		config.addDefault("Abilities.Earth.MudSurge.Cooldown", 6000);
-		config.addDefault("Abilities.Earth.MudSurge.Damage", 0.5);
+		config.addDefault("Abilities.Earth.MudSurge.Damage", 1);
 		config.addDefault("Abilities.Earth.MudSurge.Waves", 5);
 		config.addDefault("Abilities.Earth.MudSurge.SourceRange", 7);
 		config.addDefault("Abilities.Earth.MudSurge.BlindChance", 10);
 		config.addDefault("Abilities.Earth.MudSurge.WetSourceOnly", false);
 		config.addDefault("Abilities.Earth.MudSurge.WaterSearchRadius", 5);
+		config.addDefault("Abilities.Earth.MudSurge.BlindTicks", 60);
+		config.addDefault("Abilities.Earth.MudSurge.MultipleHits", true);
 		
 		config.addDefault("Abilities.Earth.SandBlast.Enabled", true);
 		config.addDefault("Abilities.Earth.SandBlast.Description", "This ability lets an earthbender blast a bunch of sand at an enemy "
