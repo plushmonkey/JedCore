@@ -49,6 +49,19 @@ public class SimpleScoreboard {
 
     public void add(String text, Integer score) {
         text = ChatColor.translateAlternateColorCodes('&', text);
+        String stripped = ChatColor.stripColor(text);
+
+        // Use the first 16 real characters.
+        if (stripped.length() > 16) {
+            int formatCounts = 0;
+            for (int i = 0; i < text.length(); ++i) {
+                if (text.charAt(i) == ChatColor.COLOR_CHAR) {
+                    ++formatCounts;
+                }
+            }
+
+            text = text.substring(0, Math.min(15 + formatCounts * 2, text.length()));
+        }
 
         if (remove(score, text, false) || !scores.containsValue(score)) {
             updated.add(text);
