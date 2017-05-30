@@ -83,8 +83,13 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	private void focusBlock() {
 		if (sourceblock.getType() == Material.SAND) {
+			if (EarthPassive.isPassiveSand(this.sourceblock)) {
+				EarthPassive.revertSand(this.sourceblock);
+				this.sourcetype = this.sourceblock.getType();
+			} else {
+				sourcetype = Material.SAND;
+			}
 			sourceblock.setType(Material.SANDSTONE);
-			sourcetype = Material.SAND;
 		} else if (sourceblock.getType() == Material.STONE) {
 			sourcetype = sourceblock.getType();
 			sourceblock.setType(Material.COBBLESTONE);
@@ -169,14 +174,14 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Vector looking = new Vector(x1 - x0, 0.0D, z1 - z0);
 		Vector push = new Vector(x1 - x0, 0.34999999999999998D, z1 - z0);
 		if (location.distance(sourceblock.getLocation()) < range) {
+			if (EarthPassive.isPassiveSand(location.getBlock())) {
+				EarthPassive.revertSand(location.getBlock());
+			}
+
 			Material cloneType = location.getBlock().getType();
 			Location locationYUP = location.clone().add(0.0D, 0.1D, 0.0D);
 
 			playEarthbendingSound(location);
-
-			if (EarthPassive.isPassiveSand(location.getBlock())) {
-				EarthPassive.revertSand(location.getBlock());
-			}
 
 			new RegenTempBlock(location.getBlock(), Material.AIR, (byte) 0, 700L);
 
