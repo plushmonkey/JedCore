@@ -138,6 +138,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirGlide.FallSpeed", 0.1);
 		config.addDefault("Abilities.Air.AirGlide.Particles", 4);
 		config.addDefault("Abilities.Air.AirGlide.AllowAirSpout", false);
+		config.addDefault("Abilities.Air.AirGlide.Cooldown", 0);
+		config.addDefault("Abilities.Air.AirGlide.Duration", 0);
 		
 		config.addDefault("Abilities.Air.AirPunch.Enabled", true);
 		config.addDefault("Abilities.Air.AirPunch.Description", "Left-Click in rapid succession to punch high desnity packets of air "

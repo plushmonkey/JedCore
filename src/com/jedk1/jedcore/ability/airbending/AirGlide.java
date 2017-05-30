@@ -16,14 +16,21 @@ public class AirGlide extends AirAbility implements AddonAbility {
 	private double fallSpeed;
 	private int particles;
 	private boolean airspout;
+	private long cooldown;
+	private long duration;
 
 	public AirGlide(Player player) {
 		super(player);
+
 		if (hasAbility(player, AirGlide.class)) {
 			AirGlide ag = (AirGlide) getAbility(player, AirGlide.class);
 			ag.remove();
 			return;
 		}
+
+		if (bPlayer.isOnCooldown(this))
+			return;
+
 		setFields();
 		start();
 	}
@@ -33,10 +40,19 @@ public class AirGlide extends AirAbility implements AddonAbility {
 		fallSpeed = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirGlide.FallSpeed");
 		particles = JedCore.plugin.getConfig().getInt("Abilities.Air.AirGlide.Particles");
 		airspout = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirGlide.AllowAirSpout");
+		cooldown  = JedCore.plugin.getConfig().getLong("Abilities.Air.AirGlide.Cooldown");
+		duration  = JedCore.plugin.getConfig().getLong("Abilities.Air.AirGlide.Duration");
 	}
 	
 	@SuppressWarnings("deprecation")
 	public void progress() {
+		long time = System.currentTimeMillis();
+
+		if (this.duration > 0 && time >= this.getStartTime() + this.duration) {
+			remove();
+			return;
+		}
+
 		if (player.isDead() || !player.isOnline()) {
 			remove();
 			return;
@@ -66,6 +82,12 @@ public class AirGlide extends AirAbility implements AddonAbility {
 		return;
 	}
 
+	@Override
+	public void remove() {
+		bPlayer.addCooldown(this);
+		super.remove();
+	}
+
 	private boolean hasAirGlide() {
 		if (bPlayer.getAbilities().containsValue("AirGlide")) {
 			return true;
@@ -75,7 +97,7 @@ public class AirGlide extends AirAbility implements AddonAbility {
 
 	@Override
 	public long getCooldown() {
-		return 0;
+		return cooldown;
 	}
 
 	@Override
