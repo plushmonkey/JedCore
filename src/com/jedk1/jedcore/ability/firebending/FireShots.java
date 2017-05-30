@@ -3,6 +3,9 @@ package com.jedk1.jedcore.ability.firebending;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.airbending.AirShield;
+import com.projectkorra.projectkorra.firebending.FireShield;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -17,6 +20,7 @@ import com.projectkorra.projectkorra.ability.FireAbility;
 import com.projectkorra.projectkorra.firebending.util.FireDamageTimer;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
+import org.bukkit.util.Vector;
 
 public class FireShots extends FireAbility implements AddonAbility {
 
@@ -27,6 +31,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 	private int fireticks;
 	private int range;
 	private double damage;
+	private boolean shieldCollisions;
 
 	public int amount;
 	
@@ -49,6 +54,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 		fireticks = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireShots.FireDuration");
 		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireShots.Range");
 		damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireShots.Damage");
+		shieldCollisions = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireShots.ShieldCollisions");
 	}
 	
 	public class FireShot {
@@ -60,6 +66,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 		private int fireticks;
 		private double distanceTravelled;
 		private double damage;
+		private Vector direction = null;
 		
 		public FireShot(Ability ability, Player player, Location location, int range, int fireticks, double damage) {
 			this.ability = ability;
@@ -81,7 +88,18 @@ public class FireShots extends FireAbility implements AddonAbility {
 				distanceTravelled ++;
 				if(distanceTravelled >= range)
 					return false;
-				location = location.add(player.getLocation().getDirection().clone().multiply(1));
+
+				Vector dir = direction;
+				if (dir == null) {
+					dir = this.player.getLocation().getDirection().clone();
+				}
+
+				location = location.add(dir);
+
+				if (handleCollisions()) {
+					return false;
+				}
+
 				if(GeneralMethods.isSolid(location.getBlock()) || isWater(location.getBlock())){
 					return false;
 				}
@@ -99,6 +117,49 @@ public class FireShots extends FireAbility implements AddonAbility {
 				}
 			}
 			return true;
+		}
+
+		private boolean handleCollisions() {
+			if (!shieldCollisions) return false;
+
+			for (AirShield airShield : CoreAbility.getAbilities(AirShield.class)) {
+				if (!airShield.getPlayer().getWorld().equals(this.player.getWorld()))
+					continue;
+
+				double radius = airShield.getRadius();
+
+				Location shieldLocation = airShield.getPlayer().getEyeLocation().clone();
+
+				if (shieldLocation.distanceSquared(this.location) <= radius * radius) {
+					Vector normal = this.location.toVector().subtract(shieldLocation.toVector()).normalize();
+					// Move this instance so it's at the edge of the shield.
+					this.location = shieldLocation.clone().add(normal.clone().multiply(radius));
+					this.direction = player.getLocation().getDirection().clone();
+					// Reflect the direction about the normal.
+					this.direction.subtract(normal.clone().multiply(2 * this.direction.dot(normal))).normalize();
+					break;
+				}
+			}
+
+			for (FireShield fireShield : CoreAbility.getAbilities(FireShield.class)) {
+				if (fireShield.getPlayer() == this.player) continue;
+				Location playerLoc = fireShield.getPlayer().getLocation().clone();
+
+				if (!playerLoc.getWorld().equals(this.player.getWorld()))
+					continue;
+
+				if (fireShield.isShield()) {
+					if (playerLoc.distanceSquared(this.location) <= fireShield.getRadius() * fireShield.getRadius())
+						return true;
+				} else {
+					double discRadius = fireShield.getDiscRadius();
+					Location tempLoc = playerLoc.clone().add(playerLoc.clone().multiply(discRadius));
+					if (tempLoc.distanceSquared(this.location) <= discRadius * discRadius)
+						return true;
+				}
+			}
+
+			return false;
 		}
 	}
 

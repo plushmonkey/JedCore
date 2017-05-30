@@ -429,6 +429,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireBall.Damage", 3.0);
 		config.addDefault("Abilities.Fire.FireBall.FireDuration", 2000);
 		config.addDefault("Abilities.Fire.FireBall.Controllable", false);
+		config.addDefault("Abilities.Fire.FireBall.ShieldCollisions", true);
+		config.addDefault("Abilities.Fire.FireBall.FireTrail", true);
 		
 		config.addDefault("Abilities.Fire.FireBreath.Enabled", true);
 		config.addDefault("Abilities.Fire.FireBreath.Description", "To use, hold Sneak (Default: Shift) to start breathing "
@@ -486,6 +488,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireShots.FireBalls", 4);
 		config.addDefault("Abilities.Fire.FireShots.FireDuration", 3000);
 		config.addDefault("Abilities.Fire.FireShots.Damage", 2.0);
+		config.addDefault("Abilities.Fire.FireShots.ShieldCollisions", true);
 		
 		config.addDefault("Abilities.Fire.FireSki.Enabled", true);
 		config.addDefault("Abilities.Fire.FireSki.Cooldown", 6000);
