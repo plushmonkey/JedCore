@@ -158,11 +158,11 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		Vector dV = l.getDirection().normalize();
 		l.add(new Vector(dV.getX() * 0.8, 0, dV.getZ() * 0.8));
 
-		if (l.getBlock().getType() != Material.AIR || l.getBlock().getType().isSolid())
+		if (!isTransparent(l.getBlock()) || l.getBlock().isLiquid() || l.getBlock().getType().isSolid())
 			return true;
-		if (l.clone().add(0, -1, 0).getBlock().getType() != Material.AIR || l.clone().add(0, -1, 0).getBlock().getType().isSolid())
+		if (!isTransparent(l.clone().add(0, -1, 0).getBlock()) || l.clone().add(0, -1, 0).getBlock().isLiquid() || l.clone().add(0, -1, 0).getBlock().getType().isSolid())
 			return true;
-		if (l.clone().add(0, -2, 0).getBlock().getType() != Material.AIR || l.clone().add(0, -2, 0).getBlock().getType().isSolid())
+		if (!isTransparent(l.clone().add(0, -2, 0).getBlock()) || l.clone().add(0, -2, 0).getBlock().isLiquid() || l.clone().add(0, -2, 0).getBlock().getType().isSolid())
 			return true;
 		return false;
 	}
