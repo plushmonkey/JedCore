@@ -24,6 +24,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 	private long duration;
 	private double speed;
 	private boolean ignite;
+	private int fireTicks;
 
 	public FireSki(Player player) {
 		super(player);
@@ -64,6 +65,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 		duration = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireSki.Duration");
 		speed = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireSki.Speed");
 		ignite = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireSki.IgniteEntities");
+		fireTicks = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireSki.FireTicks");
 	}
 
 	private void allowFlight() {
@@ -119,12 +121,13 @@ public class FireSki extends FireAbility implements AddonAbility {
 		playFirebendingSound(player.getLocation());
 		createBeam();
 
-		if (ignite)
+		if (ignite) {
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(player.getLocation().clone().add(0, -1, 0), 2.0)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()) {
-					entity.setFireTicks(60);
+					entity.setFireTicks(this.fireTicks);
 				}
 			}
+		}
 
 		player.setVelocity(travel);
 		player.setFallDistance(0);
