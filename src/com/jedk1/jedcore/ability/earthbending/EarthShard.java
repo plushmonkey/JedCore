@@ -52,7 +52,12 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 
 		if (hasAbility(player, EarthShard.class)) {
 			for (EarthShard es : EarthShard.getAbilities(player, EarthShard.class)) {
-				if (!es.isThrown) {
+				if (es.isThrown) {
+					// Remove the old instance because it got into a broken state.
+					// This shouldn't affect normal gameplay because the cooldown is long enough that the
+					// shards should have already hit their target.
+					es.remove();
+				} else {
 					es.select();
 					return;
 				}
@@ -68,8 +73,8 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	public void setFields() {
 		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.PrepareRange");
 		abilityRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.AbilityRange");
-		normalDmg = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.Damage.Normal");
-		metalDmg = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.Damage.Metal");
+		normalDmg = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthShard.Damage.Normal");
+		metalDmg = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthShard.Damage.Metal");
 		maxShards = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.MaxShards");
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthShard.Cooldown");
 	}
@@ -81,12 +86,22 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	@SuppressWarnings("deprecation")
 	public void raiseEarthBlock(Block block) {
 		if (block == null) {
-			revertBlocks();
 			return;
 		}
 
 		if (tblockTracker.size() >= maxShards) {
 			return;
+		}
+
+		Vector blockVector = block.getLocation().toVector().toBlockVector().setY(0);
+
+		// Don't select from locations that already have an EarthShard block.
+		for (TempBlock tempBlock : tblockTracker) {
+			if (tempBlock.getLocation().getWorld() != block.getWorld())
+				continue;
+			Vector tempBlockVector = tempBlock.getLocation().toVector().toBlockVector().setY(0);
+			if (tempBlockVector.equals(blockVector))
+				return;
 		}
 		
 		for (int i = 1; i < 4; i++) {
@@ -137,15 +152,18 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			remove();
 			return;
 		}
-		if (!bPlayer.canBendIgnoreCooldowns(this)) {
-			remove();
-			return;
-		}
+
 		if (isPreparing) {
+			if (!bPlayer.canBendIgnoreCooldowns(this)) {
+				remove();
+				return;
+			}
+
 			if (tblockTracker.isEmpty()) {
 				remove();
 				return;
 			}
+
 			for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
 				FallingBlock fb = tfb.getFallingBlock();
 				if (fb.isDead()) {
