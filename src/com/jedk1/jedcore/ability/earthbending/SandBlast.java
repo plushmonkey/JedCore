@@ -5,6 +5,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.SandAbility;
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -23,6 +24,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class SandBlast extends SandAbility implements AddonAbility {
@@ -34,10 +37,13 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	private static double damage;
 
 	private Block source;
+	private Material sourceType;
+	private byte sourceData;
 	private int blasts;
 	private boolean blasting;
 	private Vector direction;
 	private TempBlock tempblock;
+	private List<Entity> affectedEntities = new ArrayList<>();
 
 	Random rand = new Random();
 
@@ -50,11 +56,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 
 		if (hasAbility(player, SandBlast.class)) {
 			SandBlast sb = (SandBlast) getAbility(player, SandBlast.class);
-			if (sb.blasting) {
-				return;
-			}
 			sb.remove();
-			return;
 		}
 
 		setFields();
@@ -73,9 +75,14 @@ public class SandBlast extends SandAbility implements AddonAbility {
 
 	private boolean prepare() {
 		source = BlockSource.getEarthSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN);
-		//source = EarthMethods.getEarthSourceBlock(player, (int) sourcerange, false, true, false);
+
 		if (source != null) {
 			if (isSand(source) && source.getRelative(BlockFace.UP).getType().equals(Material.AIR)) {
+				this.sourceType = source.getType();
+				this.sourceData = source.getData();
+				if (EarthPassive.isPassiveSand(source)) {
+					EarthPassive.revertSand(source);
+				}
 				tempblock = new TempBlock(source, Material.SANDSTONE, (byte) 0);
 				return true;
 			}
@@ -89,17 +96,10 @@ public class SandBlast extends SandAbility implements AddonAbility {
 			return;
 		}
 		if (player.isDead() || !player.isOnline()) {
-			if (tempblock != null) {
-				tempblock.revertBlock();
-			}
 			remove();
 			return;
 		}
 		if (player.getWorld() != source.getWorld()) {
-			bPlayer.addCooldown(this);
-			if (tempblock != null) {
-				tempblock.revertBlock();
-			}
 			remove();
 			return;
 		}
@@ -109,16 +109,20 @@ public class SandBlast extends SandAbility implements AddonAbility {
 				blasts++;
 			} else {
 				if (TempFallingBlock.getFromAbility(this).isEmpty()) {
-					bPlayer.addCooldown(this);
-					if (tempblock != null) {
-						tempblock.revertBlock();
-					}
 					remove();
 					return;
 				}
 			}
+			affect();
 		}
-		return;
+	}
+
+	@Override
+	public void remove() {
+		if (this.tempblock != null) {
+			this.tempblock.revertBlock();
+		}
+		super.remove();
 	}
 
 	public static void blastSand(Player player) {
@@ -136,6 +140,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		if (!blasting) {
 			blasting = true;
 			direction = GeneralMethods.getDirection(source.getLocation().clone().add(0, 1, 0), GeneralMethods.getTargetedLocation(player, range)).multiply(0.07);
+			this.bPlayer.addCooldown(this);
 		}
 		tempblock.revertBlock();
 
@@ -155,7 +160,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		//fblock.setDropItem(false);
 		//fblocks.put(fblock, player);
 
-		new TempFallingBlock(source.getLocation().add(0, 1, 0), source.getType(), source.getData(), direction.clone().add(new Vector(x, 0.2, z)), this);
+		new TempFallingBlock(source.getLocation().add(0, 1, 0), sourceType, sourceData, direction.clone().add(new Vector(x, 0.2, z)), this);
 
 	}
 
@@ -174,14 +179,13 @@ public class SandBlast extends SandAbility implements AddonAbility {
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(fblock.getLocation(), 1.5)) {
 				if (entity instanceof LivingEntity && !(entity instanceof ArmorStand)) {
-					if (player.isOnline()) {
-						if (entity.getEntityId() == player.getEntityId()) {
-							break;
-						}
-					}
+					if (entity == this.player) continue;
+					if (affectedEntities.contains(entity)) continue;
 
 					if (!entity.isDead()) {
 						DamageHandler.damageEntity(entity, damage, this);
+
+						affectedEntities.add(entity);
 
 						LivingEntity le = (LivingEntity) entity;
 						if (le.hasPotionEffect(PotionEffectType.BLINDNESS)) {
