@@ -1,8 +1,10 @@
 package com.jedk1.jedcore.listener;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.*;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -80,9 +82,42 @@ import com.projectkorra.projectkorra.waterbending.blood.Bloodbending;
 public class AbilityListener implements Listener {
 
 	JedCore plugin;
+	private static boolean useImmobilize = true;
+	private static Method isImmobilizedMethod = null;
+	
+	static {
+		String version = ProjectKorra.plugin.getDescription().getVersion();
+		String[] versionTokens = version.split("\\.");
+		
+		int[] versionNumbers = Stream.of(versionTokens).mapToInt(Integer::parseInt).toArray();
+		int[] immobilizeNumbers = {1, 8, 4};
+		
+		for (int i = 0; i < versionNumbers.length; ++i) {
+			if (i >= immobilizeNumbers.length || versionNumbers[i] < immobilizeNumbers[i]) {
+				try {
+					Class <?> comboClass = Class.forName("com.projectkorra.projectkorra.chiblocking.combo.ChiCombo");
+					isImmobilizedMethod = comboClass.getDeclaredMethod("isParalyzed", Player.class);
+				} catch (Exception e) {
+					
+				}
+				break;
+			}
+		}
+	}
 
 	public AbilityListener(JedCore plugin) {
 		this.plugin = plugin;
+	}
+	
+	public static boolean isImmobilized(Player player) {
+		if (isImmobilizedMethod != null) {
+			try {
+				return (boolean)isImmobilizedMethod.invoke(null, player);
+			} catch (Exception e) {
+				
+			}
+		}
+		return Immobilize.isParalyzed(player);
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true) 
@@ -98,7 +133,7 @@ public class AbilityListener implements Listener {
 		if (Suffocate.isBreathbent(player)) {
 			event.setCancelled(true);
 			return;
-		} else if (Bloodbending.isBloodbent(player) || Paralyze.isParalyzed(player) || Immobilize.isParalyzed(player)) {
+		} else if (Bloodbending.isBloodbent(player) || Paralyze.isParalyzed(player) || isImmobilized(player)) {
 			event.setCancelled(true);
 			return;
 		} else if (bPlayer.isChiBlocked()) {
@@ -269,7 +304,7 @@ public class AbilityListener implements Listener {
 			}
 		}
 
-		if (Paralyze.isParalyzed(player) || Immobilize.isParalyzed(player) || Bloodbending.isBloodbent(player)) {
+		if (Paralyze.isParalyzed(player) || isImmobilized(player) || Bloodbending.isBloodbent(player)) {
 			event.setCancelled(true);
 			return;
 		}
