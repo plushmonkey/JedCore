@@ -72,7 +72,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 		maxSources = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.MaxSources");
 		selectRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.SourceRange");
 		maxFragments = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.MaxFragments");
-		damage = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.Damage");
+		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.MetalFragments.Damage");
 		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.Cooldown");
 	}
 

@@ -42,7 +42,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 	private int range;
 	private int maxHealth;
 	private int minHealth;
-	private int damage;
+	private double damage;
 	private long cooldown;
 
 	public static boolean stackable;
@@ -113,7 +113,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 		range = JedCore.plugin.getConfig().getInt("Abilities.Water.IceWall.Range");
 		maxHealth = JedCore.plugin.getConfig().getInt("Abilities.Water.IceWall.MaxWallHealth");
 		minHealth = JedCore.plugin.getConfig().getInt("Abilities.Water.IceWall.MinWallHealth");
-		damage = JedCore.plugin.getConfig().getInt("Abilities.Water.IceWall.Damage");
+		damage = JedCore.plugin.getConfig().getDouble("Abilities.Water.IceWall.Damage");
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.IceWall.Cooldown");
 		stackable = JedCore.plugin.getConfig().getBoolean("Abilities.Water.IceWall.Stackable");
 		lifetimeEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.IceWall.LifeTime.Enabled");

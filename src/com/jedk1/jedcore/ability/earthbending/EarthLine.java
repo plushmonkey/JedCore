@@ -61,7 +61,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthLine.Range");
 		preparerange = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthLine.PrepareRange");
 		affectingradius = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthLine.AffectingRadius");
-		damage = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthLine.Damage");
+		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthLine.Damage");
 	}
 
 	public boolean prepare() {

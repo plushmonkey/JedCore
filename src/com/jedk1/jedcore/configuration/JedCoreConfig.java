@@ -216,7 +216,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthLine.Range", 30);
 		config.addDefault("Abilities.Earth.EarthLine.PrepareRange", 7);
 		config.addDefault("Abilities.Earth.EarthLine.AffectingRadius", 2);
-		config.addDefault("Abilities.Earth.EarthLine.Damage", 3);
+		config.addDefault("Abilities.Earth.EarthLine.Damage", 3.0);
 		
 		config.addDefault("Abilities.Earth.EarthPillar.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthPillar.Description", "With this ability bound, tap Sneak (Default: Shift) on any Earthbendable "
@@ -361,7 +361,7 @@ public class JedCoreConfig {
 				+ "of blinding the target. To use, select "
 				+ "a source of earth and click in any direction.");
 		config.addDefault("Abilities.Earth.MudSurge.Cooldown", 6000);
-		config.addDefault("Abilities.Earth.MudSurge.Damage", 1);
+		config.addDefault("Abilities.Earth.MudSurge.Damage", 1.0);
 		config.addDefault("Abilities.Earth.MudSurge.Waves", 5);
 		config.addDefault("Abilities.Earth.MudSurge.SourceRange", 7);
 		config.addDefault("Abilities.Earth.MudSurge.BlindChance", 10);
@@ -623,7 +623,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.IceWall.MaxWallHealth", 12);
 		config.addDefault("Abilities.Water.IceWall.MinWallHealth", 8);
 		config.addDefault("Abilities.Water.IceWall.Range", 8);
-		config.addDefault("Abilities.Water.IceWall.Damage", 4);
+		config.addDefault("Abilities.Water.IceWall.Damage", 4.0);
 		config.addDefault("Abilities.Water.IceWall.CanBreak", true);
 		config.addDefault("Abilities.Water.IceWall.Stackable", false);
 		config.addDefault("Abilities.Water.IceWall.LifeTime.Enabled", false);
