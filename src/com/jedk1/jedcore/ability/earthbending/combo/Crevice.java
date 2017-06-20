@@ -9,19 +9,18 @@ import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.util.ComboManager.AbilityInformation;
 import com.projectkorra.projectkorra.util.ClickType;
 
+import com.projectkorra.projectkorra.util.TempBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -41,9 +40,9 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 	private boolean skip;
 	private long time;
 
-	private HashMap<Integer, List<BlockState>> collumn = new HashMap<Integer, List<BlockState>>();
+	private List<List<TempBlock>> columns = new ArrayList<>();
 
-	Random rand = new Random();
+	private Random rand = new Random();
 
 	public Crevice(Player player) {
 		super(player);
@@ -99,13 +98,19 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 		advanceCrevice();
 	}
 
+	@Override
+	public void remove() {
+		prepareRevert();
+		super.remove();
+	}
+
 	public static void closeCrevice(Player player) {
 		Block target = player.getTargetBlock((HashSet<Material>) null, (int) 10);
 		for (Block near : GeneralMethods.getBlocksAroundPoint(target.getLocation(), 2)) {
 			for (Crevice c : getAbilities(Crevice.class)) {
-				for (int id2 : c.collumn.keySet()) {
-					for (BlockState bs : c.collumn.get(id2)) {
-						if (near.getLocation().equals(bs.getLocation())) {
+				for (List<TempBlock> tbs : c.columns) {
+					for (TempBlock tb : tbs) {
+						if (near.getLocation().equals(tb.getLocation())) {
 							c.prepareRevert();
 							c.remove();
 							return;
@@ -165,22 +170,22 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 			}
 		}
 
-		removePilar(tempLoc, randInt(randomDepth + 1 - 2, randomDepth + 1 + 2));
-		removePilar(GeneralMethods.getRightSide(tempLoc, 1), randInt(randomDepth - 1, randomDepth + 1));
-		removePilar(GeneralMethods.getLeftSide(tempLoc, 1), randInt(randomDepth - 1, randomDepth + 1));
+		removePillar(tempLoc, randInt(randomDepth + 1 - 2, randomDepth + 1 + 2));
+		removePillar(GeneralMethods.getRightSide(tempLoc, 1), randInt(randomDepth - 1, randomDepth + 1));
+		removePillar(GeneralMethods.getLeftSide(tempLoc, 1), randInt(randomDepth - 1, randomDepth + 1));
 	}
 	
-	public int randInt(int min, int max) {
+	private int randInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
 	}
 
-	private void removePilar(Location location, int depth) {
-		List<BlockState> blocks = new ArrayList<BlockState>();
+	private void removePillar(Location location, int depth) {
+		List<TempBlock> blocks = new ArrayList<>();
 		Location tempLoc = location.clone().getBlock().getLocation();
 		tempLoc.add(0, 1, 0);
 		for (int i = 0; i < depth + 1; i++) {
 			if (tempLoc.getY() < 2 || tempLoc.getY() > 255) {
-				return;
+				break;
 			}
 			if (GeneralMethods.isRegionProtectedFromBuild(player, "Crevice", tempLoc)) {
 				continue;
@@ -196,24 +201,28 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 				entity.setVelocity(new Vector(0, -0.75, 0));
 			}
 
-			blocks.add(tempLoc.getBlock().getState());
-			tempLoc.getBlock().setType(Material.AIR);
+
+			blocks.add(new TempBlock(tempLoc.getBlock(), Material.AIR, (byte)0));
 			tempLoc.subtract(0, 1, 0);
 		}
+
 		Collections.reverse(blocks);
-		collumn.put(collumn.size() + 1, blocks);
+
+		columns.add(blocks);
 	}
 
 	private void prepareRevert() {
-		for (int id : collumn.keySet()) {
-			for (BlockState bs : collumn.get(id)) {
-				bs.update(true);
-				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(bs.getLocation(), 1)) {
+		for (int i = 0; i < columns.size(); ++i) {
+			List<TempBlock> tbs = columns.get(i);
+			for (TempBlock tb : tbs) {
+				tb.revertBlock();
+				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(tb.getLocation(), 1)) {
 					entity.setVelocity(new Vector(0, 0.7, 0));
 				}
-				new RegenTempBlock(bs.getBlock(), Material.AIR, (byte) 0, collumn.get(id).indexOf(bs) * 50);
+				new RegenTempBlock(tb.getBlock(), Material.AIR, (byte) 0, i * 50);
 			}
 		}
+		columns.clear();
 	}
 
 	@Override
