@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.*;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -82,26 +81,14 @@ import com.projectkorra.projectkorra.waterbending.blood.Bloodbending;
 public class AbilityListener implements Listener {
 
 	JedCore plugin;
-	private static boolean useImmobilize = true;
 	private static Method isImmobilizedMethod = null;
 	
 	static {
-		String version = ProjectKorra.plugin.getDescription().getVersion();
-		String[] versionTokens = version.split("\\.");
-		
-		int[] versionNumbers = Stream.of(versionTokens).mapToInt(Integer::parseInt).toArray();
-		int[] immobilizeNumbers = {1, 8, 4};
-		
-		for (int i = 0; i < versionNumbers.length; ++i) {
-			if (i >= immobilizeNumbers.length || versionNumbers[i] < immobilizeNumbers[i]) {
-				try {
-					Class <?> comboClass = Class.forName("com.projectkorra.projectkorra.chiblocking.combo.ChiCombo");
-					isImmobilizedMethod = comboClass.getDeclaredMethod("isParalyzed", Player.class);
-				} catch (Exception e) {
-					
-				}
-				break;
-			}
+		try {
+			Class <?> comboClass = Class.forName("com.projectkorra.projectkorra.chiblocking.combo.ChiCombo");
+			isImmobilizedMethod = comboClass.getDeclaredMethod("isParalyzed", Player.class);
+		} catch (Exception e) {
+			
 		}
 	}
 

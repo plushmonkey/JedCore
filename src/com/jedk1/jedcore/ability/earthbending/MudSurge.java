@@ -31,7 +31,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	private int blindChance;
 	private int blindTicks;
 	private boolean multipleHits;
-	private int damage;
+	private double damage;
 	private int waves;
 	private int waterSearchRadius;
 	private boolean wetSource;
@@ -88,7 +88,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	public void setFields() {
 		prepareRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.SourceRange");
 		blindChance = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.BlindChance");
-		damage = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.Damage");
+		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.MudSurge.Damage");
 		waves = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.Waves");
 		waterSearchRadius = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.WaterSearchRadius");
 		wetSource = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MudSurge.WetSourceOnly");
