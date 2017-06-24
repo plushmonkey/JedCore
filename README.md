@@ -1,5 +1,6 @@
 # JedCore
 This is my fork of jedk1's JedCore addon for ProjectKorra.  
+Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Features
 - Works with ProjectKorra 1.8.3 and 1.8.4.
