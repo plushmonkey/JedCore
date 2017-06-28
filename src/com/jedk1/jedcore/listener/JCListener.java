@@ -18,6 +18,7 @@ import com.jedk1.jedcore.scoreboard.BendingBoard;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.UpdateChecker;
+import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
 import com.projectkorra.projectkorra.event.BendingReloadEvent;
@@ -177,6 +178,8 @@ public class JCListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void projectKorraReload(BendingReloadEvent event) {
 		final CommandSender sender = event.getSender();
+		// There's a PK bug where a new collision manager is set on reload without stopping the old task.
+		ProjectKorra.getCollisionManager().stopCollisionDetection();
 		new BukkitRunnable() {
 			public void run() {
 				JCMethods.reload();

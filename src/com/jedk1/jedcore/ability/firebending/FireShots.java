@@ -2,8 +2,10 @@ package com.jedk1.jedcore.ability.firebending;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.airbending.AirShield;
 import com.projectkorra.projectkorra.firebending.FireShield;
 import org.bukkit.Location;
@@ -21,6 +23,8 @@ import com.projectkorra.projectkorra.firebending.util.FireDamageTimer;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import org.bukkit.util.Vector;
+
+import static java.util.stream.Collectors.toList;
 
 public class FireShots extends FireAbility implements AddonAbility {
 
@@ -230,6 +234,21 @@ public class FireShots extends FireAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return shots.stream().map(shot -> shot.location).collect(toList());
+	}
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Optional<FireShot> collidedShot = shots.stream().filter(shot -> shot.location.equals(collision.getLocationFirst())).findAny();
+
+			if (collidedShot.isPresent()) {
+				shots.remove(collidedShot.get());
+			}
+		}
 	}
 
 	@Override

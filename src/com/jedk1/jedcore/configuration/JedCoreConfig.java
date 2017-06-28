@@ -108,6 +108,9 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirBlade.Cooldown", 3000);
 		config.addDefault("Abilities.Air.AirBlade.Range", 30.0);
 		config.addDefault("Abilities.Air.AirBlade.Damage", 4.0);
+		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.Enabled",true);
+		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.RemoveFirst",true);
+		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.RemoveSecond",true);
 		
 		config.addDefault("Abilities.Air.AirBreath.Enabled", true);
 		config.addDefault("Abilities.Air.AirBreath.Description", "To use, hold Sneak (Default: Shift) to release "
@@ -149,6 +152,12 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirPunch.Shots", 4);
 		config.addDefault("Abilities.Air.AirPunch.Range", 30);
 		config.addDefault("Abilities.Air.AirPunch.Damage", 1.0);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.Enabled", true);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveFirst", true);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveSecond", false);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.AirBlade.Enabled", true);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.AirBlade.RemoveFirst", true);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.AirBlade.RemoveSecond", false);
 		
 		config.addDefault("Abilities.Air.Meditate.Enabled", true);
 		config.addDefault("Abilities.Air.Meditate.Description", "Hold Sneak (Default: Shift) to start meditating. "
