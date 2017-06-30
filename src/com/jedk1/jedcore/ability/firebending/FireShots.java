@@ -240,6 +240,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 	public List<Location> getLocations() {
 		return shots.stream().map(shot -> shot.location).collect(toList());
 	}
+
 	@Override
 	public void handleCollision(Collision collision) {
 		if (collision.isRemovingFirst()) {

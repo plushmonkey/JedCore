@@ -42,6 +42,7 @@ public class JedCoreConfig {
 		config.addDefault("Settings.Updater.Check", true);
 		config.addDefault("Settings.Updater.Notify", true);
 		config.addDefault("Properties.MobCollisions.Enabled", true);
+		config.addDefault("Properties.AbilityCollisions.Enabled", false);
 		
 		config.addDefault("Abilities.Avatar.ElementSphere.Enabled", true);
 		config.addDefault("Abilities.Avatar.ElementSphere.Description", "ElementSphere is a very all round ability, being "

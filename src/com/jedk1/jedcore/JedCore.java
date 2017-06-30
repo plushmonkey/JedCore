@@ -72,6 +72,13 @@ public class JedCore extends JavaPlugin {
 	}
 
 	public void initializeCollisions() {
+		boolean enabled = this.getConfig().getBoolean("Properties.AbilityCollisions.Enabled");
+
+		if (!enabled) {
+			System.out.println("Collisions disabled.");
+			return;
+		}
+
 		try {
 			ClassPath cp = ClassPath.from(this.getClassLoader());
 

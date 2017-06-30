@@ -5,6 +5,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -22,7 +23,10 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+
+import static java.util.stream.Collectors.toList;
 
 public class EarthKick extends EarthAbility implements AddonAbility {
 
@@ -159,6 +163,25 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return location;
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return temps.stream().map(TempFallingBlock::getLocation).collect(toList());
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Location location = collision.getLocationFirst();
+
+			Optional<TempFallingBlock> collidedObject = temps.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
+
+			if (collidedObject.isPresent()) {
+				temps.remove(collidedObject.get());
+				collidedObject.get().remove();
+			}
+		}
 	}
 
 	@Override
