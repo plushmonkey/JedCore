@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
@@ -12,11 +13,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AirPunch extends AirAbility implements AddonAbility {
 
-	private ConcurrentHashMap<Location, Double> locations = new ConcurrentHashMap<Location, Double>();
+	private ConcurrentHashMap<Location, Double> locations = new ConcurrentHashMap<>();
 
 	private long cooldown;
 	private long threshold;
@@ -136,6 +139,20 @@ public class AirPunch extends AirAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Location location = collision.getLocationFirst();
+
+			locations.remove(location);
+		}
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return new ArrayList<>(locations.keySet());
 	}
 
 	@Override

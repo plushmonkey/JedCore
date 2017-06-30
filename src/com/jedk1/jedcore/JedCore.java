@@ -1,8 +1,10 @@
 package com.jedk1.jedcore;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
+import com.google.common.reflect.ClassPath;
+import com.jedk1.jedcore.util.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.jedk1.jedcore.command.Commands;
@@ -11,10 +13,6 @@ import com.jedk1.jedcore.listener.AbilityListener;
 import com.jedk1.jedcore.listener.CommandListener;
 import com.jedk1.jedcore.listener.JCListener;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
-import com.jedk1.jedcore.util.MetricsLite;
-import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -60,6 +58,7 @@ public class JedCore extends JavaPlugin {
 			@Override
 			public void run() {
 				JCMethods.registerCombos();
+				initializeCollisions();
 			}
 		}.runTaskLater(this, 1);
 		
@@ -70,6 +69,35 @@ public class JedCore extends JavaPlugin {
 	    } catch (IOException e) {
 	        log.info("Failed to submit statistics for MetricsLite.");
 	    }
+	}
+
+	public void initializeCollisions() {
+		boolean enabled = this.getConfig().getBoolean("Properties.AbilityCollisions.Enabled");
+
+		if (!enabled) {
+			getLogger().info("Collisions disabled.");
+			return;
+		}
+
+		try {
+			ClassPath cp = ClassPath.from(this.getClassLoader());
+
+			for (ClassPath.ClassInfo info : cp.getTopLevelClassesRecursive("com.jedk1.jedcore.ability")) {
+				try {
+					@SuppressWarnings("unchecked")
+					Class<? extends CoreAbility> abilityClass = (Class<? extends CoreAbility>)Class.forName(info.getName());
+
+					if (abilityClass == null) continue;
+
+					CollisionInitializer initializer = new CollisionInitializer<>(abilityClass);
+					initializer.initialize();
+				} catch (Exception e) {
+
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private boolean isSpigot() {

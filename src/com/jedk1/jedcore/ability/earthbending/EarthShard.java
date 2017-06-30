@@ -3,7 +3,10 @@ package com.jedk1.jedcore.ability.earthbending;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,8 +43,9 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	private boolean isThrown = false;
 	private Location origin;
 
-	private List<TempBlock> tblockTracker = new ArrayList<TempBlock>();
-	private List<TempBlock> readyBlocksTracker = new ArrayList<TempBlock>();
+	private List<TempBlock> tblockTracker = new ArrayList<>();
+	private List<TempBlock> readyBlocksTracker = new ArrayList<>();
+	private List<TempFallingBlock> fallingBlocks = new ArrayList<>();
 
 	public EarthShard(Player player) {
 		super(player);
@@ -233,7 +237,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			vel = GeneralMethods.getDirection(tb.getLocation(), tloc).normalize().multiply(2).add(new Vector(0, 0.2, 0));
 		}
 		for (TempBlock tb : readyBlocksTracker) {
-			new TempFallingBlock(tb.getLocation(), tb.getBlock().getType(), tb.getBlock().getData(), vel, this);
+			fallingBlocks.add(new TempFallingBlock(tb.getLocation(), tb.getBlock().getType(), tb.getBlock().getData(), vel, this));
 			tb.revertBlock();
 		}
 
@@ -283,6 +287,25 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return fallingBlocks.stream().map(TempFallingBlock::getLocation).collect(Collectors.toList());
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Location location = collision.getLocationFirst();
+
+			Optional<TempFallingBlock> collidedObject = fallingBlocks.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
+
+			if (collidedObject.isPresent()) {
+				fallingBlocks.remove(collidedObject.get());
+				collidedObject.get().remove();
+			}
+		}
 	}
 
 	@Override

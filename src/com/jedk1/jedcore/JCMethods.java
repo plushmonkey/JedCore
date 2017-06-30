@@ -283,6 +283,8 @@ public class JCMethods {
 		TempFallingBlock.removeAllFallingBlocks();
 		BendingBoard.setFields();
 		BendingBoard.updateOnline();
+		JedCore.plugin.initializeCollisions();
+
 		if (UpdateChecker.hasUpdate()) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.hasPermission("jedcore.admin.notify") && JedCore.plugin.getConfig().getBoolean("Settings.Updater.Notify")) {

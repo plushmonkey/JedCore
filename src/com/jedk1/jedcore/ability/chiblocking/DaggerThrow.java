@@ -2,9 +2,11 @@ package com.jedk1.jedcore.ability.chiblocking;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ChiAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
@@ -14,6 +16,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DaggerThrow extends ChiAbility implements AddonAbility {
 	
@@ -26,6 +33,7 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	private int maxShots;
 	private static boolean particles;
 	private static double damage;
+	private List<Arrow> arrows = new ArrayList<>();
 
 	public DaggerThrow(Player player) {
 		super(player);
@@ -91,6 +99,8 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 			if (particles) {
 				arrow.setCritical(true);
 			}
+
+			arrows.add(arrow);
 			time = System.currentTimeMillis() + 500;
 			bPlayer.addCooldown("DaggerThrowShot", 100);
 		}
@@ -120,6 +130,25 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return arrows.stream().map(Arrow::getLocation).collect(Collectors.toList());
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Location location = collision.getLocationFirst();
+
+			Optional<Arrow> collidedObject = arrows.stream().filter(arrow -> arrow.getLocation().equals(location)).findAny();
+
+			if (collidedObject.isPresent()) {
+				arrows.remove(collidedObject.get());
+				collidedObject.get().remove();
+			}
+		}
 	}
 
 	@Override

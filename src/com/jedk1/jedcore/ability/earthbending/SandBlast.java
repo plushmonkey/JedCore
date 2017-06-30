@@ -5,6 +5,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.SandAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
@@ -26,7 +27,9 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class SandBlast extends SandAbility implements AddonAbility {
 
@@ -44,6 +47,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	private Vector direction;
 	private TempBlock tempblock;
 	private List<Entity> affectedEntities = new ArrayList<>();
+	private List<TempFallingBlock> fallingBlocks = new ArrayList<>();
 
 	Random rand = new Random();
 
@@ -160,7 +164,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		//fblock.setDropItem(false);
 		//fblocks.put(fblock, player);
 
-		new TempFallingBlock(source.getLocation().add(0, 1, 0), sourceType, sourceData, direction.clone().add(new Vector(x, 0.2, z)), this);
+		fallingBlocks.add(new TempFallingBlock(source.getLocation().add(0, 1, 0), sourceType, sourceData, direction.clone().add(new Vector(x, 0.2, z)), this));
 
 	}
 
@@ -207,6 +211,25 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return fallingBlocks.stream().map(TempFallingBlock::getLocation).collect(Collectors.toList());
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Location location = collision.getLocationFirst();
+
+			Optional<TempFallingBlock> collidedObject = fallingBlocks.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
+
+			if (collidedObject.isPresent()) {
+				fallingBlocks.remove(collidedObject.get());
+				collidedObject.get().remove();
+			}
+		}
 	}
 
 	@Override

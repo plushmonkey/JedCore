@@ -5,6 +5,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.TempBlock;
 
@@ -20,10 +21,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MudSurge extends EarthAbility implements AddonAbility {
 
@@ -57,7 +56,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	private List<Player> blind = new ArrayList<Player>();
 	private List<Entity> affectedEntities = new ArrayList<>();
 
-	//private List<FallingBlock> surgingMud = new ArrayList<FallingBlock>();
+	private List<TempFallingBlock> fallingBlocks = new ArrayList<>();
 	
 	Random rand = new Random();
 
@@ -253,7 +252,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 			//surgingMud.add(fb);
 			//fblocks.add(fb);
 			
-			new TempFallingBlock(tb.getLocation().add(0, 1, 0), Material.STAINED_CLAY, (byte) 12, direction.clone().add(new Vector(x, 0.2, z)), this);	
+			fallingBlocks.add(new TempFallingBlock(tb.getLocation().add(0, 1, 0), Material.STAINED_CLAY, (byte) 12, direction.clone().add(new Vector(x, 0.2, z)), this));
 			
 			playEarthbendingSound(tb.getLocation());
 		}
@@ -367,6 +366,25 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public List<Location> getLocations() {
+		return fallingBlocks.stream().map(TempFallingBlock::getLocation).collect(Collectors.toList());
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			Location location = collision.getLocationFirst();
+
+			Optional<TempFallingBlock> collidedObject = fallingBlocks.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
+
+			if (collidedObject.isPresent()) {
+				fallingBlocks.remove(collidedObject.get());
+				collidedObject.get().remove();
+			}
+		}
 	}
 
 	@Override

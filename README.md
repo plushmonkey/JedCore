@@ -40,3 +40,8 @@ Download releases [here](https://github.com/plushmonkey/JedCore/releases).
 - Fix bending board ability name length.
   - Remove the code that added multiple reset codes. This could make the board ability names so long that they would kick players offline.
 - Fix IceWall so old instances don't block new ones. 
+- Add ability collisions.
+  - Add global configuration option to disable all JedCore ability collisions. They are disabled by default.
+  - Collisions are configurable under Abilities.{element}.{abilityname}.Collisions.{abilityname}.
+    - Some default examples were added to AirBlade and AirPunch.
+  - This hasn't been tested with every ability, so it might not work with all of them.
