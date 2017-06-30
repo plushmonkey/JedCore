@@ -1,7 +1,7 @@
 package com.jedk1.jedcore;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import com.google.common.reflect.ClassPath;
 import com.jedk1.jedcore.util.*;
@@ -75,7 +75,7 @@ public class JedCore extends JavaPlugin {
 		boolean enabled = this.getConfig().getBoolean("Properties.AbilityCollisions.Enabled");
 
 		if (!enabled) {
-			System.out.println("Collisions disabled.");
+			getLogger().info("Collisions disabled.");
 			return;
 		}
 

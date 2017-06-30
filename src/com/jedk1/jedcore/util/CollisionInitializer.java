@@ -37,7 +37,7 @@ public class CollisionInitializer<T extends CoreAbility> {
             boolean removeSecond = abilityConfig.getBoolean("RemoveSecond");
 
             for (CoreAbility secondAbility : getAbility(key)) {
-                System.out.println("Initializing collision for " + abilityName + " => " + secondAbility.getName());
+                JedCore.plugin.getLogger().info("Initializing collision for " + abilityName + " => " + secondAbility.getName());
 
                 ProjectKorra.getCollisionManager().addCollision(new Collision(ability, secondAbility, removeFirst, removeSecond));
             }
