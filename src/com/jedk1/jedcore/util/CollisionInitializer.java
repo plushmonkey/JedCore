@@ -4,14 +4,24 @@ import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
+import com.projectkorra.projectkorra.firebending.FireBlast;
+import com.projectkorra.projectkorra.firebending.FireBlastCharged;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
 public class CollisionInitializer<T extends CoreAbility> {
+    private static Map<String, CoreAbility> specialAbilities = new HashMap<>();
     private Class<T> type;
+
+    static {
+        specialAbilities.put("FireBlast", CoreAbility.getAbility(FireBlast.class));
+        specialAbilities.put("FireBlastCharged", CoreAbility.getAbility(FireBlastCharged.class));
+    }
 
     public CollisionInitializer(Class<T> type) {
         this.type = type;
@@ -36,8 +46,10 @@ public class CollisionInitializer<T extends CoreAbility> {
             boolean removeFirst = abilityConfig.getBoolean("RemoveFirst");
             boolean removeSecond = abilityConfig.getBoolean("RemoveSecond");
 
-            for (CoreAbility secondAbility : getAbility(key)) {
-                JedCore.plugin.getLogger().info("Initializing collision for " + abilityName + " => " + secondAbility.getName());
+            CoreAbility secondAbility = getAbility(key);
+
+            if (secondAbility != null) {
+                JedCore.plugin.getLogger().info("Initializing collision for " + abilityName + " => " + key);
 
                 ProjectKorra.getCollisionManager().addCollision(new Collision(ability, secondAbility, removeFirst, removeSecond));
             }
@@ -46,8 +58,12 @@ public class CollisionInitializer<T extends CoreAbility> {
         return true;
     }
 
-    // Helper function to get list of abilities by name. Some abilities, like FireBlast, have multiple classes with the same ability name.
-    private List<CoreAbility> getAbility(String name) {
-       return CoreAbility.getAbilities().stream().filter(abil -> abil.getName().equalsIgnoreCase(name)).collect(toList());
+    private CoreAbility getAbility(String name) {
+        CoreAbility ability = specialAbilities.get(name);
+
+        if (ability != null)
+            return ability;
+
+        return CoreAbility.getAbility(name);
     }
 }

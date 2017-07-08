@@ -112,6 +112,9 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.Enabled",true);
 		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.RemoveFirst",true);
 		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.RemoveSecond",true);
+		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlastCharged.Enabled",true);
+		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlastCharged.RemoveFirst",true);
+		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlastCharged.RemoveSecond",false);
 		
 		config.addDefault("Abilities.Air.AirBreath.Enabled", true);
 		config.addDefault("Abilities.Air.AirBreath.Description", "To use, hold Sneak (Default: Shift) to release "
@@ -156,6 +159,9 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.Enabled", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveFirst", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveSecond", false);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlastCharged.Enabled",true);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlastCharged.RemoveFirst",true);
+		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlastCharged.RemoveSecond",false);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.AirBlade.Enabled", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.AirBlade.RemoveFirst", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.AirBlade.RemoveSecond", false);
