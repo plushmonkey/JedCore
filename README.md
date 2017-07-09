@@ -20,8 +20,8 @@ Download releases [here](https://github.com/plushmonkey/JedCore/releases).
   - Change it so the cooldown starts on launch rather than on sourcing.
 - Improve FireBall and FireShots.
   - Add configuration option for shield collisions for both FireBall and FireShots.
-  - Reflect both of the abilities off of AirShield when ShieldCollisions is enabled.
-  - Destroy both of the abilities in FireShield when ShieldCollisions is enabled.
+  - Reflect both of the abilities off of AirShield when AirShield collisions are enabled.
+  - Destroy both of the abilities in FireShield when FireShield collisions are enabled.
   - Make FireBall blaze trail configurable.
   - Change FireBall blaze trail so it lags behind the attack.
 - Revert passive sand blocks before using them. This stops abilities from turning the blocks into permanent sand.
@@ -40,8 +40,15 @@ Download releases [here](https://github.com/plushmonkey/JedCore/releases).
 - Fix bending board ability name length.
   - Remove the code that added multiple reset codes. This could make the board ability names so long that they would kick players offline.
 - Fix IceWall so old instances don't block new ones. 
+- Fix Crevice bugs.
+  - Properly revert when used at extreme y values.
+  - Use TempBlocks so the crevice properly reverts when reloading/restarting.
 - Add ability collisions.
   - Add global configuration option to disable all JedCore ability collisions. They are disabled by default.
   - Collisions are configurable under Abilities.{element}.{abilityname}.Collisions.{abilityname}.
     - Some default examples were added to AirBlade and AirPunch.
   - This hasn't been tested with every ability, so it might not work with all of them.
+- Make fire tick overriding configurable with `Properties.FireTickMethod`. The new default is `larger`.
+  - `overwrite` : This is the old method where the fire tick on the target would always be set to the new amount. This results in some weird interactions where an ability with 0 fire tick would extinguish fire on the target.
+  - `larger` : This will only set fire tick on the target if the new amount will be larger than the target already has.
+  - `accumulate` : This will add fire tick on top of what the entity already has.
