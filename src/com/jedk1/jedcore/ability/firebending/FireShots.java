@@ -125,9 +125,10 @@ public class FireShots extends FireAbility implements AddonAbility {
 			return;
 		}
 		if (!bPlayer.canBendIgnoreCooldowns(this)) {
-			bPlayer.addCooldown(this);
-			remove();
-			return;
+			amount = 0;
+			if (!bPlayer.isOnCooldown(this)) {
+				bPlayer.addCooldown(this);
+			}
 		}
 
 		for (Iterator<FireShot> iterator = shots.iterator(); iterator.hasNext();) {
