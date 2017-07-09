@@ -20,7 +20,6 @@ public class JCManager implements Runnable {
 	
 	public void run() {
 		FirePunch.display(Bukkit.getServer());
-		FireShots.progressFireShots();
 		LightningBurst.progressAll();
 		
 		HealingWaters.heal(Bukkit.getServer());

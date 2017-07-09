@@ -1,12 +1,11 @@
 package com.jedk1.jedcore.ability.firebending;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.jedk1.jedcore.util.AirShieldReflector;
+import com.jedk1.jedcore.util.FireTick;
 import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.airbending.AirShield;
-import com.projectkorra.projectkorra.firebending.FireShield;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -23,8 +22,6 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 public class FireBall extends FireAbility implements AddonAbility {
-
-	public static ConcurrentHashMap<Block, Long> ignitedBlocks = new ConcurrentHashMap<Block, Long>();
 	private Location location;
 	private Vector direction;
 	private double distanceTravelled;
@@ -34,7 +31,6 @@ public class FireBall extends FireAbility implements AddonAbility {
 	private long cooldown;
 	private double damage;
 	private boolean controllable;
-	private boolean shieldCollisions;
 	private boolean fireTrail;
 
 	public FireBall(Player player){
@@ -57,7 +53,6 @@ public class FireBall extends FireAbility implements AddonAbility {
 		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireBall.Cooldown");
 		damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireBall.Damage");
 		controllable = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBall.Controllable");
-		shieldCollisions = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBall.ShieldCollisions");
 		fireTrail = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBall.FireTrail");
 	}
 	
@@ -83,11 +78,6 @@ public class FireBall extends FireAbility implements AddonAbility {
 		for(int i = 0; i < 2; i++){
 			distanceTravelled ++;
 			if (distanceTravelled >= range) {
-				return;
-			}
-
-			if (handleCollisions()) {
-				remove();
 				return;
 			}
 
@@ -126,53 +116,12 @@ public class FireBall extends FireAbility implements AddonAbility {
 			}
 		}
 	}
-
-	private boolean handleCollisions() {
-		if (!shieldCollisions) return false;
-
-		for (AirShield airShield : CoreAbility.getAbilities(AirShield.class)) {
-			if (!airShield.getPlayer().getWorld().equals(this.player.getWorld()))
-				continue;
-
-			double radius = airShield.getRadius();
-
-			Location shieldLocation = airShield.getPlayer().getEyeLocation().clone();
-
-			if (shieldLocation.distanceSquared(this.location) <= radius * radius) {
-				Vector normal = this.location.toVector().subtract(shieldLocation.toVector()).normalize();
-				// Move this instance so it's at the edge of the shield.
-				this.location = shieldLocation.clone().add(normal.clone().multiply(radius));
-				// Reflect the direction about the normal.
-				this.direction.subtract(normal.clone().multiply(2 * this.direction.dot(normal))).normalize();
-				break;
-			}
-		}
-
-		for (FireShield fireShield : CoreAbility.getAbilities(FireShield.class)) {
-			if (fireShield.getPlayer() == this.player) continue;
-			Location playerLoc = fireShield.getPlayer().getLocation().clone();
-
-			if (!playerLoc.getWorld().equals(this.player.getWorld()))
-				continue;
-
-			if (fireShield.isShield()) {
-				if (playerLoc.distanceSquared(this.location) <= fireShield.getRadius() * fireShield.getRadius())
-					return true;
-			} else {
-				double discRadius = fireShield.getDiscRadius();
-				Location tempLoc = playerLoc.clone().add(playerLoc.clone().multiply(discRadius));
-				if (tempLoc.distanceSquared(this.location) <= discRadius * discRadius)
-					return true;
-			}
-		}
-
-		return false;
-	}
 	
 	private void doDamage(LivingEntity entity){
 		distanceTravelled = range;
 		DamageHandler.damageEntity(entity, damage, this);
-		entity.setFireTicks(Math.round(fireticks/50));
+
+		FireTick.set(entity, Math.round(fireticks / 50));
 		new FireDamageTimer(entity, player);
 	}
 	
@@ -184,6 +133,23 @@ public class FireBall extends FireAbility implements AddonAbility {
 	@Override
 	public Location getLocation() {
 		return location;
+	}
+
+	@Override
+	public void handleCollision(Collision collision) {
+		if (collision.isRemovingFirst()) {
+			remove();
+		} else {
+			CoreAbility second = collision.getAbilitySecond();
+			if (second instanceof AirShield) {
+				boolean reflect = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBall.Collisions.AirShield.Reflect", true);
+
+				if (reflect) {
+					AirShield shield = (AirShield) second;
+					AirShieldReflector.reflect(shield, this.location, this.direction);
+				}
+			}
+		}
 	}
 
 	@Override

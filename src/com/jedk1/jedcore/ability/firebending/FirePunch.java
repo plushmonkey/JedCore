@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.jedk1.jedcore.util.FireTick;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.LivingEntity;
@@ -61,7 +62,8 @@ public class FirePunch extends FireAbility implements AddonAbility {
 			DamageAbility da = new DamageAbility(player);
 			da.remove();
 			DamageHandler.damageEntity(target, getDamage(), da);
-			target.setFireTicks(getFireTicks()/50);
+
+			FireTick.set(target, getFireTicks() / 50);
 			if (getStaticCooldown() > getFireTicks()) {
 				new FireDamageTimer(target, player);
 			}

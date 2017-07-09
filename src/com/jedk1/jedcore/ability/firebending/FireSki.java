@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.FireTick;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.FireAbility;
@@ -124,7 +125,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 		if (ignite) {
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(player.getLocation().clone().add(0, -1, 0), 2.0)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()) {
-					entity.setFireTicks(this.fireTicks);
+					FireTick.set(entity, this.fireTicks);
 				}
 			}
 		}

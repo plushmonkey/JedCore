@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.jedk1.jedcore.util.FireTick;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -156,10 +157,10 @@ public class FireBreath extends FireAbility implements AddonAbility {
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(loc, damageregion)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()) {
 					if (entity instanceof Player) {
-						entity.setFireTicks(fireDuration/50);
+						FireTick.set(entity, fireDuration / 50);
 						DamageHandler.damageEntity(entity, playerDamage, this);
 					} else {
-						entity.setFireTicks(fireDuration/50);
+						FireTick.set(entity, fireDuration / 50);
 						DamageHandler.damageEntity(entity, mobDamage, this);
 					}
 				}

@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.FireTick;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -265,7 +266,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		for (Entity e : GeneralMethods.getEntitiesAroundPoint(loc, size)) {
 			if (e instanceof LivingEntity) {
 				DamageHandler.damageEntity(e, damage, this);
-				e.setFireTicks(fireTick);
+				FireTick.set(e, fireTick);
 			}
 		}
 	}

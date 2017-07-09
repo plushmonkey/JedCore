@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import com.jedk1.jedcore.util.FireTick;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -284,6 +285,7 @@ public class JCMethods {
 		BendingBoard.setFields();
 		BendingBoard.updateOnline();
 		JedCore.plugin.initializeCollisions();
+		FireTick.loadMethod();
 
 		if (UpdateChecker.hasUpdate()) {
 			for (Player player : Bukkit.getOnlinePlayers()) {

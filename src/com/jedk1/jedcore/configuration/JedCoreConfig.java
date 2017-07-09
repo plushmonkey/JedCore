@@ -42,7 +42,8 @@ public class JedCoreConfig {
 		config.addDefault("Settings.Updater.Check", true);
 		config.addDefault("Settings.Updater.Notify", true);
 		config.addDefault("Properties.MobCollisions.Enabled", true);
-		config.addDefault("Properties.AbilityCollisions.Enabled", false);
+		config.addDefault("Properties.AbilityCollisions.Enabled", true);
+		config.addDefault("Properties.FireTickMethod", "larger");
 		
 		config.addDefault("Abilities.Avatar.ElementSphere.Enabled", true);
 		config.addDefault("Abilities.Avatar.ElementSphere.Description", "ElementSphere is a very all round ability, being "
@@ -445,8 +446,14 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireBall.Damage", 3.0);
 		config.addDefault("Abilities.Fire.FireBall.FireDuration", 2000);
 		config.addDefault("Abilities.Fire.FireBall.Controllable", false);
-		config.addDefault("Abilities.Fire.FireBall.ShieldCollisions", true);
 		config.addDefault("Abilities.Fire.FireBall.FireTrail", true);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.FireShield.Enabled", true);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.FireShield.RemoveFirst", true);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.FireShield.RemoveSecond", false);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.AirShield.Enabled", true);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.AirShield.RemoveFirst", false);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.AirShield.RemoveSecond", false);
+		config.addDefault("Abilities.Fire.FireBall.Collisions.AirShield.Reflect", true);
 		
 		config.addDefault("Abilities.Fire.FireBreath.Enabled", true);
 		config.addDefault("Abilities.Fire.FireBreath.Description", "To use, hold Sneak (Default: Shift) to start breathing "
@@ -504,7 +511,13 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireShots.FireBalls", 4);
 		config.addDefault("Abilities.Fire.FireShots.FireDuration", 3000);
 		config.addDefault("Abilities.Fire.FireShots.Damage", 2.0);
-		config.addDefault("Abilities.Fire.FireShots.ShieldCollisions", true);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.FireShield.Enabled", true);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.FireShield.RemoveFirst", true);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.FireShield.RemoveSecond", false);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.AirShield.Enabled", true);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.AirShield.RemoveFirst", false);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.AirShield.RemoveSecond", false);
+		config.addDefault("Abilities.Fire.FireShots.Collisions.AirShield.Reflect", true);
 		
 		config.addDefault("Abilities.Fire.FireSki.Enabled", true);
 		config.addDefault("Abilities.Fire.FireSki.Cooldown", 6000);
