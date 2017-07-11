@@ -32,11 +32,17 @@ public class JedCoreConfig {
 		config.addDefault("Settings.Display.DisabledWorlds", true);
 
 		config.addDefault("Settings.OtherCooldowns.WallRun.Color", "GOLD");
+		config.addDefault("Settings.OtherCooldowns.WallRun.Enabled", true);
 		config.addDefault("Settings.OtherCooldowns.TorrentWave.Color", "AQUA");
+		config.addDefault("Settings.OtherCooldowns.TorrentWave.Enabled", true);
 		config.addDefault("Settings.OtherCooldowns.SurgeWave.Color", "AQUA");
+		config.addDefault("Settings.OtherCooldowns.SurgeWave.Enabled", true);
 		config.addDefault("Settings.OtherCooldowns.SurgeWall.Color", "AQUA");
+		config.addDefault("Settings.OtherCooldowns.SurgeWall.Enabled", true);
 		config.addDefault("Settings.OtherCooldowns.RaiseEarthPillar.Color", "GREEN");
+		config.addDefault("Settings.OtherCooldowns.RaiseEarthPillar.Enabled", true);
 		config.addDefault("Settings.OtherCooldowns.RaiseEarthWall.Color", "GREEN");
+		config.addDefault("Settings.OtherCooldowns.RaiseEarthWall.Enabled", true);
 		
 		config.options().copyDefaults(true);
 		board.saveConfig();

@@ -79,6 +79,9 @@ public class BendingBoard {
 			ConfigurationSection abilitySection = section.getConfigurationSection(ability);
 			if (abilitySection == null) continue;
 
+			boolean enabled = abilitySection.getBoolean("Enabled", true);
+			if (!enabled) continue;
+
 			String colorString = abilitySection.getString("Color");
 			ChatColor color = null;
 
