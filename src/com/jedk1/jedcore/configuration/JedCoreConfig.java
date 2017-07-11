@@ -30,6 +30,13 @@ public class JedCoreConfig {
 		config.addDefault("Settings.Toggle.Off", "&7You have hidden the bending board.");
 		config.addDefault("Settings.Toggle.On", "&7You have toggled the bending board on.");
 		config.addDefault("Settings.Display.DisabledWorlds", true);
+
+		config.addDefault("Settings.OtherCooldowns.WallRun.Color", "GOLD");
+		config.addDefault("Settings.OtherCooldowns.TorrentWave.Color", "AQUA");
+		config.addDefault("Settings.OtherCooldowns.SurgeWave.Color", "AQUA");
+		config.addDefault("Settings.OtherCooldowns.SurgeWall.Color", "AQUA");
+		config.addDefault("Settings.OtherCooldowns.RaiseEarthPillar.Color", "GREEN");
+		config.addDefault("Settings.OtherCooldowns.RaiseEarthWall.Color", "GREEN");
 		
 		config.options().copyDefaults(true);
 		board.saveConfig();

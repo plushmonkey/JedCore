@@ -1,14 +1,13 @@
 package com.jedk1.jedcore.scoreboard;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.projectkorra.projectkorra.Element;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -22,8 +21,10 @@ import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
 
 public class BendingBoard {
 
-	public static ConcurrentHashMap<Player, BendingBoard> boards = new ConcurrentHashMap<Player, BendingBoard>();
-	public static List<UUID> disabled = new ArrayList<UUID>();
+	private static final String OTHER = "Other:";
+	public static Map<String, ChatColor> otherAbilities = new HashMap<>();
+	public static ConcurrentHashMap<Player, BendingBoard> boards = new ConcurrentHashMap<>();
+	public static List<UUID> disabled = new ArrayList<>();
 	public static boolean enabled;
 	public static String title;
 	public static String empty;
@@ -67,6 +68,26 @@ public class BendingBoard {
 		toggleOn = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.Toggle.On"));
 		toggleOff = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.Toggle.Off"));
 		disabledworlds = JedCoreConfig.board.getConfig().getBoolean("Settings.Display.DisabledWorlds");
+	}
+
+	public static void loadOtherCooldowns() {
+		ConfigurationSection section = JedCoreConfig.board.getConfig().getConfigurationSection("Settings.OtherCooldowns");
+
+		otherAbilities.clear();
+
+		for (String ability : section.getKeys(false)) {
+			ConfigurationSection abilitySection = section.getConfigurationSection(ability);
+			if (abilitySection == null) continue;
+
+			String colorString = abilitySection.getString("Color");
+			ChatColor color = null;
+
+			if (colorString != null) {
+				color = ChatColor.valueOf(colorString);
+			}
+
+			otherAbilities.put(ability, color);
+		}
 	}
 
 	public static void updateOnline() {
@@ -206,8 +227,26 @@ public class BendingBoard {
 					}
 				}
 
+				if (!otherAbilities.isEmpty()) {
+					boolean other = false;
+					for (String ability : bPlayer.getCooldowns().keySet()) {
+						if (!otherAbilities.containsKey(ability)) continue;
+						ChatColor color = otherAbilities.get(ability);
+
+						if (!other) {
+							formatted.add(OTHER);
+							other = true;
+						}
+
+						if (color == null)
+							color = getColor(ability);
+
+						formatted.add("" + color + ChatColor.STRIKETHROUGH + ability);
+					}
+				}
+
 				if (scoreboard.get(-10, "") != null) {
-					for (int i = -9; i > -15; i--) {
+					for (int i = -9; i > -22; i--) {
 						scoreboard.remove(i, "");
 					}
 				}
@@ -220,5 +259,12 @@ public class BendingBoard {
 				scoreboard.send(player);
 			}
 		}.runTaskLater(JedCore.plugin, 5);
+	}
+
+	private ChatColor getColor(String abilityName) {
+		CoreAbility ability = CoreAbility.getAbility(abilityName);
+		if (ability != null)
+			return ability.getElement().getColor();
+		return ChatColor.WHITE;
 	}
 }

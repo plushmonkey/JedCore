@@ -294,5 +294,7 @@ public class JCMethods {
 				}
 			}
 		}
+
+		BendingBoard.loadOtherCooldowns();
 	}
 }

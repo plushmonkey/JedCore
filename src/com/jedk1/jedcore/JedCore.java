@@ -60,6 +60,7 @@ public class JedCore extends JavaPlugin {
 			@Override
 			public void run() {
 				JCMethods.registerCombos();
+				BendingBoard.loadOtherCooldowns();
 				initializeCollisions();
 			}
 		}.runTaskLater(this, 1);
