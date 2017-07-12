@@ -741,6 +741,7 @@ public class JedCoreConfig {
 				+ "inflicting a lot of damage! This ability has a long cooldown. You must hit the target in the back or this ability won't work!");
 		config.addDefault("Abilities.Chi.Backstab.Cooldown", 8500);
 		config.addDefault("Abilities.Chi.Backstab.Damage", 6.0);
+		config.addDefault("Abilities.Chi.Backstab.MaxActivationAngle", 90);
 		
 		config.addDefault("Abilities.Chi.DaggerThrow.Enabled", true);
 		config.addDefault("Abilities.Chi.DaggerThrow.Description", "With this ability bound, Left-Click in "

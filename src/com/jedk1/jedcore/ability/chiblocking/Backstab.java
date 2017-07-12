@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.chiblocking;
 
+import com.projectkorra.projectkorra.ability.CoreAbility;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -11,6 +12,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ChiAbility;
 import com.projectkorra.projectkorra.chiblocking.passive.ChiPassive;
+import org.bukkit.util.Vector;
 
 public class Backstab extends ChiAbility implements AddonAbility {
 
@@ -20,22 +22,29 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 	public static boolean punch(Player player, LivingEntity target) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer != null && bPlayer.canBend(getAbility("Backstab"))) {
-			BlockFace playerFace = GeneralMethods.getCardinalDirection(player.getLocation().getDirection());
-			Location temp = target.getLocation();
-			BlockFace targetFace = GeneralMethods.getCardinalDirection(temp.getDirection());
-			temp.setYaw(temp.getYaw() - 45);
-			BlockFace targetFaceA = GeneralMethods.getCardinalDirection(temp.getDirection());
-			temp.setYaw(temp.getYaw() + 90);
-			BlockFace targetFaceB = GeneralMethods.getCardinalDirection(temp.getDirection());
-			if (playerFace == targetFace || playerFace == targetFaceA || playerFace == targetFaceB) {
-				bPlayer.addCooldown(getAbility("Backstab"));
-				if (target instanceof Player) {
-					ChiPassive.blockChi((Player) target);
-				}
-				return true;
-			}
+		CoreAbility ability = CoreAbility.getAbility("Backstab");
+
+		if (bPlayer == null || !bPlayer.canBend(ability)) {
+			return false;
 		}
+
+		double activationAngle = Math.toRadians(JedCore.plugin.getConfig().getInt("Abilities.Chi.Backstab.MaxActivationAngle", 90));
+
+		Vector targetDirection = target.getLocation().getDirection();
+		Vector toTarget = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+
+		double angle = toTarget.angle(targetDirection);
+
+		if (angle <= activationAngle) {
+			bPlayer.addCooldown(ability);
+
+			if (target instanceof Player) {
+				ChiPassive.blockChi((Player) target);
+			}
+
+			return true;
+		}
+
 		return false;
 	}
 
@@ -85,12 +94,12 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 	
 	@Override
@@ -100,5 +109,6 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 	@Override
 	public void progress() {
+
 	}
 }
