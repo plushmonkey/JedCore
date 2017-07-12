@@ -30,8 +30,8 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 		double activationAngle = Math.toRadians(JedCore.plugin.getConfig().getInt("Abilities.Chi.Backstab.MaxActivationAngle", 90));
 
-		Vector targetDirection = target.getLocation().getDirection();
-		Vector toTarget = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+		Vector targetDirection = target.getLocation().getDirection().setY(0).normalize();
+		Vector toTarget = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
 
 		double angle = toTarget.angle(targetDirection);
 
