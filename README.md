@@ -52,3 +52,8 @@ Download releases [here](https://github.com/plushmonkey/JedCore/releases).
   - `overwrite` : This is the old method where the fire tick on the target would always be set to the new amount. This results in some weird interactions where an ability with 0 fire tick would extinguish fire on the target.
   - `larger` : This will only set fire tick on the target if the new amount will be larger than the target already has.
   - `accumulate` : This will add fire tick on top of what the entity already has.
+- Track hidden cooldowns on bending board.
+  - The list of abilities to watch can be configured in boards.yml.
+- Improve Backstab.
+  - Change the implementation so it uses dot product instead of cardinal directions. This will make it more accurate.
+  - Add configuration option for selecting the max activation angle. Configurable with Abilities.Chi.Backstab.MaxActivationAngle.
