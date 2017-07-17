@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending.combo;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -243,7 +244,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 				entity.setFallDistance(0f);
 			}
 
-			if (!isTransparent(block) || GeneralMethods.isRegionProtectedFromBuild(player, "Torrent", block.getLocation())) {
+			if (!MaterialUtil.isTransparent(block) || GeneralMethods.isRegionProtectedFromBuild(player, "Torrent", block.getLocation())) {
 				blocks.remove(block);
 				directions.remove(block);
 				if (TempBlock.isTempBlock(block)) {
@@ -274,7 +275,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	}
 
 	private void moveWater() {
-		if (!isTransparent(head.getBlock()) || GeneralMethods.isRegionProtectedFromBuild(player, "Torrent", head)) {
+		if (!MaterialUtil.isTransparent(head.getBlock()) || GeneralMethods.isRegionProtectedFromBuild(player, "Torrent", head)) {
 			range -= 2;
 		}
 		direction = GeneralMethods.getDirection(head, GeneralMethods.getTargetedLocation(player, range, new Integer[] { 8, 9 })).normalize();
