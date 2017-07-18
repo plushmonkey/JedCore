@@ -152,7 +152,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 					return true;
 				}
 			} else {
-				if (GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock)) {
+				if (GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock))) {
 					playFocusWaterEffect(sourceblock);
 					sourceloc = sourceblock.getLocation();
 					sourceblock.setType(Material.AIR);
