@@ -1,5 +1,8 @@
 package com.jedk1.jedcore.ability.earthbending.combo;
 
+import com.jedk1.jedcore.util.MaterialUtil;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
 import io.netty.util.internal.ConcurrentSet;
 
 import com.jedk1.jedcore.JedCore;
@@ -18,13 +21,17 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbility {
 
@@ -32,35 +39,64 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 	private int maxSources;
 	private int sourceRange;
 	private double damage;
+	// This will destroy the instance if LavaFlow is on cooldown.
+	private boolean requireLavaFlow;
 
 	private Location origin;
 	private int counter;
-	private ConcurrentSet<TempFallingBlock> sources = new ConcurrentSet<TempFallingBlock>();
-	private List<TempBlock> blocks = new ArrayList<TempBlock>();
+	private ConcurrentSet<TempFallingBlock> sources = new ConcurrentSet<>();
+	private List<TempBlock> blocks = new ArrayList<>();
 	
-	Random rand = new Random();
+	private Random rand = new Random();
 
 	public MagmaBlast(Player player) {
 		super(player);
 		setFields();
+
+
 		origin = player.getLocation();
-		start();
-		raiseSources();
+
+		if (raiseSources()) {
+			start();
+		}
 	}
 
 	public void setFields() {
-		maxSources = 3;
-		sourceRange = 4;
-		damage = 4.0;
+		maxSources = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.MaxShots");
+		sourceRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.SearchRange");
+		damage = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage");
+		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown");
+		requireLavaFlow  = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.RequireLavaFlow");
 	}
 
-	public void raiseSources() {
-		int check = 0;
-		while (sources.size() < maxSources && check < 10) {
-			check++;
-			Block block = getRandomSourceBlock(origin, sourceRange);
-			sources.add(new TempFallingBlock(block.getLocation().add(0, 1, 0), Material.NETHERRACK, (byte) 0, new Vector(0, 0.9, 0), this));
+	// Select random nearby earth blocks as sources and raise them in the air.
+	private boolean raiseSources() {
+		List<Block> potentialBlocks = GeneralMethods.getBlocksAroundPoint(origin, sourceRange).stream().filter(ElementalAbility::isEarth).collect(Collectors.toList());
+
+		Collections.shuffle(potentialBlocks);
+
+		for (Block newSource : potentialBlocks) {
+			if (!isValidSource(newSource)) continue;
+
+			sources.add(new TempFallingBlock(newSource.getLocation().add(0, 1, 0), Material.NETHERRACK, (byte) 0, new Vector(0, 0.9, 0), this));
+
+			if (sources.size() >= maxSources) {
+				break;
+			}
 		}
+
+		return !sources.isEmpty();
+	}
+
+	// Checks to make sure the source block has room to fly upwards.
+	private boolean isValidSource(Block block) {
+		for (int i = 0; i < 3; ++i) {
+			if (!MaterialUtil.isTransparent(block.getRelative(BlockFace.UP, i + 1))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -69,25 +105,28 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 			remove();
 			return;
 		}
-		if (!bPlayer.canBendIgnoreBinds(this) || !bPlayer.canBend(getAbility("LavaFlow"))) {
+
+		if (!bPlayer.canBendIgnoreBinds(this) || !(bPlayer.getBoundAbility() instanceof LavaFlow)) {
 			remove();
 			return;
 		}
-		counter++;
-		if (counter == 3) {
-			counter = 0;
-			displayAnimation();
+
+		if (requireLavaFlow && !bPlayer.canBend(getAbility("LavaFlow"))) {
+			remove();
+			return;
 		}
-		if (!sources.isEmpty()) {
-			handleSources();
-		}
+
+		displayAnimation();
+		handleSources();
+
 		if (TempFallingBlock.getFromAbility(this).isEmpty() && blocks.isEmpty()) {
 			remove();
-			return;
 		}
 	}
 
-	public void handleSources() {
+	private void handleSources() {
+		if (sources.isEmpty()) return;
+
 		for (TempFallingBlock tfb : sources) {
 			if (tfb.getLocation().getBlockY() >= (origin.getBlockY() + 3)) {
 				blocks.add(new TempBlock(tfb.getLocation().getBlock(), Material.NETHERRACK, (byte) 0));
@@ -97,10 +136,18 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 		}
 	}
 
-	public void displayAnimation() {
+	private void displayAnimation() {
+		if (++counter == 3) {
+			counter = 0;
+		} else {
+			return;
+		}
+
 		for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
 			if (!tfb.getFallingBlock().isDead()) {
 				playParticles(tfb.getLocation());
+			} else {
+				tfb.remove();
 			}
 		}
 		for (TempBlock tb : blocks) {
@@ -108,7 +155,7 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 		}
 	}
 
-	public void playParticles(Location location) {
+	private void playParticles(Location location) {
 		location.add(.5,.5,.5);
 		ParticleEffect.LAVA.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0f, 2, location, 257D);
 		ParticleEffect.SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0f, 2, location, 257D);
@@ -118,31 +165,14 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 		}
 	}
 
-	public Location getOffsetLocation(Location loc, double offset) {
+	private Location getOffsetLocation(Location loc, double offset) {
 		return loc.clone().add((float) ((Math.random() - 0.5)*offset), (float) ((Math.random() - 0.5)*offset), (float) ((Math.random() - 0.5)*offset));
-	}
-
-	public static Block getRandomSourceBlock(Location location, int radius) {
-		Random rand = new Random();
-		List<Integer> checked = new ArrayList<Integer>();
-		List<Block> blocks = GeneralMethods.getBlocksAroundPoint(location, radius);
-		for (int i = 0; i < blocks.size(); i++) {
-			int index = rand.nextInt(blocks.size());
-			while (checked.contains(index)) {
-				index = rand.nextInt(blocks.size());
-			}
-			checked.add(index);
-			Block block = blocks.get(index);
-			if (block == null || !isEarth(block)) {
-				continue;
-			}
-			return block;
-		}
-		return null;
 	}
 
 	@Override
 	public void remove() {
+		bPlayer.addCooldown(this);
+
 		super.remove();
 		for (TempBlock tb : blocks) {
 			tb.revertBlock();
@@ -153,13 +183,18 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 	}
 
 	public static void performAction(Player player) {
-		if (hasAbility(player, MagmaBlast.class)) {
-			((MagmaBlast) getAbility(player, MagmaBlast.class)).performAction();
+		MagmaBlast mb = getAbility(player, MagmaBlast.class);
+
+		if (mb != null) {
+			mb.performAction();
 		}
 	}
 
-	public void performAction() {
-		if (blocks.isEmpty()) return;
+	private void performAction() {
+		if (blocks.isEmpty()) {
+			return;
+		}
+
 		Location target = GeneralMethods.getTargetedLocation(player, 30);
 		double distance = 0;
 		TempBlock tb = null;
@@ -177,8 +212,10 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 
 	public static void blast(TempFallingBlock tfb) {
 		MagmaBlast mb = (MagmaBlast) tfb.getAbility();
-		Location location = tfb.getLocation().add(0.5, 0.5, 0.5);
+		Location location = tfb.getLocation().clone().add(0.5, 0.5, 0.5);
 		for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.0)) {
+			if (!(entity instanceof LivingEntity)) continue;
+
 			DamageHandler.damageEntity(entity, ((MagmaBlast) tfb.getAbility()).getDamage(), tfb.getAbility());
 		}
 		ParticleEffect.FLAME.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);

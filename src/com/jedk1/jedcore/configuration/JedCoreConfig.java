@@ -338,7 +338,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.LavaThrow.SourceGrabRange", 4);
 		config.addDefault("Abilities.Earth.LavaThrow.SourceRegenDelay", 10000);
 		config.addDefault("Abilities.Earth.LavaThrow.FireTicks", 80);
-		
+
 		config.addDefault("Abilities.Earth.MagnetShield.Enabled", true);
 		config.addDefault("Abilities.Earth.MagnetShield.Description", "Repel any metal projectiles using a strong magnetic shield. "
 				+ "To activate, simply hold sneak with this ability bound.");
@@ -423,11 +423,12 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Description", "Fire balls of magma at your enemy!");
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.MaxShots", 3);
-		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage", 5.0);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage", 4.0);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.TravelRange", 10);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.SearchRange", 4);
-		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown", 8000);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown", 6000);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ShotCooldown", 1500);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.RequireLavaFlow", false);
 		
 		config.addDefault("Abilities.Fire.Combustion.Enabled", true);
 		config.addDefault("Abilities.Fire.Combustion.Description", "Hold Shift to focus large amounts of energy into your body, "
