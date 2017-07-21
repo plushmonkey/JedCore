@@ -3,7 +3,6 @@ package com.jedk1.jedcore.ability.waterbending;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,12 +29,12 @@ import com.projectkorra.projectkorra.waterbending.ice.PhaseChange;
 public class FrostBreath extends IceAbility implements AddonAbility {
 
 	private long time;
-	Material[] invalidBlocks = { 
+	private Material[] invalidBlocks = {
 			Material.ICE, 
 			Material.LAVA, 
 			Material.STATIONARY_LAVA, 
 			Material.AIR };
-	Biome[] invalidBiomes = { 
+	private Biome[] invalidBiomes = {
 			Biome.DESERT, 
 			Biome.DESERT_HILLS,
 			Biome.HELL, 
@@ -45,7 +44,6 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 			Biome.SAVANNA, 
 			Biome.SAVANNA_ROCK
 	};
-	Random rand = new Random();
 
 	private long cooldown;
 	private long duration;
@@ -117,7 +115,6 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 			remove();
 			return;
 		}
-		return;
 	}
 
 	private boolean isLocationSafe(Location loc) {
@@ -198,7 +195,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 				Block block = l.getBlock();
 				if (isWater(l.getBlock())) {
 					TempBlock temp = new TempBlock(block, Material.ICE, (byte) 8);
-					PhaseChange.getFrozenBlocksMap().put(temp, player);
+					Torrent.getFrozenBlocks().put(temp, player);
 				} else if (isTransparent(l.getBlock()) && l.clone().add(0, -1, 0).getBlock().getType().isSolid() && !Arrays.asList(invalidBlocks).contains(l.clone().add(0, -1, 0).getBlock().getType())) {
 					new RegenTempBlock(block, Material.SNOW, (byte) 0, snowDuration, !bendSnow);
 				}
