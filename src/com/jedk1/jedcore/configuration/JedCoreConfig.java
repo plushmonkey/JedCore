@@ -709,6 +709,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.MaxRange", 40);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.MinRange", 8);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Trail", 80);
+		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.BottleSource", false);
+		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.PlantSource", false);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Size.Normal", 1);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Size.AvatarState", 3);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Size.FullmoonSmall", 2);
@@ -733,6 +735,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.Speed", 2);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed", 3);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.PlantSource", true);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants", true);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.BottleSource", false);
 		
 		config.addDefault("Abilities.Water.Ice.Passive.Skate.Enabled", true);
 		config.addDefault("Abilities.Water.Ice.Passive.Skate.SpeedFactor", 4);

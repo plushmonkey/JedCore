@@ -15,11 +15,16 @@ import com.projectkorra.projectkorra.util.TempBlock;
 import com.projectkorra.projectkorra.waterbending.OctopusForm;
 import com.projectkorra.projectkorra.waterbending.Torrent;
 
+import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -37,6 +42,8 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	private int speed;
 	private int animspeed;
 	private boolean plant;
+	private boolean requireAdjacentPlants;
+	private boolean canUseBottle;
 	
 	private int step;
 	private double velocity = 0.15;
@@ -50,6 +57,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	private Location sourceloc;
 	private Location origin1;
 	private Location origin2;
+	private boolean usingBottle;
 	
 	Random rand = new Random();
 
@@ -65,6 +73,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 			return;
 		}
 		setFields();
+		usingBottle = false;
 		if (grabSource()) {
 			start();
 			initializing = true;
@@ -86,6 +95,8 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		speed = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterGimbal.Speed");
 		animspeed = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed");
 		plant = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.PlantSource");
+		requireAdjacentPlants = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants");
+		canUseBottle = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.BottleSource");
 	}
 
 
@@ -145,7 +156,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		sourceblock = BlockSource.getWaterSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN, true, true, plant);
 		if (sourceblock != null) {
 			if (isPlant(sourceblock)) {
-				if (JCMethods.isAdjacentToThreeOrMoreSources(sourceblock, sourceblock.getType())) {
+				if (!requireAdjacentPlants || JCMethods.isAdjacentToThreeOrMoreSources(sourceblock, sourceblock.getType())) {
 					playFocusWaterEffect(sourceblock);
 					sourceloc = sourceblock.getLocation();
 					sourceblock.setType(Material.AIR);
@@ -160,6 +171,33 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 				}
 			}
 		}
+
+		// Try to use bottles if no source blocks nearby.
+		if (canUseBottle && hasWaterBottle(player)){
+			Location eye = player.getEyeLocation();
+			Location forward = eye.clone().add(eye.getDirection());
+
+			if (isTransparent(eye.getBlock()) && isTransparent(forward.getBlock())) {
+				sourceloc = forward;
+				sourceblock = sourceloc.getBlock();
+				usingBottle = true;
+				WaterReturn.emptyWaterBottle(player);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Custom function to see if player has bottle.
+	// This is to get around the WaterReturn limitation since OctopusForm will currently be using the bottle.
+	private boolean hasWaterBottle(Player player) {
+		PlayerInventory inventory = player.getInventory();
+		if(inventory.contains(Material.POTION)) {
+			ItemStack item = inventory.getItem(inventory.first(Material.POTION));
+			PotionMeta meta = (PotionMeta)item.getItemMeta();
+			return meta.getBasePotionData().getType().equals(PotionType.WATER);
+		}
+
 		return false;
 	}
 
@@ -295,6 +333,10 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		}
 		if (player.isOnline() && !initializing) {
 			bPlayer.addCooldown(this);
+		}
+
+		if (usingBottle) {
+			new WaterReturn(player, sourceblock);
 		}
 		super.remove();
 	}
