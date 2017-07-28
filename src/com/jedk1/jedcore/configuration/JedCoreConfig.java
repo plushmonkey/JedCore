@@ -423,12 +423,18 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Description", "Fire balls of magma at your enemy!");
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.MaxShots", 3);
-		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage", 4.0);
-		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.TravelRange", 10);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage", 2.0);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.SearchRange", 4);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown", 6000);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ShotCooldown", 1500);
 		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.RequireLavaFlow", false);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.PlayerCollisions", true);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.EntitySelection", true);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.SelectRange", 30.0);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.ExplosionRadius", 2.0);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.FireSpeed", 1.5);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.MaxDuration", 15000);
+		config.addDefault("Abilities.Earth.EarthCombo.MagmaBlast.MaxDistanceFromSources", 15);
 		
 		config.addDefault("Abilities.Fire.Combustion.Enabled", true);
 		config.addDefault("Abilities.Fire.Combustion.Description", "Hold Shift to focus large amounts of energy into your body, "
