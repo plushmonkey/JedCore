@@ -40,7 +40,7 @@ public class RegenTempBlock {
 	 */
 	@SuppressWarnings("deprecation")
 	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp) {
-
+		this(block, material, data, delay, temp, null);
 	}
 
 	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp, RegenCallback callback) {
