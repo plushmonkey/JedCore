@@ -7,13 +7,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RegenTempBlock {
 
-	public static ConcurrentHashMap<Block, Long> blocks = new ConcurrentHashMap<Block, Long>();
-	public static ConcurrentHashMap<Block, TempBlock> temps = new ConcurrentHashMap<Block, TempBlock>();
-	public static ConcurrentHashMap<Block, BlockState> states = new ConcurrentHashMap<Block, BlockState>();
+	public static Map<Block, RegenBlockData> blocks = new HashMap<>();
+	public static Map<Block, TempBlock> temps = new HashMap<>();
+	public static Map<Block, BlockState> states = new HashMap<>();
 
 	/**
 	 * Creates a TempBlock that reverts after a delay.
@@ -36,15 +40,19 @@ public class RegenTempBlock {
 	 */
 	@SuppressWarnings("deprecation")
 	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp) {
+
+	}
+
+	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp, RegenCallback callback) {
 		if (EarthPassive.isPassiveSand(block)) {
 			EarthPassive.revertSand(block);
 		}
 		if (blocks.containsKey(block)) {
-			blocks.replace(block, System.currentTimeMillis() + delay);
+			blocks.replace(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));
 			block.setType(material);
 			block.setData(data);
 		} else {
-			blocks.put(block, System.currentTimeMillis() + delay);
+			blocks.put(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));
 			if (TempBlock.isTempBlock(block)) {
 				TempBlock.get(block).revertBlock();
 			}
@@ -65,20 +73,32 @@ public class RegenTempBlock {
 	 * Manages blocks to be reverted.
 	 */
 	public static void manage() {
-		for (Block b : blocks.keySet()) {
-			if (System.currentTimeMillis() >= blocks.get(b)) {
-				if (temps.containsKey(b)) {
-					TempBlock tb = temps.get(b);
+		Iterator<Map.Entry<Block, RegenBlockData>> iterator = blocks.entrySet().iterator();
+
+		for (; iterator.hasNext();) {
+			Map.Entry<Block, RegenBlockData> entry = iterator.next();
+
+			Block b = entry.getKey();
+			RegenBlockData blockData = entry.getValue();
+
+			if (System.currentTimeMillis() >= blockData.endTime) {
+				TempBlock tb = temps.get(b);
+				if (tb != null) {
 					tb.revertBlock();
 					temps.remove(b);
 				}
-				if (states.containsKey(b)) {
-					BlockState bs = states.get(b);
+
+				BlockState bs = states.get(b);
+				if (bs != null) {
 					bs.update(true);
 					states.remove(b);
 				}
-				//handlePlant(b);
-				blocks.remove(b);
+
+				iterator.remove();
+
+				if (blockData.callback != null) {
+					blockData.callback.onRegen(b);
+				}
 			}
 		}
 	}
@@ -156,20 +176,17 @@ public class RegenTempBlock {
 		return false;
 	}
 	
-	/**
-	 * If a block is a double plant, make sure the top of the plant is replaced.
-	 * @param block
-	 */
-	/* Work in progress.
-	@SuppressWarnings("deprecation")
-	private static void handlePlant(Block block) {
-		if (block.getType().equals(Material.DOUBLE_PLANT)) {
-			block = block.getRelative(BlockFace.UP);
-			if (block.getType().equals(Material.AIR)) {
-				block.setType(Material.DOUBLE_PLANT);
-				block.setData((byte) 8);
-			}
+	private static class RegenBlockData {
+		long endTime;
+		RegenCallback callback;
+
+		public RegenBlockData(long endTime, RegenCallback callback) {
+			this.endTime = endTime;
+			this.callback = callback;
 		}
 	}
-	*/
+
+	public interface RegenCallback {
+		void onRegen(Block block);
+	}
 }

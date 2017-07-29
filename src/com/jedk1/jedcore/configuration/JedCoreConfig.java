@@ -275,10 +275,14 @@ public class JedCoreConfig {
 				+ "the ground, and Left Click! Additionally, if an entity just so happens to get caught in "
 				+ "the wave, they will be moved with the wave.");
 		config.addDefault("Abilities.Earth.EarthSurf.Cooldown.Cooldown", 3000);
+		config.addDefault("Abilities.Earth.EarthSurf.Cooldown.MinimumCooldown", 2000);
+		config.addDefault("Abilities.Earth.EarthSurf.Cooldown.Scaled", true);
 		config.addDefault("Abilities.Earth.EarthSurf.Cooldown.Enabled", false);
 		config.addDefault("Abilities.Earth.EarthSurf.Duration.Duration", 7000);
 		config.addDefault("Abilities.Earth.EarthSurf.Duration.Enabled", false);
+		config.addDefault("Abilities.Earth.EarthSurf.RelaxedCollisions", true);
 		config.addDefault("Abilities.Earth.EarthSurf.Speed", 0.55);
+		config.addDefault("Abilities.Earth.EarthSurf.SpringConstant", 0.4);
 		
 		config.addDefault("Abilities.Earth.Fissure.Enabled", true);
 		config.addDefault("Abilities.Earth.Fissure.Description", "Fissure is an advanced Lavabending "
