@@ -114,8 +114,8 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 
 	// Checks to make sure the source block has room to fly upwards.
 	private boolean isValidSource(Block block) {
-		for (int i = 0; i < RAISE_HEIGHT; ++i) {
-			if (!MaterialUtil.isTransparent(block.getRelative(BlockFace.UP, i + 1))) {
+		for (int i = 0; i <= RAISE_HEIGHT; ++i) {
+			if (!MaterialUtil.isTransparent(block.getRelative(BlockFace.UP, i + 1)) || block.isLiquid()) {
 				return false;
 			}
 		}
