@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -151,7 +152,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	}
 
 	private Block getBlockBeneath(Location l) {
-		while (l.getBlock() != null && l.getBlockY() > 1 && isTransparent(l.getBlock())) {
+		while (l.getBlock() != null && l.getBlockY() > 1 && MaterialUtil.isTransparent(l.getBlock())) {
 			l.add(0, -0.5, 0);
 		}
 		return l.getBlock();
@@ -191,7 +192,8 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 				} else {
 					new RegenTempBlock(block, Material.AIR, (byte) 0, 1000L);
 				}
-				new TempFallingBlock(temp, getBlockBeneath(bL).getType(), getBlockBeneath(bL).getData(), new Vector(0, 0.25, 0), this);
+
+				new TempFallingBlock(temp, getBlockBeneath(bL).getType(), getBlockBeneath(bL).getData(), new Vector(0, 0.25, 0), this, true);
 				
 				for (Entity e : GeneralMethods.getEntitiesAroundPoint(loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld()), 1.5D)) {
 					if (e instanceof LivingEntity && e.getEntityId() != player.getEntityId()) {
@@ -293,7 +295,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	private abstract class AbstractCollisionDetector implements CollisionDetector {
 		protected boolean isCollision(Location location) {
 			Block block = location.getBlock();
-			return !isTransparent(block) || block.isLiquid() || block.getType().isSolid();
+			return !MaterialUtil.isTransparent(block) || block.isLiquid() || block.getType().isSolid();
 		}
 	}
 
