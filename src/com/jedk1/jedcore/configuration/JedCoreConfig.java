@@ -282,7 +282,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthSurf.Duration.Enabled", false);
 		config.addDefault("Abilities.Earth.EarthSurf.RelaxedCollisions", true);
 		config.addDefault("Abilities.Earth.EarthSurf.Speed", 0.55);
-		config.addDefault("Abilities.Earth.EarthSurf.SpringConstant", 0.4);
+		config.addDefault("Abilities.Earth.EarthSurf.HeightTolerance", 3);
+		config.addDefault("Abilities.Earth.EarthSurf.SpringStiffness", 0.35);
 		
 		config.addDefault("Abilities.Earth.Fissure.Enabled", true);
 		config.addDefault("Abilities.Earth.Fissure.Description", "Fissure is an advanced Lavabending "

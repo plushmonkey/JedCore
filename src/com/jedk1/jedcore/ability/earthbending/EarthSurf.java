@@ -36,9 +36,10 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	private boolean cooldownEnabled;
 	private boolean durationEnabled;
 	private double speed;
-	private double springConstant;
+	private double springStiffness;
 	private Set<Block> ridingBlocks = new HashSet<>();
 	private CollisionDetector collisionDetector = new DefaultCollisionDetector();
+	private DoubleSmoother heightSmoother;
 
 	public EarthSurf(Player player) {
 		super(player);
@@ -65,7 +66,10 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	}
 
 	private boolean canStart() {
-		return isEarthbendable(player, getBlockBeneath(player.getLocation().clone())) && !isMetal(getBlockBeneath(player.getLocation().clone()));
+		Block beneath = getBlockBeneath(player.getLocation().clone());
+		double maxHeight = getMaxHeight();
+
+		return isEarthbendable(player, beneath) && !isMetal(beneath) && beneath.getLocation().distanceSquared(player.getLocation()) <= maxHeight * maxHeight;
 	}
 
 	public void setFields() {
@@ -75,7 +79,10 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		cooldownEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.Cooldown.Enabled");
 		durationEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.Duration.Enabled");
 		speed = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthSurf.Speed");
-		springConstant = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthSurf.SpringConstant");
+		springStiffness = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthSurf.SpringStiffness");
+
+		int smootherSize = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthSurf.HeightTolerance");
+		this.heightSmoother = new DoubleSmoother(Math.max(smootherSize, 1));
 
 		if (JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.RelaxedCollisions")) {
 			this.collisionDetector = new RelaxedCollisionDetector();
@@ -118,17 +125,18 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 		// How far the player is above the ground.
 		double height = getPlayerDistance();
-		double maxHeight = TARGET_HEIGHT + 2;
+		double maxHeight = getMaxHeight();
+		double smoothedHeight = heightSmoother.add(height);
 
 		// Destroy ability if player gets too far from ground.
-		if (height > maxHeight) {
+		if (smoothedHeight > maxHeight) {
 			remove();
 			return;
 		}
 
 		// Calculate the spring force to push the player back to the target height.
 		double displacement = height - TARGET_HEIGHT;
-		double force = -springConstant * displacement;
+		double force = -springStiffness * displacement;
 
 		Vector velocity = direction.clone().multiply(speed).setY(force);
 
@@ -136,6 +144,10 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 		player.setVelocity(velocity);
 		player.setFallDistance(0);
+	}
+
+	private double getMaxHeight() {
+		return TARGET_HEIGHT + 2.0;
 	}
 
 	private double getPlayerDistance() {
@@ -224,8 +236,12 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		player.setFlying(false);
 
 		if (cooldownEnabled && player.isOnline()) {
-			double t = Math.min((System.currentTimeMillis() - this.getStartTime()) / (double)duration, 1.0);
-			long scaledCooldown = Math.max((long)(cooldown * t), minimumCooldown);
+			long scaledCooldown = cooldown;
+
+			if (durationEnabled && duration > 0) {
+				double t = Math.min((System.currentTimeMillis() - this.getStartTime()) / (double) duration, 1.0);
+				scaledCooldown = Math.max((long) (cooldown * t), minimumCooldown);
+			}
 
 			bPlayer.addCooldown(this, scaledCooldown);
 		}
@@ -326,7 +342,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		@Override
 		public boolean isColliding(Player player) {
 			// The location in front of the player, where the player will be in one second.
-			Location front = player.getEyeLocation().clone();
+			Location front = player.getEyeLocation().clone().subtract(0.0, 0.5, 0.0);
 			front.setPitch(0);
 
 			Vector direction = front.getDirection().clone().setY(0).normalize();
@@ -335,6 +351,29 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 			front.add(direction.clone().multiply(Math.max(speed, playerSpeed)));
 
 			return isCollision(front);
+		}
+	}
+
+	private static class DoubleSmoother {
+		private double[] values;
+		private int size;
+		private int index;
+
+		public DoubleSmoother(int size) {
+			this.size = size;
+			this.index = 0;
+
+			values = new double[size];
+		}
+
+		public double add(double value) {
+			values[index] = value;
+			index = (index + 1) % size;
+			return get();
+		}
+
+		public double get() {
+			return Arrays.stream(this.values).sum() / this.size;
 		}
 	}
 }
