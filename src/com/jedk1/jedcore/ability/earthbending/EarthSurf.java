@@ -138,6 +138,12 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		double displacement = height - TARGET_HEIGHT;
 		double force = -springStiffness * displacement;
 
+		double maxForce = 0.5;
+		if (Math.abs(force) > maxForce) {
+			// Cap the force to maxForce so the player isn't instantly pulled to the ground.
+			force = force / Math.abs(force) * maxForce;
+		}
+
 		Vector velocity = direction.clone().multiply(speed).setY(force);
 
 		rideWave();
