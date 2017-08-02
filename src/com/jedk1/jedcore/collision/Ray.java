@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.collision;
 
+import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class Ray {
@@ -29,5 +30,9 @@ public class Ray {
         } else {
             directionReciprocal.setZ(1.0 / direction.getZ());
         }
+    }
+
+    public Ray(Location origin, Vector direction) {
+        this(origin.toVector(), direction);
     }
 }
