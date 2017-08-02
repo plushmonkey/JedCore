@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.util.FireTick;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -34,7 +35,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 		}
 		
 		if (hasAbility(player, FireSki.class)) {
-			FireSki fs = (FireSki) getAbility(player, FireSki.class);
+			FireSki fs = getAbility(player, FireSki.class);
 			fs.remove();
 			return;
 		}
@@ -43,7 +44,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 			return;
 		}
 
-		if (getPlayerDistance(player) < 0.7) {
+		if (CollisionDetector.isOnGround(player) || CollisionDetector.distanceAboveGround(player) < 0.7) {
 			return;
 		}
 
@@ -135,14 +136,6 @@ public class FireSki extends FireAbility implements AddonAbility {
 	}
 
 	private double getPlayerDistance() {
-		Location l = player.getLocation().clone();
-		while (l.getBlock() != null && l.getBlockY() > 1 && !GeneralMethods.isSolid(l.getBlock())) {
-			l.add(0, -0.1, 0);
-		}
-		return player.getLocation().getY() - l.getY();
-	}
-
-	public static double getPlayerDistance(Player player) {
 		Location l = player.getLocation().clone();
 		while (l.getBlock() != null && l.getBlockY() > 1 && !GeneralMethods.isSolid(l.getBlock())) {
 			l.add(0, -0.1, 0);
