@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.TempFallingBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.SandAbility;
@@ -151,7 +152,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		//FallingBlock fblock = source.getWorld().spawnFallingBlock(source.getLocation().clone().add(0, 1, 0), source.getType(), source.getData());
 
 		if (rand.nextInt(2) == 0) {
-			playSandBendingSound(source.getLocation().add(0, 1, 0));
+			VersionUtil.playSandbendingSound(source.getLocation().add(0, 1, 0));
 		}
 
 		double x = rand.nextDouble() / 10;
