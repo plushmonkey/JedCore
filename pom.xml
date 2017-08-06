@@ -20,28 +20,34 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.12.1-R0.1-SNAPSHOT</version>
+      <version>1.12-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!-- Bukkit API -->
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
-      <version>1.12.1-R0.1-SNAPSHOT</version>
+      <version>1.12-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!-- ProjectKorra -->
     <dependency>
       <groupId>com.projectkorra</groupId>
       <artifactId>projectkorra</artifactId>
-      <version>1.8.5</version>
+      <version>1.8.6</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>4.0.34.Final</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
 
   <build>
     <defaultGoal>clean package install</defaultGoal>
-    <finalName>${project.name}-${project.version}</finalName>
+    <finalName>${project.name}</finalName>
     <sourceDirectory>${project.basedir}/src/</sourceDirectory>
     <resources>
       <resource>

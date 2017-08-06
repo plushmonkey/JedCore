@@ -30,17 +30,6 @@ public class VersionUtil {
         EarthAbility.playSandbendingSound(loc);
     }
 
-    public static boolean isImmobilized(Player player) {
-        if (isImmobilizedMethod != null) {
-            try {
-                return (boolean)isImmobilizedMethod.invoke(null, player);
-            } catch (Exception e) {
-
-            }
-        }
-        return Immobilize.isParalyzed(player);
-    }
-
     private static void setupSandbendingSound() {
         try {
             Class<?> earthAbility = Class.forName("com.projectkorra.projectkorra.ability.EarthAbility");

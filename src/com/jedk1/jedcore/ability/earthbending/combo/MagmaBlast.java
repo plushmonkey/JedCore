@@ -286,7 +286,7 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 		}
 
 		if (target == null) {
-			target = GeneralMethods.getTargetedLocation(player, selectRange, Material.NETHERRACK.getId());
+			target = GeneralMethods.getTargetedLocation(player, selectRange, Material.NETHERRACK);
 		}
 
 		TempBlock tb = getClosestSource(target);
