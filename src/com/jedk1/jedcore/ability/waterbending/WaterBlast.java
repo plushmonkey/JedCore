@@ -104,7 +104,7 @@ public class WaterBlast extends WaterAbility implements AddonAbility {
 
 	@Override
 	public String getName() {
-		return null;
+		return "WaterBlast";
 	}
 
 	@Override
