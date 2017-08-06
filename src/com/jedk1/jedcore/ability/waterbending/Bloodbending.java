@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.ThrownEntityTracker;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -87,7 +89,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	}
 
 	private void launch() {
-		Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, 20));
+		Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), VersionUtil.getTargetedLocation(player, 20));
 		direction = direction.normalize();
 		direction.multiply(3);
 		victim.setVelocity(direction);
@@ -103,7 +105,8 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 			if (bloodbendingThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
-				location = GeneralMethods.getTargetedLocation(player, i, transparent);
+				Material[] materials = (Material[]) Arrays.stream(transparent).map(Material::getMaterial).toArray();
+				location = VersionUtil.getTargetedLocation(player, i, materials);
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
 			if (entities.contains(player)) {
@@ -203,9 +206,9 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 			return;
 		}
 		Location oldLocation = victim.getLocation();
-		Location loc = GeneralMethods.getTargetedLocation(player, (int) player.getLocation().distance(oldLocation));
+		Location loc = VersionUtil.getTargetedLocation(player, (int) player.getLocation().distance(oldLocation));
 		double distance = loc.distance(oldLocation);
-		Vector v = GeneralMethods.getDirection(oldLocation, GeneralMethods.getTargetedLocation(player, 10));
+		Vector v = GeneralMethods.getDirection(oldLocation, VersionUtil.getTargetedLocation(player, 10));
 		if (distance > 1.2D) {
 			victim.setVelocity(v.normalize().multiply(0.8D));
 		} else {

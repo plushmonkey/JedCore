@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.TempFallingBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
@@ -144,7 +145,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	private Block getMudSourceBlock(int range) {
 		//Block testBlock = player.getTargetBlock(EarthMethods.getTransparentEarthbending(), range);
-		Block testBlock = GeneralMethods.getTargetedLocation(player, range, getTransparentMaterial()).getBlock();
+		Block testBlock = VersionUtil.getTargetedLocationTransparent(player, range).getBlock();
 		if (isMud(testBlock))
 			return testBlock;
 
@@ -239,7 +240,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 		for (TempBlock tb : mudBlocks) {
 			//FallingBlock fb = GeneralMethods.spawnFallingBlock(tb.getLocation().add(0, 1, 0), Material.STAINED_CLAY, (byte) 12);
-			Vector direction = GeneralMethods.getDirection(tb.getLocation().add(0, 1, 0), GeneralMethods.getTargetedLocation(player, 30)).multiply(0.07);
+			Vector direction = GeneralMethods.getDirection(tb.getLocation().add(0, 1, 0), VersionUtil.getTargetedLocation(player, 30)).multiply(0.07);
 
 			double x = rand.nextDouble() / 5;
 			double z = rand.nextDouble() / 5;

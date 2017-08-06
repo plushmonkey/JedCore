@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.TempFallingBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
@@ -120,7 +121,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 		if (GeneralMethods.getTargetedEntity(player, 30, new ArrayList<Entity>()) != null) {
 			direction = GeneralMethods.getDirection(source.getLocation(), GeneralMethods.getTargetedEntity(player, 30, new ArrayList<Entity>()).getLocation());
 		} else {
-			direction = GeneralMethods.getDirection(source.getLocation(), GeneralMethods.getTargetedLocation(player, 30));
+			direction = GeneralMethods.getDirection(source.getLocation(), VersionUtil.getTargetedLocation(player, 30));
 		}
 
 		Item ii = player.getWorld().dropItemNaturally(source.getLocation().getBlock().getRelative(GeneralMethods.getCardinalDirection(direction)).getLocation(), is);

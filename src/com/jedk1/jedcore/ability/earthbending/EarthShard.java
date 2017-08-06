@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import org.bukkit.Location;
@@ -220,7 +221,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 		if (!isPreparing || isThrown || tblockTracker.size() > readyBlocksTracker.size())
 			return;
 
-		Location tloc = GeneralMethods.getTargetedLocation(player, abilityRange);
+		Location tloc = VersionUtil.getTargetedLocation(player, abilityRange);
 
 		if (GeneralMethods.getTargetedEntity(player, abilityRange, new ArrayList<Entity>()) != null)
 			tloc = GeneralMethods.getTargetedEntity(player, abilityRange, new ArrayList<Entity>()).getLocation();

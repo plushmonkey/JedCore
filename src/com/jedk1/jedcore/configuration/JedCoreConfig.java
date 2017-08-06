@@ -701,6 +701,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WakeFishing.Cooldown", 10000);
 		config.addDefault("Abilities.Water.WakeFishing.Duration", 20000);
 		config.addDefault("Abilities.Water.WakeFishing.Range", 5);
+
+		config.addDefault("Abilities.Water.WaterBlast.Enabled", false);
 		
 		config.addDefault("Abilities.Water.WaterCombo.Maelstrom.Enabled", true);
 		config.addDefault("Abilities.Water.WaterCombo.Maelstrom.Description", "Create a swirling mass of water that drags any entity that enters it to the bottom "

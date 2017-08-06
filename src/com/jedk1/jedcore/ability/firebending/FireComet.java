@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.FireAbility;
@@ -93,12 +94,12 @@ public class FireComet extends FireAbility implements AddonAbility {
 				if (!player.isSneaking()) {
 					vector = player.getLocation().getDirection();
 					if (location == null) {
-						location = GeneralMethods.getTargetedLocation(player, 6);
+						location = VersionUtil.getTargetedLocation(player, 6);
 					}
 					launchLoc = location.clone();
 					setFired(true);
 				} else {
-					location = GeneralMethods.getTargetedLocation(player, 6);
+					location = VersionUtil.getTargetedLocation(player, 6);
 				}
 			} else {
 				if (!advance()) {
@@ -117,7 +118,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 				remove();
 				return;
 			}
-			location = GeneralMethods.getTargetedLocation(player, 6);
+			location = VersionUtil.getTargetedLocation(player, 6);
 			displayChargingAnim();
 		}
 	}

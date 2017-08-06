@@ -3,6 +3,7 @@ package com.jedk1.jedcore.ability.waterbending.combo;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
@@ -306,7 +307,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		if (!MaterialUtil.isTransparent(head.getBlock()) || GeneralMethods.isRegionProtectedFromBuild(player, "Torrent", head)) {
 			range -= 2;
 		}
-		direction = GeneralMethods.getDirection(head, GeneralMethods.getTargetedLocation(player, range, new Integer[] { 8, 9 })).normalize();
+		direction = GeneralMethods.getDirection(head, VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER)).normalize();
 		head = head.add(direction.clone().multiply(1));
 		head.setDirection(direction);
 		playWaterbendingSound(head);

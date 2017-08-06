@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.RegenTempBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LavaAbility;
@@ -110,7 +111,8 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 		Block source = getRandomSourceBlock(location, 3);
 		if (source != null) {
 			shots++;
-			Vector direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, range, new Integer[] {8, 9, 10, 11})).normalize();
+			Vector direction = GeneralMethods.getDirection(player.getLocation(),
+					VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA)).normalize();
 			Location origin = source.getLocation().clone().add(0, 2, 0);
 			Location head = origin.clone();
 			head.setDirection(direction);

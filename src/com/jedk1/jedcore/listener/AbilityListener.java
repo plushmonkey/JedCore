@@ -99,7 +99,7 @@ public class AbilityListener implements Listener {
 		if (Suffocate.isBreathbent(player)) {
 			event.setCancelled(true);
 			return;
-		} else if (Bloodbending.isBloodbent(player) || Paralyze.isParalyzed(player) || VersionUtil.isImmobilized(player)) {
+		} else if (Bloodbending.isBloodbent(player) || VersionUtil.isStopped(player)) {
 			event.setCancelled(true);
 			return;
 		} else if (bPlayer.isChiBlocked()) {
@@ -270,7 +270,7 @@ public class AbilityListener implements Listener {
 			}
 		}
 
-		if (Paralyze.isParalyzed(player) || VersionUtil.isImmobilized(player) || Bloodbending.isBloodbent(player)) {
+		if (VersionUtil.isStopped(player) || Bloodbending.isBloodbent(player)) {
 			event.setCancelled(true);
 			return;
 		}

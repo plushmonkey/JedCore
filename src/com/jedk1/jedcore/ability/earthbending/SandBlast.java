@@ -144,7 +144,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	private void blastSand() {
 		if (!blasting) {
 			blasting = true;
-			direction = GeneralMethods.getDirection(source.getLocation().clone().add(0, 1, 0), GeneralMethods.getTargetedLocation(player, range)).multiply(0.07);
+			direction = GeneralMethods.getDirection(source.getLocation().clone().add(0, 1, 0), VersionUtil.getTargetedLocation(player, range)).multiply(0.07);
 			this.bPlayer.addCooldown(this);
 		}
 		tempblock.revertBlock();

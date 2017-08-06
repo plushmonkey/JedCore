@@ -1,10 +1,8 @@
 package com.jedk1.jedcore.ability.waterbending;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+import com.jedk1.jedcore.util.VersionUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -143,7 +141,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 			if (bloodpuppetThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
-				location = GeneralMethods.getTargetedLocation(player, i, transparent);
+				Material[] materials = (Material[])Arrays.stream(transparent).map(Material::getMaterial).toArray();
+				location = VersionUtil.getTargetedLocation(player, i, materials);
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
 			if (entities.contains(player)) {
@@ -390,7 +389,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 
 		Location newlocation = puppet.getLocation();
 
-		Location location = GeneralMethods.getTargetedLocation(player, distance + 1);
+		Location location = VersionUtil.getTargetedLocation(player, distance + 1);
 		double distance = location.distance(newlocation);
 		double dx, dy, dz;
 		dx = location.getX() - newlocation.getX();

@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.util.RegenTempBlock;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.Ability;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -59,7 +60,7 @@ public class WaterBlast extends WaterAbility implements AddonAbility {
 				return;
 
 			if (!player.isDead())
-				direction = GeneralMethods.getDirection(location, GeneralMethods.getTargetedLocation(player, range, new Integer[] { 8, 9 })).normalize();
+				direction = GeneralMethods.getDirection(location, VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER)).normalize();
 			location = location.add(direction.clone().multiply(1));
 
 			if (GeneralMethods.isSolid(location.getBlock())) {
@@ -144,6 +145,6 @@ public class WaterBlast extends WaterAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterBlast.Enabled");
 	}
 }

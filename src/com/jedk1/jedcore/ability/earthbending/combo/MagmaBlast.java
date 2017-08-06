@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending.combo;
 
 import com.jedk1.jedcore.collision.AABB;
 import com.jedk1.jedcore.util.MaterialUtil;
+import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
 import io.netty.util.internal.ConcurrentSet;
@@ -286,7 +287,7 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 		}
 
 		if (target == null) {
-			target = GeneralMethods.getTargetedLocation(player, selectRange, Material.NETHERRACK.getId());
+			target = VersionUtil.getTargetedLocation(player, selectRange, Material.NETHERRACK);
 		}
 
 		TempBlock tb = getClosestSource(target);
