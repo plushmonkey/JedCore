@@ -1,6 +1,5 @@
 package com.jedk1.jedcore.util;
 
-import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.chiblocking.combo.Immobilize;
 import org.bukkit.Location;
