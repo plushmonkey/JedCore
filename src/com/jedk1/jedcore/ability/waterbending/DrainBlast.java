@@ -57,7 +57,7 @@ public class DrainBlast extends WaterAbility implements AddonAbility {
 				return;
 
 			if (!player.isDead())
-				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, blastRange, new Integer[] { 8, 9 })).normalize();
+				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, blastRange, new Material[] { Material.WATER, Material.STATIONARY_WATER })).normalize();
 			location = location.add(direction.clone().multiply(1));
 			if (GeneralMethods.isSolid(location.getBlock()) || !isTransparent(location.getBlock())) {
 				travelled = blastRange;

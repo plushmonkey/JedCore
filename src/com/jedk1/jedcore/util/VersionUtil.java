@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.util;
 
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.chiblocking.combo.Immobilize;
 import org.bukkit.Location;
@@ -28,17 +29,6 @@ public class VersionUtil {
         }
 
         EarthAbility.playSandbendingSound(loc);
-    }
-
-    public static boolean isImmobilized(Player player) {
-        if (isImmobilizedMethod != null) {
-            try {
-                return (boolean)isImmobilizedMethod.invoke(null, player);
-            } catch (Exception e) {
-
-            }
-        }
-        return Immobilize.isParalyzed(player);
     }
 
     private static void setupSandbendingSound() {

@@ -80,7 +80,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 				return;
 
 			if (!player.isDead() && controllable)
-				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, range, new Integer[] { 8, 9 })).normalize();
+				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, range, new Material[] { Material.WATER, Material.STATIONARY_WATER })).normalize();
 
 			location = location.add(direction.clone().multiply(1));
 			if (GeneralMethods.isSolid(location.getBlock()) || isWater(location.getBlock())) {

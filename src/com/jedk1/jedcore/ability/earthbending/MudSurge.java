@@ -144,7 +144,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	private Block getMudSourceBlock(int range) {
 		//Block testBlock = player.getTargetBlock(EarthMethods.getTransparentEarthbending(), range);
-		Block testBlock = GeneralMethods.getTargetedLocation(player, range, getTransparentMaterial()).getBlock();
+		Block testBlock = GeneralMethods.getTargetedLocation(player, range, getTransparentMaterials()).getBlock();
 		if (isMud(testBlock))
 			return testBlock;
 

@@ -99,7 +99,7 @@ public class AbilityListener implements Listener {
 		if (Suffocate.isBreathbent(player)) {
 			event.setCancelled(true);
 			return;
-		} else if (Bloodbending.isBloodbent(player) || Paralyze.isParalyzed(player) || VersionUtil.isImmobilized(player)) {
+		} else if (Bloodbending.isBloodbent(player) || bPlayer.isParalyzed()) {
 			event.setCancelled(true);
 			return;
 		} else if (bPlayer.isChiBlocked()) {
@@ -270,7 +270,7 @@ public class AbilityListener implements Listener {
 			}
 		}
 
-		if (Paralyze.isParalyzed(player) || VersionUtil.isImmobilized(player) || Bloodbending.isBloodbent(player)) {
+		if (bPlayer.isParalyzed() || Bloodbending.isBloodbent(player)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -393,7 +393,7 @@ public class AbilityListener implements Listener {
 				if (abil.equalsIgnoreCase("drain")) {
 					new Drain(player);
 				}
-				if (abil.equalsIgnoreCase("wakefishing")) {
+				if (abil.equalsIgnoreCase("wakefishing") && !CoreAbility.hasAbility(event.getPlayer(), WakeFishing.class)) {
 					new WakeFishing(player);
 				}
 			}

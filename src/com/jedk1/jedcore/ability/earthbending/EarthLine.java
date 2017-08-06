@@ -116,7 +116,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Entity target = GeneralMethods.getTargetedEntity(player, range, player.getNearbyEntities(range, range, range));
 		Location location;
 		if (target == null) {
-			location = GeneralMethods.getTargetedLocation(player, range, new Integer[0]);
+			location = GeneralMethods.getTargetedLocation(player, range, new Material[0]);
 		} else {
 			location = ((LivingEntity) target).getEyeLocation();
 		}
