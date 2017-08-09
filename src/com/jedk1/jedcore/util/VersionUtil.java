@@ -3,9 +3,11 @@ package com.jedk1.jedcore.util;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.MovementHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -17,6 +19,8 @@ public class VersionUtil {
     private static Method playSandBendingMethod = null;
     private static Method isImmobilizedMethod = null;
     private static Method getTargetedLocationMethod = null;
+    private static Method isPassiveSandMethod = null;
+    private static Method revertSandMethod = null;
     private static Field nonOpaque = null;
     private static boolean hasMovementHandler = false;
 
@@ -25,6 +29,7 @@ public class VersionUtil {
         setupImmobilize();
         setupTargetedLocation();
         setupMovementHandler();
+        setupEarthPassive();
     }
 
     public static Location getTargetedLocation(Player player, double range, Material... materials) {
@@ -90,6 +95,42 @@ public class VersionUtil {
 
         BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
         return bPlayer.isParalyzed() || isImmobilized(player);
+    }
+
+    public static boolean isPassiveSand(Block block) {
+        if (isPassiveSandMethod != null) {
+            try {
+                return (boolean)isPassiveSandMethod.invoke(null, block);
+            } catch (Exception e) {
+
+            }
+        }
+
+        return DensityShift.isPassiveSand(block);
+    }
+
+    public static void revertSand(Block block) {
+        if (revertSandMethod != null) {
+            try {
+                revertSandMethod.invoke(null, block);
+                return;
+            } catch (Exception e) {
+
+            }
+        }
+
+        DensityShift.revertSand(block);
+    }
+
+    private static void setupEarthPassive() {
+        try {
+            Class<?> earthPassive = Class.forName("com.projectkorra.projectkorra.earthbending.passive.EarthPassive");
+
+            isPassiveSandMethod = earthPassive.getDeclaredMethod("isPassiveSand", Block.class);
+            revertSandMethod = earthPassive.getDeclaredMethod("revertSand", Block.class);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+
+        }
     }
 
     private static void setupMovementHandler() {

@@ -1,6 +1,5 @@
 package com.jedk1.jedcore.util;
 
-import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.TempBlock;
 
 import org.bukkit.Material;
@@ -10,8 +9,6 @@ import org.bukkit.block.BlockState;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RegenTempBlock {
 
@@ -44,8 +41,8 @@ public class RegenTempBlock {
 	}
 
 	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp, RegenCallback callback) {
-		if (EarthPassive.isPassiveSand(block)) {
-			EarthPassive.revertSand(block);
+		if (VersionUtil.isPassiveSand(block)) {
+			VersionUtil.revertSand(block);
 		}
 		if (blocks.containsKey(block)) {
 			blocks.replace(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));

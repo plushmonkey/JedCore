@@ -8,7 +8,6 @@ import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
-import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -88,8 +87,8 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	private void focusBlock() {
 		if (sourceblock.getType() == Material.SAND) {
-			if (EarthPassive.isPassiveSand(this.sourceblock)) {
-				EarthPassive.revertSand(this.sourceblock);
+			if (VersionUtil.isPassiveSand(this.sourceblock)) {
+				VersionUtil.revertSand(this.sourceblock);
 				this.sourcetype = this.sourceblock.getType();
 			} else {
 				sourcetype = Material.SAND;
@@ -180,8 +179,8 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Vector looking = new Vector(x1 - x0, 0.0D, z1 - z0);
 		Vector push = new Vector(x1 - x0, 0.34999999999999998D, z1 - z0);
 		if (location.distance(sourceblock.getLocation()) < range) {
-			if (EarthPassive.isPassiveSand(location.getBlock())) {
-				EarthPassive.revertSand(location.getBlock());
+			if (VersionUtil.isPassiveSand(location.getBlock())) {
+				VersionUtil.revertSand(location.getBlock());
 			}
 
 			Material cloneType = location.getBlock().getType();
