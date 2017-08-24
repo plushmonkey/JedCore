@@ -83,7 +83,7 @@ permissions:
     description: Access to fire abilities.
     children:
       bending.ability.Combustion: true
-      bending.ability.Dishcarge: true
+      bending.ability.Discharge: true
       bending.ability.FireBall: true
       bending.ability.FireBreath: true
       bending.ability.FireComet: true
