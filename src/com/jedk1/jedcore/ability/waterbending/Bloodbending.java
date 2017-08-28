@@ -40,14 +40,6 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	public LivingEntity victim;
 	private BendingPlayer victimBPlayer;
 	private boolean grabbed;
-
-	private Integer[] transparent = {0, 6, 8, 9, 10, 11, 27, 28, 30, 31, 32, 
-			37, 38, 39, 40, 50, 51, 55, 59, 63, 64, 
-			65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 
-			78, 83, 93, 94, 104, 105, 111, 115, 117, 
-			132, 141, 142, 143, 147, 148, 149, 150, 
-			157, 175, 176, 177, 183, 184, 185, 187, 
-			193, 194, 195, 196, 197};
 	
 	public Bloodbending(Player player) {
 		super(player);
@@ -105,8 +97,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 			if (bloodbendingThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
-				Material[] materials = (Material[]) Arrays.stream(transparent).map(Material::getMaterial).toArray();
-				location = VersionUtil.getTargetedLocation(player, i, materials);
+				location = VersionUtil.getTargetedLocationTransparent(player, i);
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
 			if (entities.contains(player)) {
