@@ -69,6 +69,10 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 				oldES.prepareCancel();
 			} else {
 				if (oldES.setup) {
+					if (!bPlayer.canBendIgnoreBindsCooldowns(this)) {
+						return;
+					}
+
 					switch (player.getInventory().getHeldItemSlot()) {
 						case 0:
 							if (player.hasPermission("bending.ability.ElementSphere.Air")) {
