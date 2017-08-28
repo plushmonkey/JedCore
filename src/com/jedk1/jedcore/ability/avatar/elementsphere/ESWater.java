@@ -37,7 +37,7 @@ public class ESWater extends AvatarAbility implements AddonAbility {
 		if (currES.getWaterUses() == 0) {
 			return;
 		}
-		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || bPlayer.isOnCooldown("ESWater")) {
+		if (bPlayer.isOnCooldown("ESWater")) {
 			return;
 		}
 		setFields();

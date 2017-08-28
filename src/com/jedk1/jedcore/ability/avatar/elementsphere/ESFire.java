@@ -41,7 +41,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 		if (currES.getFireUses() == 0) {
 			return;
 		}
-		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || bPlayer.isOnCooldown("ESFire")) {
+		if (bPlayer.isOnCooldown("ESFire")) {
 			return;
 		}
 		setFields();
