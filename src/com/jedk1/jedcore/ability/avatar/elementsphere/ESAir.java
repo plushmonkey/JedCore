@@ -33,7 +33,7 @@ public class ESAir extends AvatarAbility implements AddonAbility {
 		if (currES.getAirUses() == 0) {
 			return;
 		}
-		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || bPlayer.isOnCooldown("ESAir")) {
+		if (bPlayer.isOnCooldown("ESAir")) {
 			return;
 		}
 		setFields();
