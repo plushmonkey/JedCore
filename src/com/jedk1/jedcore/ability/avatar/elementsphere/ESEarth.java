@@ -43,7 +43,7 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 		if (currES.getEarthUses() == 0) {
 			return;
 		}
-		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || bPlayer.isOnCooldown("ESEarth")) {
+		if (bPlayer.isOnCooldown("ESEarth")) {
 			return;
 		}
 		setFields();
