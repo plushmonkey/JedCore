@@ -53,7 +53,7 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		ElementSphere currES = getAbility(player, ElementSphere.class);
-		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || bPlayer.isOnCooldown("ESStream")) {
+		if (bPlayer.isOnCooldown("ESStream")) {
 			return;
 		}
 		setFields();
