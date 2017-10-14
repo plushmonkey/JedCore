@@ -18,14 +18,17 @@ import com.jedk1.jedcore.scoreboard.BendingBoard;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.UpdateChecker;
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
+import com.projectkorra.projectkorra.airbending.AirSpout;
 import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
 import com.projectkorra.projectkorra.event.BendingReloadEvent;
 import com.projectkorra.projectkorra.event.HorizontalVelocityChangeEvent;
 import com.projectkorra.projectkorra.event.PlayerCooldownChangeEvent;
+import com.projectkorra.projectkorra.waterbending.WaterSpout;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -127,6 +130,18 @@ public class JCListener implements Listener {
 				if (arrow.hasMetadata("daggerthrow") && arrow.getShooter() instanceof Player) {
 					DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
 					event.setDamage(0);
+					
+					if (event.getEntity() instanceof Player) {
+						if (CoreAbility.hasAbility((Player) event.getEntity(), AirSpout.class)) {
+							CoreAbility.getAbility((Player) event.getEntity(), AirSpout.class).remove();
+							BendingPlayer.getBendingPlayer((Player) event.getEntity()).addCooldown("AirSpout", 1000L);
+						}
+						if (CoreAbility.hasAbility((Player) event.getEntity(), WaterSpout.class)) {
+							CoreAbility.getAbility((Player) event.getEntity(), WaterSpout.class).remove();
+							BendingPlayer.getBendingPlayer((Player) event.getEntity()).addCooldown("WaterSpout", 1000L);
+						}
+					}
+					
 					event.setCancelled(true);
 				}
 				if (arrow.hasMetadata("metalhook")) {
