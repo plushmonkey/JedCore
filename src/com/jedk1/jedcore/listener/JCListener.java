@@ -130,18 +130,6 @@ public class JCListener implements Listener {
 				if (arrow.hasMetadata("daggerthrow") && arrow.getShooter() instanceof Player) {
 					DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
 					event.setDamage(0);
-					
-					if (event.getEntity() instanceof Player) {
-						if (CoreAbility.hasAbility((Player) event.getEntity(), AirSpout.class)) {
-							CoreAbility.getAbility((Player) event.getEntity(), AirSpout.class).remove();
-							BendingPlayer.getBendingPlayer((Player) event.getEntity()).addCooldown("AirSpout", 1000L);
-						}
-						if (CoreAbility.hasAbility((Player) event.getEntity(), WaterSpout.class)) {
-							CoreAbility.getAbility((Player) event.getEntity(), WaterSpout.class).remove();
-							BendingPlayer.getBendingPlayer((Player) event.getEntity()).addCooldown("WaterSpout", 1000L);
-						}
-					}
-					
 					event.setCancelled(true);
 				}
 				if (arrow.hasMetadata("metalhook")) {

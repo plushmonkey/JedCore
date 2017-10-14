@@ -15,13 +15,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 public class CollisionInitializer<T extends CoreAbility> {
-    private static Map<String, CoreAbility> specialAbilities = new HashMap<>();
     private Class<T> type;
-
-    static {
-        specialAbilities.put("FireBlast", CoreAbility.getAbility(FireBlast.class));
-        specialAbilities.put("FireBlastCharged", CoreAbility.getAbility(FireBlastCharged.class));
-    }
 
     public CollisionInitializer(Class<T> type) {
         this.type = type;
@@ -46,7 +40,7 @@ public class CollisionInitializer<T extends CoreAbility> {
             boolean removeFirst = abilityConfig.getBoolean("RemoveFirst");
             boolean removeSecond = abilityConfig.getBoolean("RemoveSecond");
 
-            CoreAbility secondAbility = getAbility(key);
+            CoreAbility secondAbility = AbilitySelector.getAbility(key);
 
             if (secondAbility != null) {
                 JedCore.plugin.getLogger().info("Initializing collision for " + abilityName + " => " + key);
@@ -56,14 +50,5 @@ public class CollisionInitializer<T extends CoreAbility> {
         }
 
         return true;
-    }
-
-    private CoreAbility getAbility(String name) {
-        CoreAbility ability = specialAbilities.get(name);
-
-        if (ability != null)
-            return ability;
-
-        return CoreAbility.getAbility(name);
     }
 }

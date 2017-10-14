@@ -2,15 +2,18 @@ package com.jedk1.jedcore.ability.chiblocking;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
-import com.jedk1.jedcore.util.TempFallingBlock;
+import com.jedk1.jedcore.util.AbilitySelector;
+import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ChiAbility;
+import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -23,29 +26,35 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DaggerThrow extends ChiAbility implements AddonAbility {
-	
+	private static List<AbilityInteraction> interactions = new ArrayList<>();
+	private static boolean particles;
+	private static double damage;
+
 	private Location location;
 	private long time;
 	private int shots = 1;
-
 	private long cooldown;
 	private boolean limitEnabled;
 	private int maxShots;
-	private static boolean particles;
-	private static double damage;
 	private List<Arrow> arrows = new ArrayList<>();
 
 	public DaggerThrow(Player player) {
 		super(player);
+
+		if (this instanceof DamageAbility) {
+			return;
+		}
+
 		if (!bPlayer.canBend(this)) {
 			return;
 		}
+
 		if (bPlayer.isOnCooldown("DaggerThrowShot")) {
 			return;
 		}
 
 		if (hasAbility(player, DaggerThrow.class)) {
-			DaggerThrow dt = (DaggerThrow) getAbility(player, DaggerThrow.class);
+			DaggerThrow dt = getAbility(player, DaggerThrow.class);
 			dt.shootArrow();
 			return;
 		}
@@ -63,6 +72,18 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		maxShots = JedCore.plugin.getConfig().getInt("Abilities.Chi.DaggerThrow.MaxDaggers.Amount");
 		particles = JedCore.plugin.getConfig().getBoolean("Abilities.Chi.DaggerThrow.ParticleTrail");
 		damage = JedCore.plugin.getConfig().getDouble("Abilities.Chi.DaggerThrow.Damage");
+
+		loadInteractions();
+	}
+
+	private void loadInteractions() {
+		interactions.clear();
+
+		String path = "Abilities.Chi.DaggerThrow.Interactions";
+		ConfigurationSection section = JedCore.plugin.getConfig().getConfigurationSection(path);
+		for (String abilityName : section.getKeys(false)) {
+			interactions.add(new AbilityInteraction(abilityName));
+		}
 	}
 
 	@Override
@@ -79,23 +100,26 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		if (shots > maxShots && limitEnabled) {
 			bPlayer.addCooldown(this);
 			remove();
-			return;
 		}
-		return;
 	}
 
 	private void shootArrow() {
 		if (JCMethods.removeItemFromInventory(player, Material.ARROW, 1)) {
 			shots++;
-			Arrow arrow;
 			location = player.getEyeLocation();
-			Vector vector = location.toVector().add(location.getDirection().multiply(2.5)).toLocation(location.getWorld()).toVector().subtract(player.getEyeLocation().toVector());
-			arrow = player.launchProjectile(Arrow.class);
+
+			Vector vector = location.toVector().
+					add(location.getDirection().multiply(2.5)).
+					toLocation(location.getWorld()).toVector().
+					subtract(player.getEyeLocation().toVector());
+
+			Arrow arrow = player.launchProjectile(Arrow.class);
 			arrow.setVelocity(vector);
 			arrow.getLocation().setDirection(vector);
 			arrow.setKnockbackStrength(0);
 			arrow.setBounce(false);
 			arrow.setMetadata("daggerthrow", new FixedMetadataValue(JedCore.plugin, "1"));
+
 			if (particles) {
 				arrow.setCritical(true);
 			}
@@ -119,6 +143,26 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		da.remove();
 		if (prevHealth > entity.getHealth()) {
 			arrow.remove();
+		}
+
+		if (!(entity instanceof Player)) {
+			return;
+		}
+
+		Player target = (Player)entity;
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
+
+		for (AbilityInteraction interaction : interactions) {
+			if (!interaction.enabled) continue;
+
+			CoreAbility abilityDefinition = AbilitySelector.getAbility(interaction.name);
+			if (abilityDefinition == null) continue;
+
+			CoreAbility ability = CoreAbility.getAbility(target, abilityDefinition.getClass());
+			if (ability == null) continue;
+
+			ability.remove();
+			bPlayer.addCooldown(ability, interaction.cooldown);
 		}
 	}
 	
@@ -231,7 +275,22 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		@Override
 		public void progress() {
 			remove();
-			return;
+		}
+	}
+
+	private static class AbilityInteraction {
+		public boolean enabled;
+		public long cooldown;
+		public String name;
+
+		public AbilityInteraction(String abilityName) {
+			this.name = abilityName;
+			loadConfig();
+		}
+
+		public void loadConfig() {
+			this.enabled = JedCore.plugin.getConfig().getBoolean("Abilities.Chi.DaggerThrow.Interactions." + name + ".Enabled", true);
+			this.cooldown = JedCore.plugin.getConfig().getLong("Abilities.Chi.DaggerThrow.Interactions." + name + ".Cooldown", 1000);
 		}
 	}
 }

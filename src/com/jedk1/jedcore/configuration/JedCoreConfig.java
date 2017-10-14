@@ -770,7 +770,11 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Chi.DaggerThrow.MaxDaggers.Amount", 6);
 		config.addDefault("Abilities.Chi.DaggerThrow.Damage", 1.0);
 		config.addDefault("Abilities.Chi.DaggerThrow.ParticleTrail", true);
-		
+		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.Enabled", true);
+		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.Cooldown", 1000);
+		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.AirSpout.Enabled", true);
+		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.AirSpout.Cooldown", 1000);
+
 		String[] invalidWallRun = {Material.BARRIER.name()};
 		config.addDefault("Abilities.Passives.WallRun.Enabled", true);
 		config.addDefault("Abilities.Passives.WallRun.Cooldown", 6000);
