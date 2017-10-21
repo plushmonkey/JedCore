@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.airbending.combo;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ComboAbility;
@@ -10,6 +11,7 @@ import com.projectkorra.projectkorra.object.HorizontalVelocityTracker;
 import com.projectkorra.projectkorra.util.ClickType;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,9 +44,11 @@ public class SwiftStream extends FlightAbility implements AddonAbility, ComboAbi
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.AirCombo.SwiftStream.Cooldown");
-		dragFactor = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirCombo.SwiftStream.DragFactor");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Air.AirCombo.SwiftStream.Duration");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Air.AirCombo.SwiftStream.Cooldown");
+		dragFactor = config.getDouble("Abilities.Air.AirCombo.SwiftStream.DragFactor");
+		duration = config.getLong("Abilities.Air.AirCombo.SwiftStream.Duration");
 	}
 
 	public void launch() {
@@ -146,7 +150,8 @@ public class SwiftStream extends FlightAbility implements AddonAbility, ComboAbi
 
 	@Override
 	public String getDescription() {
-	   return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.AirCombo.SwiftStream.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+	   return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirCombo.SwiftStream.Description");
 	}
 	
 	@Override
@@ -169,6 +174,7 @@ public class SwiftStream extends FlightAbility implements AddonAbility, ComboAbi
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirCombo.SwiftStream.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.AirCombo.SwiftStream.Enabled");
 	}
 }

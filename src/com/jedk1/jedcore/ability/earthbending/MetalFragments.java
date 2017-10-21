@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -16,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
@@ -73,11 +75,13 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		maxSources = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.MaxSources");
-		selectRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.SourceRange");
-		maxFragments = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.MaxFragments");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.MetalFragments.Damage");
-		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalFragments.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		maxSources = config.getInt("Abilities.Earth.MetalFragments.MaxSources");
+		selectRange = config.getInt("Abilities.Earth.MetalFragments.SourceRange");
+		maxFragments = config.getInt("Abilities.Earth.MetalFragments.MaxFragments");
+		damage = config.getDouble("Abilities.Earth.MetalFragments.Damage");
+		cooldown = config.getInt("Abilities.Earth.MetalFragments.Cooldown");
 	}
 
 	public static void shootFragment(Player player, boolean left) {
@@ -359,7 +363,8 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.MetalFragments.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.MetalFragments.Description");
 	}
 
 	@Override
@@ -374,6 +379,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MetalFragments.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.MetalFragments.Enabled");
 	}
 }

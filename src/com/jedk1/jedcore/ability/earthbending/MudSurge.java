@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -14,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
@@ -86,15 +88,17 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		prepareRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.SourceRange");
-		blindChance = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.BlindChance");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.MudSurge.Damage");
-		waves = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.Waves");
-		waterSearchRadius = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.WaterSearchRadius");
-		wetSource = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MudSurge.WetSourceOnly");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.MudSurge.Cooldown");
-		blindTicks = JedCore.plugin.getConfig().getInt("Abilities.Earth.MudSurge.BlindTicks");
-		multipleHits = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MudSurge.MultipleHits");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		prepareRange = config.getInt("Abilities.Earth.MudSurge.SourceRange");
+		blindChance = config.getInt("Abilities.Earth.MudSurge.BlindChance");
+		damage = config.getDouble("Abilities.Earth.MudSurge.Damage");
+		waves = config.getInt("Abilities.Earth.MudSurge.Waves");
+		waterSearchRadius = config.getInt("Abilities.Earth.MudSurge.WaterSearchRadius");
+		wetSource = config.getBoolean("Abilities.Earth.MudSurge.WetSourceOnly");
+		cooldown = config.getLong("Abilities.Earth.MudSurge.Cooldown");
+		blindTicks = config.getInt("Abilities.Earth.MudSurge.BlindTicks");
+		multipleHits = config.getBoolean("Abilities.Earth.MudSurge.MultipleHits");
 	}
 
 	private boolean getSource() {
@@ -415,7 +419,8 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.MudSurge.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.MudSurge.Description");
 	}
 
 	@Override
@@ -430,6 +435,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MudSurge.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.MudSurge.Enabled");
 	}
 }

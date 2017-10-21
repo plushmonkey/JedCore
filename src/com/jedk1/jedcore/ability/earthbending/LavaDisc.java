@@ -2,10 +2,12 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import java.util.List;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,18 +63,20 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.LavaDisc.Damage");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaDisc.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaDisc.Duration");
-		regen = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaDisc.Regen");
-		sourceRegen = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaDisc.SourceRegen");
-		particles = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaDisc.Particles");
-		lavaOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaDisc.LavaSourceOnly");
-		passHit = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaDisc.ContinueAfterEntityHit");
-		damageBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaDisc.BlockDamage");
-		lavaTrail = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaDisc.LavaTrail");
-		recall = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaDisc.RecallLimit") - 1;
-		meltable = JedCore.plugin.getConfig().getStringList("Abilities.Earth.LavaDisc.AdditionalMeltableBlocks");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		damage = config.getDouble("Abilities.Earth.LavaDisc.Damage");
+		cooldown = config.getLong("Abilities.Earth.LavaDisc.Cooldown");
+		duration = config.getLong("Abilities.Earth.LavaDisc.Duration");
+		regen = config.getLong("Abilities.Earth.LavaDisc.Regen");
+		sourceRegen = config.getLong("Abilities.Earth.LavaDisc.SourceRegen");
+		particles = config.getInt("Abilities.Earth.LavaDisc.Particles");
+		lavaOnly = config.getBoolean("Abilities.Earth.LavaDisc.LavaSourceOnly");
+		passHit = config.getBoolean("Abilities.Earth.LavaDisc.ContinueAfterEntityHit");
+		damageBlocks = config.getBoolean("Abilities.Earth.LavaDisc.BlockDamage");
+		lavaTrail = config.getBoolean("Abilities.Earth.LavaDisc.LavaTrail");
+		recall = config.getInt("Abilities.Earth.LavaDisc.RecallLimit") - 1;
+		meltable = config.getStringList("Abilities.Earth.LavaDisc.AdditionalMeltableBlocks");
 	}
 
 	private boolean prepare() {
@@ -311,7 +315,8 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.LavaDisc.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.LavaDisc.Description");
 	}
 
 	@Override
@@ -326,6 +331,7 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaDisc.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.LavaDisc.Enabled");
 	}
 }

@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.FireTick;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -17,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -78,17 +80,19 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.Combustion.Damage");
-		fireTick = JedCore.plugin.getConfig().getInt("Abilities.Fire.Combustion.FireTick");
-		misfireModifier = JedCore.plugin.getConfig().getInt("Abilities.Fire.Combustion.misfireModifier");
-		warmup = JedCore.plugin.getConfig().getLong("Abilities.Fire.Combustion.Warmup");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.Combustion.Cooldown");
-		regenTime = JedCore.plugin.getConfig().getLong("Abilities.Fire.Combustion.RegenTime");
-		power = JedCore.plugin.getConfig().getInt("Abilities.Fire.Combustion.Power");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.Combustion.Range");
-		damageBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.DamageBlocks");
-		regenBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.RegenBlocks");
-		instantExplodeIfHit = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.InstantExplodeIfHit");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		damage = config.getDouble("Abilities.Fire.Combustion.Damage");
+		fireTick = config.getInt("Abilities.Fire.Combustion.FireTick");
+		misfireModifier = config.getInt("Abilities.Fire.Combustion.misfireModifier");
+		warmup = config.getLong("Abilities.Fire.Combustion.Warmup");
+		cooldown = config.getLong("Abilities.Fire.Combustion.Cooldown");
+		regenTime = config.getLong("Abilities.Fire.Combustion.RegenTime");
+		power = config.getInt("Abilities.Fire.Combustion.Power");
+		range = config.getInt("Abilities.Fire.Combustion.Range");
+		damageBlocks = config.getBoolean("Abilities.Fire.Combustion.DamageBlocks");
+		regenBlocks = config.getBoolean("Abilities.Fire.Combustion.RegenBlocks");
+		instantExplodeIfHit = config.getBoolean("Abilities.Fire.Combustion.InstantExplodeIfHit");
 	}
 
 	@Override
@@ -332,7 +336,8 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Fire.Combustion.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Fire.Combustion.Description");
 	}
 	
 	@Override
@@ -347,6 +352,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Combustion.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.Combustion.Enabled");
 	}
 }

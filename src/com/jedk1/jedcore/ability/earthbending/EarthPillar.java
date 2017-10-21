@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.earthbending.Collapse;
@@ -11,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -61,8 +63,10 @@ public class EarthPillar extends EarthAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		height = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthPillar.Height");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthPillar.Range");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		height = config.getInt("Abilities.Earth.EarthPillar.Height");
+		range = config.getInt("Abilities.Earth.EarthPillar.Range");
 	}
 
 	@Override
@@ -149,7 +153,8 @@ public class EarthPillar extends EarthAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.EarthPillar.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.EarthPillar.Description");
 	}
 
 	@Override
@@ -164,6 +169,7 @@ public class EarthPillar extends EarthAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthPillar.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.EarthPillar.Enabled");
 	}
 }

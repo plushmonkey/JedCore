@@ -2,9 +2,11 @@ package com.jedk1.jedcore.ability.waterbending;
 
 import java.util.*;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.VersionUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Creature;
@@ -65,14 +67,16 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		nightOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Water.BloodPuppet.NightOnly");
-		fullMoonOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Water.BloodPuppet.FullMoonOnly");
-		undeadMobs = JedCore.plugin.getConfig().getBoolean("Abilities.Water.BloodPuppet.UndeadMobs");
-		bloodpuppetThroughBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Water.BloodPuppet.IgnoreWalls");
-		requireBound = JedCore.plugin.getConfig().getBoolean("Abilities.Water.BloodPuppet.RequireBound");
-		distance = JedCore.plugin.getConfig().getInt("Abilities.Water.BloodPuppet.Distance");
-		holdtime = JedCore.plugin.getConfig().getLong("Abilities.Water.BloodPuppet.HoldTime");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.BloodPuppet.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		nightOnly = config.getBoolean("Abilities.Water.BloodPuppet.NightOnly");
+		fullMoonOnly = config.getBoolean("Abilities.Water.BloodPuppet.FullMoonOnly");
+		undeadMobs = config.getBoolean("Abilities.Water.BloodPuppet.UndeadMobs");
+		bloodpuppetThroughBlocks = config.getBoolean("Abilities.Water.BloodPuppet.IgnoreWalls");
+		requireBound = config.getBoolean("Abilities.Water.BloodPuppet.RequireBound");
+		distance = config.getInt("Abilities.Water.BloodPuppet.Distance");
+		holdtime = config.getLong("Abilities.Water.BloodPuppet.HoldTime");
+		cooldown = config.getLong("Abilities.Water.BloodPuppet.Cooldown");
 	}
 
 	public boolean isEligible(Player player, boolean hasAbility) {
@@ -448,7 +452,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.BloodPuppet.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.BloodPuppet.Description");
 	}
 
 	@Override
@@ -463,6 +468,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.BloodPuppet.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.BloodPuppet.Enabled");
 	}
 }

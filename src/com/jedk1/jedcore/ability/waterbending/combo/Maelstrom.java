@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending.combo;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -16,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -56,10 +58,12 @@ public class Maelstrom extends WaterAbility implements AddonAbility, ComboAbilit
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.WaterCombo.Maelstrom.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Water.WaterCombo.Maelstrom.Duration");
-		depth = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.Maelstrom.MaxDepth");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.Maelstrom.Range");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Water.WaterCombo.Maelstrom.Cooldown");
+		duration = config.getLong("Abilities.Water.WaterCombo.Maelstrom.Duration");
+		depth = config.getInt("Abilities.Water.WaterCombo.Maelstrom.MaxDepth");
+		range = config.getInt("Abilities.Water.WaterCombo.Maelstrom.Range");
 		canRemove = true;
 		start = System.currentTimeMillis();
 	}
@@ -246,7 +250,8 @@ public class Maelstrom extends WaterAbility implements AddonAbility, ComboAbilit
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.WaterCombo.Maelstrom.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.WaterCombo.Maelstrom.Description");
 	}
 
 	@Override
@@ -261,6 +266,7 @@ public class Maelstrom extends WaterAbility implements AddonAbility, ComboAbilit
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.Maelstrom.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.WaterCombo.Maelstrom.Enabled");
 	}
 }

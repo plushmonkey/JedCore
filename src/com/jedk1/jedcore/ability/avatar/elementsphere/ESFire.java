@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.avatar.elementsphere;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -13,6 +14,7 @@ import com.projectkorra.projectkorra.util.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -53,12 +55,14 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Fire.Cooldown");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Fire.Range");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Fire.Damage");
-		burnTime = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Fire.BurnDuration");
-		speed = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Fire.Speed");
-		controllable = JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Fire.Controllable");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Avatar.ElementSphere.Fire.Cooldown");
+		range = config.getDouble("Abilities.Avatar.ElementSphere.Fire.Range");
+		damage = config.getDouble("Abilities.Avatar.ElementSphere.Fire.Damage");
+		burnTime = config.getLong("Abilities.Avatar.ElementSphere.Fire.BurnDuration");
+		speed = config.getInt("Abilities.Avatar.ElementSphere.Fire.Speed");
+		controllable = config.getBoolean("Abilities.Avatar.ElementSphere.Fire.Controllable");
 	}
 
 	@Override
@@ -169,6 +173,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Avatar.ElementSphere.Enabled");
 	}
 }

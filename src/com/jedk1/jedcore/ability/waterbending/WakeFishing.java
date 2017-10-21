@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.util.BlockSource;
@@ -10,6 +11,7 @@ import com.projectkorra.projectkorra.util.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -46,9 +48,11 @@ public class WakeFishing extends WaterAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.WakeFishing.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Water.WakeFishing.Duration");
-		range = JedCore.plugin.getConfig().getLong("Abilities.Water.WakeFishing.Range");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Water.WakeFishing.Cooldown");
+		duration = config.getLong("Abilities.Water.WakeFishing.Duration");
+		range = config.getLong("Abilities.Water.WakeFishing.Range");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -162,7 +166,8 @@ public class WakeFishing extends WaterAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.WakeFishing.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.WakeFishing.Description");
 	}
 
 	@Override
@@ -177,6 +182,7 @@ public class WakeFishing extends WaterAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.WakeFishing.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.WakeFishing.Enabled");
 	}
 }

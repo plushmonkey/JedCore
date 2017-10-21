@@ -1,12 +1,14 @@
 package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -37,15 +39,17 @@ public class Meditate extends AirAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		unfocusMsg = JedCore.plugin.getConfig().getString("Abilities.Air.Meditate.UnfocusMessage");
-		lossFocusMessage = JedCore.plugin.getConfig().getBoolean("Abilities.Air.Meditate.LossFocusMessage");
-		warmup = JedCore.plugin.getConfig().getLong("Abilities.Air.Meditate.ChargeTime");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.Meditate.Cooldown");
-		boostDuration = JedCore.plugin.getConfig().getInt("Abilities.Air.Meditate.BoostDuration");
-		particleDensity = JedCore.plugin.getConfig().getInt("Abilities.Air.Meditate.ParticleDensity");
-		absorptionBoost = JedCore.plugin.getConfig().getInt("Abilities.Air.Meditate.AbsorptionBoost");
-		speedBoost = JedCore.plugin.getConfig().getInt("Abilities.Air.Meditate.SpeedBoost");
-		jumpBoost = JedCore.plugin.getConfig().getInt("Abilities.Air.Meditate.JumpBoost");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		unfocusMsg = config.getString("Abilities.Air.Meditate.UnfocusMessage");
+		lossFocusMessage = config.getBoolean("Abilities.Air.Meditate.LossFocusMessage");
+		warmup = config.getLong("Abilities.Air.Meditate.ChargeTime");
+		cooldown = config.getLong("Abilities.Air.Meditate.Cooldown");
+		boostDuration = config.getInt("Abilities.Air.Meditate.BoostDuration");
+		particleDensity = config.getInt("Abilities.Air.Meditate.ParticleDensity");
+		absorptionBoost = config.getInt("Abilities.Air.Meditate.AbsorptionBoost");
+		speedBoost = config.getInt("Abilities.Air.Meditate.SpeedBoost");
+		jumpBoost = config.getInt("Abilities.Air.Meditate.JumpBoost");
 		
 		time = System.currentTimeMillis();
 		startHealth = player.getHealth();
@@ -146,7 +150,8 @@ public class Meditate extends AirAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.Meditate.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.Meditate.Description");
 	}
 
 	@Override
@@ -161,6 +166,7 @@ public class Meditate extends AirAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.Meditate.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.Meditate.Enabled");
 	}
 }

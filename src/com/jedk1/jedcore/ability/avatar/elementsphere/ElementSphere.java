@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.avatar.elementsphere;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -16,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -126,14 +128,16 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 	}
 
 	public void setFields() {
-		airUses = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Air.Uses");
-		fireUses = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Fire.Uses");
-		waterUses = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Water.Uses");
-		earthUses = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Earth.Uses");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Duration");
-		height = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.MaxControlledHeight");
-		speed = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.FlySpeed");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		airUses = config.getInt("Abilities.Avatar.ElementSphere.Air.Uses");
+		fireUses = config.getInt("Abilities.Avatar.ElementSphere.Fire.Uses");
+		waterUses = config.getInt("Abilities.Avatar.ElementSphere.Water.Uses");
+		earthUses = config.getInt("Abilities.Avatar.ElementSphere.Earth.Uses");
+		cooldown = config.getLong("Abilities.Avatar.ElementSphere.Cooldown");
+		duration = config.getLong("Abilities.Avatar.ElementSphere.Duration");
+		height = config.getDouble("Abilities.Avatar.ElementSphere.MaxControlledHeight");
+		speed = config.getDouble("Abilities.Avatar.ElementSphere.FlySpeed");
 	}
 
 	@Override
@@ -367,7 +371,8 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Avatar.ElementSphere.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Avatar.ElementSphere.Description");
 	}
 
 	@Override
@@ -382,7 +387,8 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Avatar.ElementSphere.Enabled");
 	}
 
 	@Override

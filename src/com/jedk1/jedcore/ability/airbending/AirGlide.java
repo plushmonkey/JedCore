@@ -2,12 +2,14 @@ package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
 import com.projectkorra.projectkorra.airbending.AirSpout;
 
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -45,13 +47,15 @@ public class AirGlide extends AirAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		speed = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirGlide.Speed");
-		fallSpeed = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirGlide.FallSpeed");
-		particles = JedCore.plugin.getConfig().getInt("Abilities.Air.AirGlide.Particles");
-		airspout = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirGlide.AllowAirSpout");
-		cooldown  = JedCore.plugin.getConfig().getLong("Abilities.Air.AirGlide.Cooldown");
-		duration  = JedCore.plugin.getConfig().getLong("Abilities.Air.AirGlide.Duration");
-		requireGround = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirGlide.RequireGround") && cooldown > 0;
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		speed = config.getDouble("Abilities.Air.AirGlide.Speed");
+		fallSpeed = config.getDouble("Abilities.Air.AirGlide.FallSpeed");
+		particles = config.getInt("Abilities.Air.AirGlide.Particles");
+		airspout = config.getBoolean("Abilities.Air.AirGlide.AllowAirSpout");
+		cooldown  = config.getLong("Abilities.Air.AirGlide.Cooldown");
+		duration  = config.getLong("Abilities.Air.AirGlide.Duration");
+		requireGround = config.getBoolean("Abilities.Air.AirGlide.RequireGround") && cooldown > 0;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -171,7 +175,8 @@ public class AirGlide extends AirAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.AirGlide.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirGlide.Description");
 	}
 
 	@Override
@@ -186,6 +191,7 @@ public class AirGlide extends AirAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirGlide.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.AirGlide.Enabled");
 	}
 }

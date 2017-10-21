@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.airbending.combo;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.ThrownEntityTracker;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -11,6 +12,7 @@ import com.projectkorra.projectkorra.object.HorizontalVelocityTracker;
 import com.projectkorra.projectkorra.util.ClickType;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -51,9 +53,11 @@ public class AirSlam extends AirAbility implements AddonAbility, ComboAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.AirCombo.AirSlam.Cooldown");
-		power = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirCombo.AirSlam.Power");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Air.AirCombo.AirSlam.Range");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Air.AirCombo.AirSlam.Cooldown");
+		power = config.getDouble("Abilities.Air.AirCombo.AirSlam.Power");
+		range = config.getInt("Abilities.Air.AirCombo.AirSlam.Range");
 	}
 
 	@Override
@@ -127,7 +131,8 @@ public class AirSlam extends AirAbility implements AddonAbility, ComboAbility {
 
 	@Override
 	public String getDescription() {
-	   return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.AirCombo.AirSlam.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirCombo.AirSlam.Description");
 	}
 	
 	@Override
@@ -150,6 +155,7 @@ public class AirSlam extends AirAbility implements AddonAbility, ComboAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirCombo.AirSlam.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.AirCombo.AirSlam.Enabled");
 	}
 }

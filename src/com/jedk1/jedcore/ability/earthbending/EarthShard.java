@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
@@ -76,12 +78,14 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.PrepareRange");
-		abilityRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.AbilityRange");
-		normalDmg = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthShard.Damage.Normal");
-		metalDmg = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthShard.Damage.Metal");
-		maxShards = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthShard.MaxShards");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthShard.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		range = config.getInt("Abilities.Earth.EarthShard.PrepareRange");
+		abilityRange = config.getInt("Abilities.Earth.EarthShard.AbilityRange");
+		normalDmg = config.getDouble("Abilities.Earth.EarthShard.Damage.Normal");
+		metalDmg = config.getDouble("Abilities.Earth.EarthShard.Damage.Metal");
+		maxShards = config.getInt("Abilities.Earth.EarthShard.MaxShards");
+		cooldown = config.getLong("Abilities.Earth.EarthShard.Cooldown");
 	}
 
 	public void select() {
@@ -336,7 +340,8 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.EarthShard.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.EarthShard.Description");
 	}
 
 	@Override
@@ -351,6 +356,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthShard.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.EarthShard.Enabled");
 	}
 }

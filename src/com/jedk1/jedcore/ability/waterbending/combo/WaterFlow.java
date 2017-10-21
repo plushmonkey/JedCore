@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending.combo;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.VersionUtil;
@@ -23,6 +24,7 @@ import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -130,27 +132,29 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	}
 	
 	public void setFields() {
-		sourcerange = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.SourceRange");
-		maxrange = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.MaxRange");
-		minrange = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.MinRange");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Water.WaterCombo.WaterFlow.Duration");
-		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.Cooldown");
-		meltdelay = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.MeltDelay");
-		trail = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.Trail");
-		avatar = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.IsAvatarStateToggle");
-		avatarDuration = JedCore.plugin.getConfig().getLong("Abilities.Water.WaterCombo.WaterFlow.AvatarStateDuration");
-		stayatsource = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlayerStayNearSource");
-		stayrange = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.MaxDistanceFromSource");
-		canUseBottle = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.BottleSource");
-		canUsePlants = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlantSource");
-		fullmoonCooldown = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Modifier.Cooldown");
-		fullmoonDuration = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Modifier.Duration");
-		fullmoonEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Enabled");
-		playerRideOwnFlow = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlayerRideOwnFlow");
-		size = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.Size.Normal");
-		avatarSize = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.Size.AvatarState");
-		fullmoonSizeSmall = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.Size.FullmoonSmall");
-		fullmoonSizeLarge = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterFlow.Size.FullmoonLarge");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		sourcerange = config.getInt("Abilities.Water.WaterCombo.WaterFlow.SourceRange");
+		maxrange = config.getInt("Abilities.Water.WaterCombo.WaterFlow.MaxRange");
+		minrange = config.getInt("Abilities.Water.WaterCombo.WaterFlow.MinRange");
+		duration = config.getLong("Abilities.Water.WaterCombo.WaterFlow.Duration");
+		cooldown = config.getInt("Abilities.Water.WaterCombo.WaterFlow.Cooldown");
+		meltdelay = config.getInt("Abilities.Water.WaterCombo.WaterFlow.MeltDelay");
+		trail = config.getInt("Abilities.Water.WaterCombo.WaterFlow.Trail");
+		avatar = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.IsAvatarStateToggle");
+		avatarDuration = config.getLong("Abilities.Water.WaterCombo.WaterFlow.AvatarStateDuration");
+		stayatsource = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlayerStayNearSource");
+		stayrange = config.getInt("Abilities.Water.WaterCombo.WaterFlow.MaxDistanceFromSource");
+		canUseBottle = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.BottleSource");
+		canUsePlants = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlantSource");
+		fullmoonCooldown = config.getInt("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Modifier.Cooldown");
+		fullmoonDuration = config.getInt("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Modifier.Duration");
+		fullmoonEnabled = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Enabled");
+		playerRideOwnFlow = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlayerRideOwnFlow");
+		size = config.getInt("Abilities.Water.WaterCombo.WaterFlow.Size.Normal");
+		avatarSize = config.getInt("Abilities.Water.WaterCombo.WaterFlow.Size.AvatarState");
+		fullmoonSizeSmall = config.getInt("Abilities.Water.WaterCombo.WaterFlow.Size.FullmoonSmall");
+		fullmoonSizeLarge = config.getInt("Abilities.Water.WaterCombo.WaterFlow.Size.FullmoonLarge");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -425,7 +429,8 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 
 	@Override
 	public String getDescription() {
-	   return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.WaterCombo.WaterFlow.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+	   return "* JedCore Addon *\n" + config.getString("Abilities.Water.WaterCombo.WaterFlow.Description");
 	}
 	
 	@Override
@@ -448,6 +453,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterFlow.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.Enabled");
 	}
 }

@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
@@ -8,6 +9,7 @@ import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -49,11 +51,13 @@ public class AirPunch extends AirAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.AirPunch.Cooldown");
-		threshold = JedCore.plugin.getConfig().getLong("Abilities.Air.AirPunch.Threshold");
-		maxShots = JedCore.plugin.getConfig().getInt("Abilities.Air.AirPunch.Shots");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirPunch.Range");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirPunch.Damage");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Air.AirPunch.Cooldown");
+		threshold = config.getLong("Abilities.Air.AirPunch.Threshold");
+		maxShots = config.getInt("Abilities.Air.AirPunch.Shots");
+		range = config.getDouble("Abilities.Air.AirPunch.Range");
+		damage = config.getDouble("Abilities.Air.AirPunch.Damage");
 		shots = maxShots;
 	}
 
@@ -182,7 +186,8 @@ public class AirPunch extends AirAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.AirPunch.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirPunch.Description");
 	}
 
 	@Override
@@ -197,6 +202,7 @@ public class AirPunch extends AirAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirPunch.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.AirPunch.Enabled");
 	}
 }

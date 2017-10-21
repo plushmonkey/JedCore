@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.avatar.elementsphere;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
@@ -55,10 +57,11 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		revertDelay = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Earth.ImpactRevert");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Earth.Damage");
-		impactSize = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Earth.ImpactCraterSize");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Earth.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		revertDelay = config.getLong("Abilities.Avatar.ElementSphere.Earth.ImpactRevert");
+		damage = config.getDouble("Abilities.Avatar.ElementSphere.Earth.Damage");
+		impactSize = config.getInt("Abilities.Avatar.ElementSphere.Earth.ImpactCraterSize");
+		cooldown = config.getLong("Abilities.Avatar.ElementSphere.Earth.Cooldown");
 	}
 
 	@Override
@@ -175,6 +178,7 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Avatar.ElementSphere.Enabled");
 	}
 }

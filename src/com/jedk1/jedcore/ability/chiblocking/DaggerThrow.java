@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.chiblocking;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.AbilitySelector;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -67,11 +68,13 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Chi.DaggerThrow.Cooldown");
-		limitEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Chi.DaggerThrow.MaxDaggers.Enabled");
-		maxShots = JedCore.plugin.getConfig().getInt("Abilities.Chi.DaggerThrow.MaxDaggers.Amount");
-		particles = JedCore.plugin.getConfig().getBoolean("Abilities.Chi.DaggerThrow.ParticleTrail");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Chi.DaggerThrow.Damage");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Chi.DaggerThrow.Cooldown");
+		limitEnabled = config.getBoolean("Abilities.Chi.DaggerThrow.MaxDaggers.Enabled");
+		maxShots = config.getInt("Abilities.Chi.DaggerThrow.MaxDaggers.Amount");
+		particles = config.getBoolean("Abilities.Chi.DaggerThrow.ParticleTrail");
+		damage = config.getDouble("Abilities.Chi.DaggerThrow.Damage");
 
 		loadInteractions();
 	}
@@ -80,7 +83,9 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		interactions.clear();
 
 		String path = "Abilities.Chi.DaggerThrow.Interactions";
-		ConfigurationSection section = JedCore.plugin.getConfig().getConfigurationSection(path);
+
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		ConfigurationSection section = config.getConfigurationSection(path);
 		for (String abilityName : section.getKeys(false)) {
 			interactions.add(new AbilityInteraction(abilityName));
 		}
@@ -222,7 +227,8 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Chi.DaggerThrow.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Chi.DaggerThrow.Description");
 	}
 
 	@Override
@@ -237,7 +243,8 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Chi.DaggerThrow.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Chi.DaggerThrow.Enabled");
 	}
 	
 	public static class DamageAbility extends DaggerThrow {
@@ -278,7 +285,7 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		}
 	}
 
-	private static class AbilityInteraction {
+	private class AbilityInteraction {
 		public boolean enabled;
 		public long cooldown;
 		public String name;
@@ -289,8 +296,9 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		}
 
 		public void loadConfig() {
-			this.enabled = JedCore.plugin.getConfig().getBoolean("Abilities.Chi.DaggerThrow.Interactions." + name + ".Enabled", true);
-			this.cooldown = JedCore.plugin.getConfig().getLong("Abilities.Chi.DaggerThrow.Interactions." + name + ".Cooldown", 1000);
+			ConfigurationSection config = JedCoreConfig.getConfig(player);
+			this.enabled = config.getBoolean("Abilities.Chi.DaggerThrow.Interactions." + name + ".Enabled", true);
+			this.cooldown = config.getLong("Abilities.Chi.DaggerThrow.Interactions." + name + ".Cooldown", 1000);
 		}
 	}
 }

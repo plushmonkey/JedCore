@@ -3,6 +3,7 @@ package com.jedk1.jedcore.ability.firebending;
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.FireTick;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -10,6 +11,7 @@ import com.projectkorra.projectkorra.ability.FireAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -63,11 +65,13 @@ public class FireSki extends FireAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireSki.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireSki.Duration");
-		speed = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireSki.Speed");
-		ignite = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireSki.IgniteEntities");
-		fireTicks = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireSki.FireTicks");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Fire.FireSki.Cooldown");
+		duration = config.getLong("Abilities.Fire.FireSki.Duration");
+		speed = config.getDouble("Abilities.Fire.FireSki.Speed");
+		ignite = config.getBoolean("Abilities.Fire.FireSki.IgniteEntities");
+		fireTicks = config.getInt("Abilities.Fire.FireSki.FireTicks");
 	}
 
 	private void allowFlight() {
@@ -263,6 +267,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireSki.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.FireSki.Enabled");
 	}
 }

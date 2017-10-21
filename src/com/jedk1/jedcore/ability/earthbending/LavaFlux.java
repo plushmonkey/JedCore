@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,14 +63,16 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		speed = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaFlux.Speed");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		speed = config.getInt("Abilities.Earth.LavaFlux.Speed");
 		if (speed < 1) speed = 1;
-		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.LavaFlux.Range");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaFlux.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaFlux.Duration");
-		cleanup = JedCore.plugin.getConfig().getLong("Abilities.Earth.LavaFlux.Cleanup");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.LavaFlux.Damage");
-		wave = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaFlux.Wave");
+		range = config.getInt("Abilities.Earth.LavaFlux.Range");
+		cooldown = config.getLong("Abilities.Earth.LavaFlux.Cooldown");
+		duration = config.getLong("Abilities.Earth.LavaFlux.Duration");
+		cleanup = config.getLong("Abilities.Earth.LavaFlux.Cleanup");
+		damage = config.getDouble("Abilities.Earth.LavaFlux.Damage");
+		wave = config.getBoolean("Abilities.Earth.LavaFlux.Wave");
 	}
 
 	@Override
@@ -274,13 +278,16 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.LavaFlux.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.LavaFlux.Description");
 	}
 
 	@Override
 	public void load() {
-		if (JedCore.plugin.getConfig().get("Abilities.Earth.LavaFlux.Speed") instanceof String) {
-			JedCore.plugin.getConfig().set("Abilities.Earth.LavaFlux.Speed", 1);
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		if (config.get("Abilities.Earth.LavaFlux.Speed") instanceof String) {
+			config.set("Abilities.Earth.LavaFlux.Speed", 1);
 			JedCore.plugin.saveConfig();
 			JedCore.plugin.reloadConfig();
 		}
@@ -294,6 +301,7 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.LavaFlux.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.LavaFlux.Enabled");
 	}
 }

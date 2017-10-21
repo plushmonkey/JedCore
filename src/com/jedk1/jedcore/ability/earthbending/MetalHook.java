@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -9,6 +10,7 @@ import com.projectkorra.projectkorra.ability.MetalAbility;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -61,10 +63,12 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.MetalHook.Cooldown");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalHook.Range");
-		maxhooks = JedCore.plugin.getConfig().getInt("Abilities.Earth.MetalHook.MaxHooks");
-		nosource = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MetalHook.RequireItem");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Earth.MetalHook.Cooldown");
+		range = config.getInt("Abilities.Earth.MetalHook.Range");
+		maxhooks = config.getInt("Abilities.Earth.MetalHook.MaxHooks");
+		nosource = config.getBoolean("Abilities.Earth.MetalHook.RequireItem");
 	}
 
 	@Override
@@ -243,7 +247,8 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.MetalHook.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.MetalHook.Description");
 	}
 
 	@Override
@@ -258,6 +263,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.MetalHook.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.MetalHook.Enabled");
 	}
 }

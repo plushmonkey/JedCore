@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.avatar.elementsphere;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
@@ -8,6 +9,7 @@ import com.projectkorra.projectkorra.ability.AvatarAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -44,11 +46,13 @@ public class ESAir extends AvatarAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Air.Cooldown");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Air.Range");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Air.Damage");
-		knockback = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Air.Knockback");
-		speed = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Air.Speed");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Avatar.ElementSphere.Air.Cooldown");
+		range = config.getDouble("Abilities.Avatar.ElementSphere.Air.Range");
+		damage = config.getDouble("Abilities.Avatar.ElementSphere.Air.Damage");
+		knockback = config.getDouble("Abilities.Avatar.ElementSphere.Air.Knockback");
+		speed = config.getInt("Abilities.Avatar.ElementSphere.Air.Speed");
 	}
 
 	@Override
@@ -145,6 +149,7 @@ public class ESAir extends AvatarAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Avatar.ElementSphere.Enabled");
 	}
 }

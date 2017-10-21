@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
@@ -10,10 +11,12 @@ import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.TempBlock;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -40,6 +43,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	private Set<Block> ridingBlocks = new HashSet<>();
 	private CollisionDetector collisionDetector = new DefaultCollisionDetector();
 	private DoubleSmoother heightSmoother;
+	private boolean canFly;
 
 	public EarthSurf(Player player) {
 		super(player);
@@ -56,6 +60,8 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		setFields();
 
 		location = player.getLocation();
+		// Only enable flying again if the player is in creative. This isn't perfect, but it fixes common problem.
+		this.canFly = player.getAllowFlight() && player.getGameMode() == GameMode.CREATIVE;
 
 		if (canStart()) {
 			initHealth = player.getHealth();
@@ -73,22 +79,24 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthSurf.Cooldown.Cooldown");
-		minimumCooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthSurf.Cooldown.MinimumCooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthSurf.Duration.Duration");
-		cooldownEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.Cooldown.Enabled");
-		durationEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.Duration.Enabled");
-		speed = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthSurf.Speed");
-		springStiffness = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthSurf.SpringStiffness");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
 
-		int smootherSize = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthSurf.HeightTolerance");
+		cooldown = config.getLong("Abilities.Earth.EarthSurf.Cooldown.Cooldown");
+		minimumCooldown = config.getLong("Abilities.Earth.EarthSurf.Cooldown.MinimumCooldown");
+		duration = config.getLong("Abilities.Earth.EarthSurf.Duration.Duration");
+		cooldownEnabled = config.getBoolean("Abilities.Earth.EarthSurf.Cooldown.Enabled");
+		durationEnabled = config.getBoolean("Abilities.Earth.EarthSurf.Duration.Enabled");
+		speed = config.getDouble("Abilities.Earth.EarthSurf.Speed");
+		springStiffness = config.getDouble("Abilities.Earth.EarthSurf.SpringStiffness");
+
+		int smootherSize = config.getInt("Abilities.Earth.EarthSurf.HeightTolerance");
 		this.heightSmoother = new DoubleSmoother(Math.max(smootherSize, 1));
 
-		if (JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.RelaxedCollisions")) {
+		if (config.getBoolean("Abilities.Earth.EarthSurf.RelaxedCollisions")) {
 			this.collisionDetector = new RelaxedCollisionDetector();
 		}
 
-		if (!JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.Cooldown.Scaled")) {
+		if (!config.getBoolean("Abilities.Earth.EarthSurf.Cooldown.Scaled")) {
 			minimumCooldown = cooldown;
 		}
 	}
@@ -192,6 +200,12 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 				Block block = loc.clone().add(0, -3.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset - 0.5)).toLocation(player.getWorld()).getBlock();
 				Location temp = loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld());
 
+				// Don't render blocks above the player because it looks bad.
+				// TODO: Change this check to see if it's a reachable position instead.
+				if (block.getLocation().getY() > this.player.getLocation().getY()) {
+					continue;
+				}
+
 				if (EarthPassive.isPassiveSand(block)) {
 					EarthPassive.revertSand(block);
 				}
@@ -238,7 +252,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void remove() {
-		player.setAllowFlight(false);
+		player.setAllowFlight(this.canFly);
 		player.setFlying(false);
 
 		if (cooldownEnabled && player.isOnline()) {
@@ -292,7 +306,9 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.EarthSurf.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.EarthSurf.Description");
 	}
 
 	@Override
@@ -307,7 +323,9 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthSurf.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		return config.getBoolean("Abilities.Earth.EarthSurf.Enabled");
 	}
 
 	private interface CollisionDetector {

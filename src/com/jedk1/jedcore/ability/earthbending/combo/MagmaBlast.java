@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending.combo;
 
 import com.jedk1.jedcore.collision.AABB;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.ability.ElementalAbility;
@@ -24,6 +25,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -79,19 +81,21 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 	}
 
 	public void setFields() {
-		maxSources = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.MaxShots");
-		sourceRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.SearchRange");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage");
-		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown");
-		requireLavaFlow = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.RequireLavaFlow");
-		playerCollisions = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.PlayerCollisions");
-		entitySelection = JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.EntitySelection");
-		selectRange = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthCombo.MagmaBlast.SelectRange");
-		explosionRadius = (float)JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthCombo.MagmaBlast.ExplosionRadius");
-		fireSpeed = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthCombo.MagmaBlast.FireSpeed");
-		maxDuration = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthCombo.MagmaBlast.MaxDuration");
-		maxDistanceFromSources = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthCombo.MagmaBlast.MaxDistanceFromSources");
-		shotCooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthCombo.MagmaBlast.ShotCooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		maxSources = config.getInt("Abilities.Earth.EarthCombo.MagmaBlast.MaxShots");
+		sourceRange = config.getInt("Abilities.Earth.EarthCombo.MagmaBlast.SearchRange");
+		damage = config.getDouble("Abilities.Earth.EarthCombo.MagmaBlast.ImpactDamage");
+		cooldown = config.getInt("Abilities.Earth.EarthCombo.MagmaBlast.Cooldown");
+		requireLavaFlow = config.getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.RequireLavaFlow");
+		playerCollisions = config.getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.PlayerCollisions");
+		entitySelection = config.getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.EntitySelection");
+		selectRange = config.getDouble("Abilities.Earth.EarthCombo.MagmaBlast.SelectRange");
+		explosionRadius = (float)config.getDouble("Abilities.Earth.EarthCombo.MagmaBlast.ExplosionRadius");
+		fireSpeed = config.getDouble("Abilities.Earth.EarthCombo.MagmaBlast.FireSpeed");
+		maxDuration = config.getLong("Abilities.Earth.EarthCombo.MagmaBlast.MaxDuration");
+		maxDistanceFromSources = config.getLong("Abilities.Earth.EarthCombo.MagmaBlast.MaxDistanceFromSources");
+		shotCooldown = config.getLong("Abilities.Earth.EarthCombo.MagmaBlast.ShotCooldown");
 	}
 
 	// Select random nearby earth blocks as sources and raise them in the air.
@@ -437,7 +441,8 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.EarthCombo.MagmaBlast.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.EarthCombo.MagmaBlast.Description");
 	}
 
 	@Override
@@ -460,6 +465,7 @@ public class MagmaBlast extends LavaAbility implements AddonAbility, ComboAbilit
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.EarthCombo.MagmaBlast.Enabled");
 	}
 }

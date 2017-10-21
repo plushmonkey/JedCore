@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
@@ -15,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockState;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -65,21 +67,23 @@ public class FireComet extends FireAbility implements AddonAbility {
 	}
 
 	public void setFields() {
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
 		if (isSozinsComet(player.getWorld()) || bPlayer.isAvatarState()) {
-			cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.SozinsComet.Cooldown");
-			charge = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.SozinsComet.ChargeUp");
-			damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.SozinsComet.Damage");
-			blastRadius = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.SozinsComet.BlastRadius");
+			cooldown = config.getLong("Abilities.Fire.FireComet.SozinsComet.Cooldown");
+			charge = config.getLong("Abilities.Fire.FireComet.SozinsComet.ChargeUp");
+			damage = config.getDouble("Abilities.Fire.FireComet.SozinsComet.Damage");
+			blastRadius = config.getDouble("Abilities.Fire.FireComet.SozinsComet.BlastRadius");
 		} else {
-			cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.Cooldown");
-			charge = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.ChargeUp");
-			damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.Damage");
-			blastRadius = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireComet.BlastRadius");
+			cooldown = config.getLong("Abilities.Fire.FireComet.Cooldown");
+			charge = config.getLong("Abilities.Fire.FireComet.ChargeUp");
+			damage = config.getDouble("Abilities.Fire.FireComet.Damage");
+			blastRadius = config.getDouble("Abilities.Fire.FireComet.BlastRadius");
 		}
-		regen = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireComet.RegenDelay");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireComet.Range");
-		cometOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.SozinsCometOnly");
-		avatarBypass = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.AvatarStateBypassComet");
+		regen = config.getLong("Abilities.Fire.FireComet.RegenDelay");
+		range = config.getInt("Abilities.Fire.FireComet.Range");
+		cometOnly = config.getBoolean("Abilities.Fire.FireComet.SozinsCometOnly");
+		avatarBypass = config.getBoolean("Abilities.Fire.FireComet.AvatarStateBypassComet");
 		time = System.currentTimeMillis();
 	}
 
@@ -332,7 +336,8 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Fire.FireComet.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Fire.FireComet.Description");
 	}
 
 	@Override
@@ -347,6 +352,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireComet.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.FireComet.Enabled");
 	}
 }

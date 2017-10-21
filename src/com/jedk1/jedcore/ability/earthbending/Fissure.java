@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -67,11 +69,13 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		slapRange = JedCore.plugin.getConfig().getInt("Abilities.Earth.Fissure.SlapRange");
-		maxWidth = JedCore.plugin.getConfig().getInt("Abilities.Earth.Fissure.MaxWidth");
-		slapDelay = JedCore.plugin.getConfig().getInt("Abilities.Earth.Fissure.SlapDelay");
-		duration = JedCore.plugin.getConfig().getInt("Abilities.Earth.Fissure.Duration");
-		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Earth.Fissure.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		slapRange = config.getInt("Abilities.Earth.Fissure.SlapRange");
+		maxWidth = config.getInt("Abilities.Earth.Fissure.MaxWidth");
+		slapDelay = config.getInt("Abilities.Earth.Fissure.SlapDelay");
+		duration = config.getInt("Abilities.Earth.Fissure.Duration");
+		cooldown = config.getInt("Abilities.Earth.Fissure.Cooldown");
 	}
 
 	@Override
@@ -296,7 +300,8 @@ public class Fissure extends LavaAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.Fissure.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.Fissure.Description");
 	}
 
 	@Override
@@ -311,6 +316,7 @@ public class Fissure extends LavaAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.Fissure.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.Fissure.Enabled");
 	}
 }

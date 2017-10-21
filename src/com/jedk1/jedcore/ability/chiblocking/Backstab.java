@@ -1,8 +1,11 @@
 package com.jedk1.jedcore.ability.chiblocking;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -28,7 +31,8 @@ public class Backstab extends ChiAbility implements AddonAbility {
 			return false;
 		}
 
-		double activationAngle = Math.toRadians(JedCore.plugin.getConfig().getInt("Abilities.Chi.Backstab.MaxActivationAngle", 90));
+		ConfigurationSection config = JedCoreConfig.getConfig(player);
+		double activationAngle = Math.toRadians(config.getInt("Abilities.Chi.Backstab.MaxActivationAngle", 90));
 
 		Vector targetDirection = target.getLocation().getDirection().setY(0).normalize();
 		Vector toTarget = target.getLocation().toVector().subtract(player.getLocation().toVector()).setY(0).normalize();
@@ -48,13 +52,15 @@ public class Backstab extends ChiAbility implements AddonAbility {
 		return false;
 	}
 
-	public static double getDamage() {
-		return JedCore.plugin.getConfig().getDouble("Abilities.Chi.Backstab.Damage");
+	public static double getDamage(World world) {
+		ConfigurationSection config = JedCoreConfig.getConfig(world);
+		return config.getDouble("Abilities.Chi.Backstab.Damage");
 	}
 	
 	@Override
 	public long getCooldown() {
-		return JedCore.plugin.getConfig().getLong("Abilities.Chi.Backstab.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getLong("Abilities.Chi.Backstab.Cooldown");
 	}
 
 	@Override
@@ -89,7 +95,8 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Chi.Backstab.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Chi.Backstab.Description");
 	}
 
 	@Override
@@ -104,7 +111,8 @@ public class Backstab extends ChiAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Chi.Backstab.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Chi.Backstab.Enabled");
 	}
 
 	@Override

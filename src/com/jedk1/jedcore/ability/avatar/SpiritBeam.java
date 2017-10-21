@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.avatar;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -12,6 +13,7 @@ import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -49,14 +51,16 @@ public class SpiritBeam extends AvatarAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		duration = JedCore.plugin.getConfig().getInt("Abilities.Avatar.SpiritBeam.Duration");
-		cooldown = JedCore.plugin.getConfig().getInt("Abilities.Avatar.SpiritBeam.Cooldown");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.SpiritBeam.Damage");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Avatar.SpiritBeam.Range");
-		avataronly = JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.SpiritBeam.AvatarStateOnly");
-		blockdamage = JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.SpiritBeam.BlockDamage.Enabled");
-		regen = JedCore.plugin.getConfig().getLong("Abilities.Avatar.SpiritBeam.BlockDamage.Regen");
-		radius = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.SpiritBeam.BlockDamage.Radius");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		duration = config.getInt("Abilities.Avatar.SpiritBeam.Duration");
+		cooldown = config.getInt("Abilities.Avatar.SpiritBeam.Cooldown");
+		damage = config.getDouble("Abilities.Avatar.SpiritBeam.Damage");
+		range = config.getInt("Abilities.Avatar.SpiritBeam.Range");
+		avataronly = config.getBoolean("Abilities.Avatar.SpiritBeam.AvatarStateOnly");
+		blockdamage = config.getBoolean("Abilities.Avatar.SpiritBeam.BlockDamage.Enabled");
+		regen = config.getLong("Abilities.Avatar.SpiritBeam.BlockDamage.Regen");
+		radius = config.getDouble("Abilities.Avatar.SpiritBeam.BlockDamage.Radius");
 	}
 
 	@Override
@@ -161,7 +165,8 @@ public class SpiritBeam extends AvatarAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Avatar.SpiritBeam.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Avatar.SpiritBeam.Description");
 	}
 
 	@Override
@@ -176,6 +181,7 @@ public class SpiritBeam extends AvatarAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.SpiritBeam.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Avatar.SpiritBeam.Enabled");
 	}
 }

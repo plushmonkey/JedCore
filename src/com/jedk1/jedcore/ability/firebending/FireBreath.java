@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.FireTick;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -70,20 +72,22 @@ public class FireBreath extends FireAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireBreath.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireBreath.Duration");
-		particles = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireBreath.Particles");
-		playerDamage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireBreath.Damage.Player");
-		mobDamage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireBreath.Damage.Mob");
-		fireDuration = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireBreath.FireDuration");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireBreath.Range");
-		spawnFire = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBreath.Avatar.FireEnabled");
-		meltEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBreath.Melt.Enabled");
-		meltChance = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireBreath.Melt.Chance");
-		easterEgg = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBreath.RainbowBreath.Enabled");
-		bindMsg = JedCore.plugin.getConfig().getString("Abilities.Fire.FireBreath.RainbowBreath.EnabledMessage");
-		unbindMsg = JedCore.plugin.getConfig().getString("Abilities.Fire.FireBreath.RainbowBreath.DisabledMessage");
-		deniedMsg = JedCore.plugin.getConfig().getString("Abilities.Fire.FireBreath.RainbowBreath.NoAccess");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Fire.FireBreath.Cooldown");
+		duration = config.getLong("Abilities.Fire.FireBreath.Duration");
+		particles = config.getInt("Abilities.Fire.FireBreath.Particles");
+		playerDamage = config.getDouble("Abilities.Fire.FireBreath.Damage.Player");
+		mobDamage = config.getDouble("Abilities.Fire.FireBreath.Damage.Mob");
+		fireDuration = config.getInt("Abilities.Fire.FireBreath.FireDuration");
+		range = config.getInt("Abilities.Fire.FireBreath.Range");
+		spawnFire = config.getBoolean("Abilities.Fire.FireBreath.Avatar.FireEnabled");
+		meltEnabled = config.getBoolean("Abilities.Fire.FireBreath.Melt.Enabled");
+		meltChance = config.getInt("Abilities.Fire.FireBreath.Melt.Chance");
+		easterEgg = config.getBoolean("Abilities.Fire.FireBreath.RainbowBreath.Enabled");
+		bindMsg = config.getString("Abilities.Fire.FireBreath.RainbowBreath.EnabledMessage");
+		unbindMsg = config.getString("Abilities.Fire.FireBreath.RainbowBreath.DisabledMessage");
+		deniedMsg = config.getString("Abilities.Fire.FireBreath.RainbowBreath.NoAccess");
 	}
 
 	@Override
@@ -275,7 +279,8 @@ public class FireBreath extends FireAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Fire.FireBreath.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Fire.FireBreath.Description");
 	}
 
 	@Override
@@ -290,6 +295,7 @@ public class FireBreath extends FireAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireBreath.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.FireBreath.Enabled");
 	}
 }

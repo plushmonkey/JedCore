@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.AirShieldReflector;
 import com.jedk1.jedcore.util.FireTick;
 import com.projectkorra.projectkorra.ability.CoreAbility;
@@ -12,6 +13,7 @@ import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.airbending.AirShield;
 import com.projectkorra.projectkorra.firebending.util.FireDamageTimer;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -52,11 +54,13 @@ public class FireShots extends FireAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.FireShots.Cooldown");
-		startAmount = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireShots.FireBalls");
-		fireticks = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireShots.FireDuration");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Fire.FireShots.Range");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.FireShots.Damage");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Fire.FireShots.Cooldown");
+		startAmount = config.getInt("Abilities.Fire.FireShots.FireBalls");
+		fireticks = config.getInt("Abilities.Fire.FireShots.FireDuration");
+		range = config.getInt("Abilities.Fire.FireShots.Range");
+		damage = config.getDouble("Abilities.Fire.FireShots.Damage");
 	}
 	
 	public class FireShot {
@@ -200,7 +204,8 @@ public class FireShots extends FireAbility implements AddonAbility {
 		} else {
 			CoreAbility second = collision.getAbilitySecond();
 			if (second instanceof AirShield) {
-				boolean reflect = JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireShots.Collisions.AirShield.Reflect", true);
+				ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+				boolean reflect = config.getBoolean("Abilities.Fire.FireShots.Collisions.AirShield.Reflect", true);
 
 				if (reflect) {
 					Optional<FireShot> collidedShot = shots.stream().filter(shot -> shot.location.equals(collision.getLocationFirst())).findAny();
@@ -244,7 +249,8 @@ public class FireShots extends FireAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Fire.FireShots.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Fire.FireShots.Description");
 	}
 
 	@Override
@@ -259,6 +265,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.FireShots.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.FireShots.Enabled");
 	}
 }

@@ -3,6 +3,7 @@ package com.jedk1.jedcore.ability.waterbending.combo;
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.ability.waterbending.WaterBlast;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -20,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -87,16 +89,18 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	}
 	
 	public void setFields() {
-		sourcerange = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterGimbal.SourceRange");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.WaterCombo.WaterGimbal.Cooldown");
-		ringsize = JedCore.plugin.getConfig().getDouble("Abilities.Water.WaterCombo.WaterGimbal.RingSize");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Water.WaterCombo.WaterGimbal.Range");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Water.WaterCombo.WaterGimbal.Damage");
-		speed = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterGimbal.Speed");
-		animspeed = JedCore.plugin.getConfig().getInt("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed");
-		plant = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.PlantSource");
-		requireAdjacentPlants = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants");
-		canUseBottle = JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.BottleSource");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		sourcerange = config.getInt("Abilities.Water.WaterCombo.WaterGimbal.SourceRange");
+		cooldown = config.getLong("Abilities.Water.WaterCombo.WaterGimbal.Cooldown");
+		ringsize = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.RingSize");
+		range = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Range");
+		damage = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Damage");
+		speed = config.getInt("Abilities.Water.WaterCombo.WaterGimbal.Speed");
+		animspeed = config.getInt("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed");
+		plant = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.PlantSource");
+		requireAdjacentPlants = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants");
+		canUseBottle = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.BottleSource");
 	}
 
 
@@ -398,7 +402,8 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 
 	@Override
 	public String getDescription() {
-	   return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.WaterCombo.WaterGimbal.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+	   return "* JedCore Addon *\n" + config.getString("Abilities.Water.WaterCombo.WaterGimbal.Description");
 	}
 	
 	@Override
@@ -421,6 +426,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.WaterCombo.WaterGimbal.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.Enabled");
 	}
 }

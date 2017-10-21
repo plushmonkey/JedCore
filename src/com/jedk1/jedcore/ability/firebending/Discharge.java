@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LightningAbility;
@@ -8,6 +9,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -55,8 +57,10 @@ public class Discharge extends LightningAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.Discharge.Damage");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.Discharge.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		damage = config.getDouble("Abilities.Fire.Discharge.Damage");
+		cooldown = config.getLong("Abilities.Fire.Discharge.Cooldown");
 		
 		branchSpace = 0.2;
 		time = System.currentTimeMillis();
@@ -187,7 +191,8 @@ public class Discharge extends LightningAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Fire.Discharge.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Fire.Discharge.Description");
 	}
 
 	@Override
@@ -202,6 +207,7 @@ public class Discharge extends LightningAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.Discharge.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.Discharge.Enabled");
 	}
 }

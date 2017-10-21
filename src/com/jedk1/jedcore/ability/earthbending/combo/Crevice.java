@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending.combo;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -56,11 +58,13 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 	}
 	
 	public void setFields() {
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthCombo.Crevice.Range");
-		regenDelay = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthCombo.Crevice.RevertDelay");
-		randomDepth = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.Crevice.Depth");
-		avatarDepth = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthCombo.Crevice.AvatarStateDepth");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthCombo.Crevice.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		range = config.getDouble("Abilities.Earth.EarthCombo.Crevice.Range");
+		regenDelay = config.getLong("Abilities.Earth.EarthCombo.Crevice.RevertDelay");
+		randomDepth = config.getInt("Abilities.Earth.EarthCombo.Crevice.Depth");
+		avatarDepth = config.getInt("Abilities.Earth.EarthCombo.Crevice.AvatarStateDepth");
+		cooldown = config.getLong("Abilities.Earth.EarthCombo.Crevice.Cooldown");
 	}
 
 	private void createInstance() {
@@ -277,7 +281,8 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 
 	@Override
 	public String getDescription() {
-	   return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.EarthCombo.Crevice.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+	   return "* JedCore Addon *\n" + config.getString("Abilities.Earth.EarthCombo.Crevice.Description");
 	}
 	
 	@Override
@@ -300,6 +305,7 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthCombo.Crevice.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.EarthCombo.Crevice.Enabled");
 	}
 }

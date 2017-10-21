@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LightningAbility;
@@ -8,6 +9,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -48,10 +50,12 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Fire.LightningBurst.Cooldown");
-		chargeup = JedCore.plugin.getConfig().getLong("Abilities.Fire.LightningBurst.ChargeUp");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Fire.LightningBurst.Damage");
-		radius = JedCore.plugin.getConfig().getDouble("Abilities.Fire.LightningBurst.Radius");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Fire.LightningBurst.Cooldown");
+		chargeup = config.getLong("Abilities.Fire.LightningBurst.ChargeUp");
+		damage = config.getDouble("Abilities.Fire.LightningBurst.Damage");
+		radius = config.getDouble("Abilities.Fire.LightningBurst.Radius");
 	}
 
 	private void spawnBolt(Player player, Location location, double max, double gap, int arc, boolean dodamage){
@@ -250,7 +254,8 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Fire.LightningBurst.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Fire.LightningBurst.Description");
 	}
 
 	@Override
@@ -265,6 +270,7 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Fire.LightningBurst.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Fire.LightningBurst.Enabled");
 	}
 }

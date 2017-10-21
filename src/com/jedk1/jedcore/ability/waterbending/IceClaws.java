@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
@@ -8,6 +9,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -49,12 +51,14 @@ public class IceClaws extends IceAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.IceClaws.Cooldown");
-		chargeUp = JedCore.plugin.getConfig().getLong("Abilities.Water.IceClaws.ChargeTime");
-		slowDur = JedCore.plugin.getConfig().getInt("Abilities.Water.IceClaws.SlowDuration")/50;
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Water.IceClaws.Damage");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Water.IceClaws.Range");
-		throwable = JedCore.plugin.getConfig().getBoolean("Abilities.Water.IceClaws.Throwable");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Water.IceClaws.Cooldown");
+		chargeUp = config.getLong("Abilities.Water.IceClaws.ChargeTime");
+		slowDur = config.getInt("Abilities.Water.IceClaws.SlowDuration")/50;
+		damage = config.getDouble("Abilities.Water.IceClaws.Damage");
+		range = config.getDouble("Abilities.Water.IceClaws.Range");
+		throwable = config.getBoolean("Abilities.Water.IceClaws.Throwable");
 	}
 
 	@Override
@@ -188,7 +192,8 @@ public class IceClaws extends IceAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.IceClaws.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.IceClaws.Description");
 	}
 
 	@Override
@@ -203,6 +208,7 @@ public class IceClaws extends IceAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.IceClaws.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.IceClaws.Enabled");
 	}
 }

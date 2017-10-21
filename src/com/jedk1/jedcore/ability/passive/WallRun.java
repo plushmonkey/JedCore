@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.passive;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
@@ -13,6 +14,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -64,16 +66,18 @@ public class WallRun extends ChiAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		enabled = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Enabled");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Passives.WallRun.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Passives.WallRun.Duration");
-		particles = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Particles");
-		air = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Air");
-		earth = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Earth");
-		water = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Water");
-		fire = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Fire");
-		chi = JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Chi");
-		invalid = JedCore.plugin.getConfig().getStringList("Abilities.Passives.WallRun.InvalidBlocks");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		enabled = config.getBoolean("Abilities.Passives.WallRun.Enabled");
+		cooldown = config.getLong("Abilities.Passives.WallRun.Cooldown");
+		duration = config.getLong("Abilities.Passives.WallRun.Duration");
+		particles = config.getBoolean("Abilities.Passives.WallRun.Particles");
+		air = config.getBoolean("Abilities.Passives.WallRun.Air");
+		earth = config.getBoolean("Abilities.Passives.WallRun.Earth");
+		water = config.getBoolean("Abilities.Passives.WallRun.Water");
+		fire = config.getBoolean("Abilities.Passives.WallRun.Fire");
+		chi = config.getBoolean("Abilities.Passives.WallRun.Chi");
+		invalid = config.getStringList("Abilities.Passives.WallRun.InvalidBlocks");
 	}
 
 	private boolean isEligible() {
@@ -199,6 +203,7 @@ public class WallRun extends ChiAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Passives.WallRun.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Passives.WallRun.Enabled");
 	}
 }

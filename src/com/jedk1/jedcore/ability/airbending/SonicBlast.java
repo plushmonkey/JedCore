@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
@@ -10,14 +11,13 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
 
 public class SonicBlast extends AirAbility implements AddonAbility {
 
@@ -45,13 +45,15 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Air.SonicBlast.Damage");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Air.SonicBlast.Range");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.SonicBlast.Cooldown");
-		warmup = JedCore.plugin.getConfig().getLong("Abilities.Air.SonicBlast.ChargeTime");
-		chargeSwapping = JedCore.plugin.getConfig().getBoolean("Abilities.Air.SonicBlast.ChargeSwapping");
-		nauseaDur = JedCore.plugin.getConfig().getInt("Abilities.Air.SonicBlast.Effects.NauseaDuration");
-		blindDur = JedCore.plugin.getConfig().getInt("Abilities.Air.SonicBlast.Effects.BlindnessDuration");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		damage = config.getDouble("Abilities.Air.SonicBlast.Damage");
+		range = config.getDouble("Abilities.Air.SonicBlast.Range");
+		cooldown = config.getLong("Abilities.Air.SonicBlast.Cooldown");
+		warmup = config.getLong("Abilities.Air.SonicBlast.ChargeTime");
+		chargeSwapping = config.getBoolean("Abilities.Air.SonicBlast.ChargeSwapping");
+		nauseaDur = config.getInt("Abilities.Air.SonicBlast.Effects.NauseaDuration");
+		blindDur = config.getInt("Abilities.Air.SonicBlast.Effects.BlindnessDuration");
 		time = System.currentTimeMillis();
 	}
 
@@ -173,7 +175,8 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.SonicBlast.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.SonicBlast.Description");
 	}
 
 	@Override
@@ -188,6 +191,7 @@ public class SonicBlast extends AirAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.SonicBlast.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.SonicBlast.Enabled");
 	}
 }

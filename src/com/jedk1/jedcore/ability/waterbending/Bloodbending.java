@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.ThrownEntityTracker;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.BendingPlayer;
@@ -14,6 +15,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -54,14 +56,16 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		nightOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Bloodbending.NightOnly");
-		fullMoonOnly = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Bloodbending.FullMoonOnly");
-		undeadMobs = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Bloodbending.UndeadMobs");
-		bloodbendingThroughBlocks = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Bloodbending.IgnoreWalls");
-		requireBound = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Bloodbending.RequireBound");
-		distance = JedCore.plugin.getConfig().getInt("Abilities.Water.Bloodbending.Distance");
-		holdtime = JedCore.plugin.getConfig().getLong("Abilities.Water.Bloodbending.HoldTime");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.Bloodbending.Cooldown");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		nightOnly = config.getBoolean("Abilities.Water.Bloodbending.NightOnly");
+		fullMoonOnly = config.getBoolean("Abilities.Water.Bloodbending.FullMoonOnly");
+		undeadMobs = config.getBoolean("Abilities.Water.Bloodbending.UndeadMobs");
+		bloodbendingThroughBlocks = config.getBoolean("Abilities.Water.Bloodbending.IgnoreWalls");
+		requireBound = config.getBoolean("Abilities.Water.Bloodbending.RequireBound");
+		distance = config.getInt("Abilities.Water.Bloodbending.Distance");
+		holdtime = config.getLong("Abilities.Water.Bloodbending.HoldTime");
+		cooldown = config.getLong("Abilities.Water.Bloodbending.Cooldown");
 	}
 
 	public boolean isEligible(Player player, boolean hasAbility) {
@@ -261,7 +265,8 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.Bloodbending.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.Bloodbending.Description");
 	}
 
 	@Override
@@ -276,6 +281,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.Bloodbending.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.Bloodbending.Enabled");
 	}
 }

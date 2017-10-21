@@ -116,7 +116,7 @@ public class JCListener implements Listener {
 				return;
 			}
 			if (Backstab.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
-				event.setDamage(Backstab.getDamage());
+				event.setDamage(Backstab.getDamage(event.getDamager().getWorld()));
 				return;
 			}
 			if (IceClaws.freezeEntity((Player) event.getDamager(), (LivingEntity) event.getEntity())) {

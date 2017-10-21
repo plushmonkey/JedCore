@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -17,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
@@ -71,11 +73,13 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.SandBlast.Cooldown");
-		sourcerange = JedCore.plugin.getConfig().getDouble("Abilities.Earth.SandBlast.SourceRange");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Earth.SandBlast.Range");
-		maxBlasts = JedCore.plugin.getConfig().getInt("Abilities.Earth.SandBlast.MaxSandBlocks");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.SandBlast.Damage");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Earth.SandBlast.Cooldown");
+		sourcerange = config.getDouble("Abilities.Earth.SandBlast.SourceRange");
+		range = config.getInt("Abilities.Earth.SandBlast.Range");
+		maxBlasts = config.getInt("Abilities.Earth.SandBlast.MaxSandBlocks");
+		damage = config.getDouble("Abilities.Earth.SandBlast.Damage");
 	}
 
 	private boolean prepare() {
@@ -260,7 +264,8 @@ public class SandBlast extends SandAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.SandBlast.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.SandBlast.Description");
 	}
 
 	@Override
@@ -275,6 +280,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.SandBlast.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.SandBlast.Enabled");
 	}
 }

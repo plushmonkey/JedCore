@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -15,6 +16,7 @@ import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
@@ -56,9 +58,11 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Earth.EarthKick.Cooldown");
-		earthBlocks = JedCore.plugin.getConfig().getInt("Abilities.Earth.EarthKick.EarthBlocks");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Earth.EarthKick.Damage");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Earth.EarthKick.Cooldown");
+		earthBlocks = config.getInt("Abilities.Earth.EarthKick.EarthBlocks");
+		damage = config.getDouble("Abilities.Earth.EarthKick.Damage");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -211,7 +215,8 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Earth.EarthKick.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Earth.EarthKick.Description");
 	}
 
 	@Override
@@ -226,6 +231,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Earth.EarthKick.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Earth.EarthKick.Enabled");
 	}
 }

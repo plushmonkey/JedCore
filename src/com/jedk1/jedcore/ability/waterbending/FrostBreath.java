@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -76,20 +78,22 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.FrostBreath.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Water.FrostBreath.Duration");
-		particles = JedCore.plugin.getConfig().getInt("Abilities.Water.FrostBreath.Particles");
-		freezeDuration = JedCore.plugin.getConfig().getInt("Abilities.Water.FrostBreath.FrostDuration");
-		snowDuration = JedCore.plugin.getConfig().getInt("Abilities.Water.FrostBreath.SnowDuration");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Water.FrostBreath.Range");
-		snowEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.FrostBreath.Snow");
-		bendSnow = JedCore.plugin.getConfig().getBoolean("Abilities.Water.FrostBreath.BendableSnow");
-		damageEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.FrostBreath.Damage.Enabled");
-		playerDamage = JedCore.plugin.getConfig().getDouble("Abilities.Water.FrostBreath.Damage.Player");
-		mobDamage = JedCore.plugin.getConfig().getDouble("Abilities.Water.FrostBreath.Damage.Mob");
-		slowEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.FrostBreath.Slow.Enabled");
-		slowDuration = JedCore.plugin.getConfig().getLong("Abilities.Water.FrostBreath.Slow.Duration");
-		restrictBiomes = JedCore.plugin.getConfig().getBoolean("Abilities.Water.FrostBreath.RestrictBiomes");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Water.FrostBreath.Cooldown");
+		duration = config.getLong("Abilities.Water.FrostBreath.Duration");
+		particles = config.getInt("Abilities.Water.FrostBreath.Particles");
+		freezeDuration = config.getInt("Abilities.Water.FrostBreath.FrostDuration");
+		snowDuration = config.getInt("Abilities.Water.FrostBreath.SnowDuration");
+		range = config.getInt("Abilities.Water.FrostBreath.Range");
+		snowEnabled = config.getBoolean("Abilities.Water.FrostBreath.Snow");
+		bendSnow = config.getBoolean("Abilities.Water.FrostBreath.BendableSnow");
+		damageEnabled = config.getBoolean("Abilities.Water.FrostBreath.Damage.Enabled");
+		playerDamage = config.getDouble("Abilities.Water.FrostBreath.Damage.Player");
+		mobDamage = config.getDouble("Abilities.Water.FrostBreath.Damage.Mob");
+		slowEnabled = config.getBoolean("Abilities.Water.FrostBreath.Slow.Enabled");
+		slowDuration = config.getLong("Abilities.Water.FrostBreath.Slow.Duration");
+		restrictBiomes = config.getBoolean("Abilities.Water.FrostBreath.RestrictBiomes");
 	}
 
 	@Override
@@ -276,7 +280,8 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.FrostBreath.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.FrostBreath.Description");
 	}
 
 	@Override
@@ -291,6 +296,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.FrostBreath.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.FrostBreath.Enabled");
 	}
 }

@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
@@ -11,6 +12,7 @@ import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -25,8 +27,6 @@ public class AirBreath extends AirAbility implements AddonAbility {
 
 	private long time;
 	private boolean isAvatar;
-
-	Random rand = new Random();
 
 	private long cooldown;
 	private long duration;
@@ -68,22 +68,24 @@ public class AirBreath extends AirAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Air.AirBreath.Cooldown");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Air.AirBreath.Duration");
-		particles = JedCore.plugin.getConfig().getInt("Abilities.Air.AirBreath.Particles");
-		coolLava = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.AffectBlocks.Lava");
-		extinguishFire = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.AffectBlocks.Fire");
-		extinguishMobs = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.ExtinguishEntities");
-		damageEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.Damage.Enabled");
-		playerDamage = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirBreath.Damage.Player");
-		mobDamage = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirBreath.Damage.Mob");
-		knockback = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirBreath.Knockback");
-		range = JedCore.plugin.getConfig().getInt("Abilities.Air.AirBreath.Range");
-		launch = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirBreath.LaunchPower");
-		regenOxygen = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.RegenTargetOxygen");
-		avatarAmplify = JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.Avatar.Enabled");
-		avatarRange = JedCore.plugin.getConfig().getInt("Abilities.Air.AirBreath.Avatar.Range");
-		avatarKnockback = JedCore.plugin.getConfig().getDouble("Abilities.Air.AirBreath.Avatar.Knockback");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		cooldown = config.getLong("Abilities.Air.AirBreath.Cooldown");
+		duration = config.getLong("Abilities.Air.AirBreath.Duration");
+		particles = config.getInt("Abilities.Air.AirBreath.Particles");
+		coolLava = config.getBoolean("Abilities.Air.AirBreath.AffectBlocks.Lava");
+		extinguishFire = config.getBoolean("Abilities.Air.AirBreath.AffectBlocks.Fire");
+		extinguishMobs = config.getBoolean("Abilities.Air.AirBreath.ExtinguishEntities");
+		damageEnabled = config.getBoolean("Abilities.Air.AirBreath.Damage.Enabled");
+		playerDamage = config.getDouble("Abilities.Air.AirBreath.Damage.Player");
+		mobDamage = config.getDouble("Abilities.Air.AirBreath.Damage.Mob");
+		knockback = config.getDouble("Abilities.Air.AirBreath.Knockback");
+		range = config.getInt("Abilities.Air.AirBreath.Range");
+		launch = config.getDouble("Abilities.Air.AirBreath.LaunchPower");
+		regenOxygen = config.getBoolean("Abilities.Air.AirBreath.RegenTargetOxygen");
+		avatarAmplify = config.getBoolean("Abilities.Air.AirBreath.Avatar.Enabled");
+		avatarRange = config.getInt("Abilities.Air.AirBreath.Avatar.Range");
+		avatarKnockback = config.getDouble("Abilities.Air.AirBreath.Avatar.Knockback");
 	}
 
 	@Override
@@ -228,7 +230,8 @@ public class AirBreath extends AirAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Air.AirBreath.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirBreath.Description");
 	}
 
 	@Override
@@ -243,6 +246,7 @@ public class AirBreath extends AirAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Air.AirBreath.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Air.AirBreath.Enabled");
 	}
 }

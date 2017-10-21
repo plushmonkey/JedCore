@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -82,21 +84,23 @@ public class Drain extends WaterAbility implements AddonAbility {
 	}
 
 	public void setFields() {
-		regenDelay = JedCore.plugin.getConfig().getLong("Abilities.Water.Drain.RegenDelay");
-		duration = JedCore.plugin.getConfig().getLong("Abilities.Water.Drain.Duration");
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Water.Drain.Cooldown");
-		absorbSpeed = JedCore.plugin.getConfig().getDouble("Abilities.Water.Drain.AbsorbSpeed");
-		radius = JedCore.plugin.getConfig().getInt("Abilities.Water.Drain.Radius");
-		chance = JedCore.plugin.getConfig().getInt("Abilities.Water.Drain.AbsorbChance");
-		absorbRate = JedCore.plugin.getConfig().getInt("Abilities.Water.Drain.AbsorbRate");
-		holdRange = JedCore.plugin.getConfig().getInt("Abilities.Water.Drain.HoldRange");
-		blastsEnabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Drain.BlastsEnabled");
-		maxBlasts = JedCore.plugin.getConfig().getInt("Abilities.Water.Drain.MaxBlasts");
-		keepSrc = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Drain.KeepSource");
-		blastRange = JedCore.plugin.getConfig().getDouble("Abilities.Water.Drain.BlastRange");
-		blastDamage = JedCore.plugin.getConfig().getDouble("Abilities.Water.Drain.BlastDamage");
-		blastSpeed = JedCore.plugin.getConfig().getDouble("Abilities.Water.Drain.BlastSpeed");
-		useRain = JedCore.plugin.getConfig().getBoolean("Abilities.Water.Drain.AllowRainSource");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		regenDelay = config.getLong("Abilities.Water.Drain.RegenDelay");
+		duration = config.getLong("Abilities.Water.Drain.Duration");
+		cooldown = config.getLong("Abilities.Water.Drain.Cooldown");
+		absorbSpeed = config.getDouble("Abilities.Water.Drain.AbsorbSpeed");
+		radius = config.getInt("Abilities.Water.Drain.Radius");
+		chance = config.getInt("Abilities.Water.Drain.AbsorbChance");
+		absorbRate = config.getInt("Abilities.Water.Drain.AbsorbRate");
+		holdRange = config.getInt("Abilities.Water.Drain.HoldRange");
+		blastsEnabled = config.getBoolean("Abilities.Water.Drain.BlastsEnabled");
+		maxBlasts = config.getInt("Abilities.Water.Drain.MaxBlasts");
+		keepSrc = config.getBoolean("Abilities.Water.Drain.KeepSource");
+		blastRange = config.getDouble("Abilities.Water.Drain.BlastRange");
+		blastDamage = config.getDouble("Abilities.Water.Drain.BlastDamage");
+		blastSpeed = config.getDouble("Abilities.Water.Drain.BlastSpeed");
+		useRain = config.getBoolean("Abilities.Water.Drain.AllowRainSource");
 	}
 	
 	public boolean isValidBiome(Biome biome) {
@@ -376,7 +380,8 @@ public class Drain extends WaterAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.Drain.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.Drain.Description");
 	}
 
 	@Override
@@ -391,6 +396,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Water.Drain.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Water.Drain.Enabled");
 	}
 }

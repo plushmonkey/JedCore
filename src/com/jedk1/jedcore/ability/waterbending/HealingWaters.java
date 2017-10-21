@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.waterbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -14,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -52,7 +54,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 	private static void heal(Player player) {
 		if(inWater(player)){
 			if(player.isSneaking()){
-				Entity entity = GeneralMethods.getTargetedEntity(player, getRange(), new ArrayList<Entity>());
+				Entity entity = GeneralMethods.getTargetedEntity(player, getRange(player), new ArrayList<Entity>());
 				if(entity instanceof LivingEntity && inWater(entity)){
 					Location playerLoc = entity.getLocation();
 					playerLoc.add(0, 1, 0);
@@ -68,7 +70,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 				giveHP(player);
 			}
 		}else if(hasWaterSupply(player) && player.isSneaking()){
-			Entity entity = GeneralMethods.getTargetedEntity(player, getRange(), new ArrayList<Entity>());
+			Entity entity = GeneralMethods.getTargetedEntity(player, getRange(player), new ArrayList<Entity>());
 			if(entity != null){
 				if(entity instanceof LivingEntity){
 					Damageable dLe = (Damageable)entity;
@@ -80,7 +82,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 						giveHPToEntity((LivingEntity) entity);
 						entity.setFireTicks(0);
 						Random rand = new Random();
-						if(rand.nextInt(getDrainChance()) == 0)
+						if(rand.nextInt(getDrainChance(player)) == 0)
 							drainWaterSupply(player);
 					}
 				}
@@ -92,7 +94,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 				giveHP(player);
 				player.setFireTicks(0);
 				Random rand = new Random();
-				if(rand.nextInt(getDrainChance()) == 0)
+				if(rand.nextInt(getDrainChance(player)) == 0)
 					drainWaterSupply(player);
 			}
 		}
@@ -156,7 +158,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 		Damageable dP = (Damageable)player;
 		if (!GeneralMethods.isRegionProtectedFromBuild(player, "HealingWaters", player.getLocation()))
 			if(dP.getHealth() < dP.getMaxHealth()) {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 70, getPower()));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 70, getPower(player)));
 				AirAbility.breakBreathbendingHold(player);
 			}
 	}
@@ -170,16 +172,19 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 		}
 	}
 
-	public static int getPower() {
-		return JedCore.plugin.getConfig().getInt("Abilities.Water.HealingWaters.Power");
+	public static int getPower(Player player) {
+		ConfigurationSection config = JedCoreConfig.getConfig(player);
+		return config.getInt("Abilities.Water.HealingWaters.Power");
 	}
 
-	public static double getRange() {
-		return JedCore.plugin.getConfig().getDouble("Abilities.Water.HealingWaters.Range");
+	public static double getRange(Player player) {
+		ConfigurationSection config = JedCoreConfig.getConfig(player);
+		return config.getDouble("Abilities.Water.HealingWaters.Range");
 	}
 
-	public static int getDrainChance() {
-		return JedCore.plugin.getConfig().getInt("Abilities.Water.HealingWaters.DrainChance");
+	public static int getDrainChance(Player player) {
+		ConfigurationSection config = JedCoreConfig.getConfig(player);
+		return config.getInt("Abilities.Water.HealingWaters.DrainChance");
 	}
 
 	@Override
@@ -219,7 +224,8 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-		return "* JedCore Addon *\n" + JedCore.plugin.getConfig().getString("Abilities.Water.HealingWaters.Description");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return "* JedCore Addon *\n" + config.getString("Abilities.Water.HealingWaters.Description");
 	}
 
 	@Override
@@ -234,7 +240,8 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 
 	@Override
 	public boolean isEnabled() {
-		enabled = JedCore.plugin.getConfig().getBoolean("Abilities.Water.HealingWaters.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		enabled = config.getBoolean("Abilities.Water.HealingWaters.Enabled");
 		return enabled;
 	}
 

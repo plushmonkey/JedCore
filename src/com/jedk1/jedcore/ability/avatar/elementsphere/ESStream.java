@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.avatar.elementsphere;
 
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -14,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockState;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -85,14 +87,16 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 	}
 	
 	public void setFields() {
-		cooldown = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Stream.Cooldown");
-		range = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Stream.Range");
-		damage = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Stream.Damage");
-		knockback = JedCore.plugin.getConfig().getDouble("Abilities.Avatar.ElementSphere.Stream.Knockback");
-		requiredUses = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Stream.RequiredUses");
-		cancelAbility = JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Stream.EndAbility");
-		radius = JedCore.plugin.getConfig().getInt("Abilities.Avatar.ElementSphere.Stream.ImpactCraterSize");
-		regen = JedCore.plugin.getConfig().getLong("Abilities.Avatar.ElementSphere.Stream.ImpactRevert");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		
+		cooldown = config.getLong("Abilities.Avatar.ElementSphere.Stream.Cooldown");
+		range = config.getDouble("Abilities.Avatar.ElementSphere.Stream.Range");
+		damage = config.getDouble("Abilities.Avatar.ElementSphere.Stream.Damage");
+		knockback = config.getDouble("Abilities.Avatar.ElementSphere.Stream.Knockback");
+		requiredUses = config.getInt("Abilities.Avatar.ElementSphere.Stream.RequiredUses");
+		cancelAbility = config.getBoolean("Abilities.Avatar.ElementSphere.Stream.EndAbility");
+		radius = config.getInt("Abilities.Avatar.ElementSphere.Stream.ImpactCraterSize");
+		regen = config.getLong("Abilities.Avatar.ElementSphere.Stream.ImpactRevert");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -264,6 +268,7 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 	
 	@Override
 	public boolean isEnabled() {
-		return JedCore.plugin.getConfig().getBoolean("Abilities.Avatar.ElementSphere.Enabled");
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getBoolean("Abilities.Avatar.ElementSphere.Enabled");
 	}
 }
