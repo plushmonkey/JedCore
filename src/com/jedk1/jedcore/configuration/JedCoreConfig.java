@@ -3,7 +3,10 @@ package com.jedk1.jedcore.configuration;
 import com.jedk1.jedcore.JedCore;
 
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 
@@ -56,6 +59,7 @@ public class JedCoreConfig {
 		config.addDefault("Settings.Updater.Notify", true);
 		config.addDefault("Properties.MobCollisions.Enabled", true);
 		config.addDefault("Properties.AbilityCollisions.Enabled", true);
+		config.addDefault("Properties.PerWorldConfig", true);
 		config.addDefault("Properties.FireTickMethod", "larger");
 		
 		config.addDefault("Abilities.Avatar.ElementSphere.Enabled", true);
@@ -789,5 +793,22 @@ public class JedCoreConfig {
 		
 		config.options().copyDefaults(true);
 		plugin.saveConfig();
+	}
+
+	public static ConfigurationSection getConfig(Player player) {
+		if (player == null)
+			return getConfig((World)null);
+		return getConfig(player.getWorld());
+	}
+
+	public static ConfigurationSection getConfig(World world) {
+		boolean perWorldConfig = plugin.getConfig().getBoolean("Properties.PerWorldConfig");
+
+		if (world == null || !perWorldConfig) {
+			return plugin.getConfig();
+		}
+
+		String prefix = "Worlds." + world.getName();
+		return new SubsectionConfigurationDecorator(plugin.getConfig(), prefix);
 	}
 }
