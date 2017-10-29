@@ -409,6 +409,9 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.MudSurge.WaterSearchRadius", 5);
 		config.addDefault("Abilities.Earth.MudSurge.BlindTicks", 60);
 		config.addDefault("Abilities.Earth.MudSurge.MultipleHits", true);
+		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.SwappedSlots.Enabled", true);
+		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.OutOfRange.Enabled", true);
+		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.OutOfRange.Range", 25.0);
 		
 		config.addDefault("Abilities.Earth.SandBlast.Enabled", true);
 		config.addDefault("Abilities.Earth.SandBlast.Description", "This ability lets an earthbender blast a bunch of sand at an enemy "

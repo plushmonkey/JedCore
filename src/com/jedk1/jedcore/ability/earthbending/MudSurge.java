@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -28,7 +29,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MudSurge extends EarthAbility implements AddonAbility {
-
 	private int prepareRange;
 	private int blindChance;
 	private int blindTicks;
@@ -44,6 +44,8 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	public static long mudCreationInterval = 100;
 	public static Material[] mudTypes = new Material[] { Material.SAND, Material.CLAY, Material.STAINED_CLAY, Material.GRASS, Material.DIRT, Material.MYCEL, Material.SOUL_SAND, Material.RED_SANDSTONE, Material.SANDSTONE };
 
+	private CompositeRemovalPolicy removalPolicy;
+
 	private Block source;
 	private TempBlock sourceTB;
 
@@ -53,15 +55,15 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	private boolean doNotSurge = false;
 	public boolean started = false;
 
-	private List<Block> mudArea = new ArrayList<Block>();
+	private List<Block> mudArea = new ArrayList<>();
 	private ListIterator<Block> mudAreaItr;
-	private List<TempBlock> mudBlocks = new ArrayList<TempBlock>();
-	private List<Player> blind = new ArrayList<Player>();
+	private List<TempBlock> mudBlocks = new ArrayList<>();
+	private List<Player> blind = new ArrayList<>();
 	private List<Entity> affectedEntities = new ArrayList<>();
 
 	private List<TempFallingBlock> fallingBlocks = new ArrayList<>();
 	
-	Random rand = new Random();
+	private Random rand = new Random();
 
 	public MudSurge(Player player) {
 		super(player);
@@ -71,13 +73,23 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 		}
 
 		if (hasAbility(player, MudSurge.class)) {
-			MudSurge ms = (MudSurge) getAbility(player, MudSurge.class);
+			MudSurge ms = getAbility(player, MudSurge.class);
 			if (!ms.hasStarted()) {
 				ms.remove();
 			} else {
 				return;
 			}
 		}
+
+		this.removalPolicy = new CompositeRemovalPolicy(this,
+				new CannotBendRemovalPolicy(this.bPlayer, this, true, true),
+				new IsOfflineRemovalPolicy(this.player),
+				new IsDeadRemovalPolicy(this.player),
+				new OutOfRangeRemovalPolicy(this.player, 25.0, () -> {
+					return this.source.getLocation();
+				}),
+				new SwappedSlotsRemovalPolicy<>(bPlayer, MudSurge.class)
+		);
 		
 		setFields();
 
@@ -89,6 +101,8 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	
 	public void setFields() {
 		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		this.removalPolicy.load(config);
 		
 		prepareRange = config.getInt("Abilities.Earth.MudSurge.SourceRange");
 		blindChance = config.getInt("Abilities.Earth.MudSurge.BlindChance");
@@ -99,6 +113,28 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 		cooldown = config.getLong("Abilities.Earth.MudSurge.Cooldown");
 		blindTicks = config.getInt("Abilities.Earth.MudSurge.BlindTicks");
 		multipleHits = config.getBoolean("Abilities.Earth.MudSurge.MultipleHits");
+	}
+
+	@Override
+	public void progress() {
+		if (removalPolicy.shouldRemove()) {
+			remove();
+			return;
+		}
+
+		if (mudFormed && started && System.currentTimeMillis() > lastSurgeTime + surgeInterval) {
+			surge();
+			affect();
+			if (TempFallingBlock.getFromAbility(this).isEmpty()) {
+				remove();
+				return;
+			}
+			return;
+		}
+
+		if (!mudFormed) {
+			createMudPool();
+		}
 	}
 
 	private boolean getSource() {
@@ -134,6 +170,11 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	private void startSurge() {
 		started = true;
 		this.bPlayer.addCooldown(this);
+
+		// Clear out the policies that only apply while sourcing.
+		this.removalPolicy.removePolicyType(IsDeadRemovalPolicy.class);
+		this.removalPolicy.removePolicyType(OutOfRangeRemovalPolicy.class);
+		this.removalPolicy.removePolicyType(SwappedSlotsRemovalPolicy.class);
 	}
 
 	private boolean hasStarted() {
@@ -144,11 +185,10 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 		if (!hasAbility(player, MudSurge.class))
 			return;
 
-		((MudSurge) getAbility(player, MudSurge.class)).startSurge();
+		getAbility(player, MudSurge.class).startSurge();
 	}
 
 	private Block getMudSourceBlock(int range) {
-		//Block testBlock = player.getTargetBlock(EarthMethods.getTransparentEarthbending(), range);
 		Block testBlock = VersionUtil.getTargetedLocationTransparent(player, range).getBlock();
 		if (isMud(testBlock))
 			return testBlock;
@@ -243,7 +283,6 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 			return;
 
 		for (TempBlock tb : mudBlocks) {
-			//FallingBlock fb = GeneralMethods.spawnFallingBlock(tb.getLocation().add(0, 1, 0), Material.STAINED_CLAY, (byte) 12);
 			Vector direction = GeneralMethods.getDirection(tb.getLocation().add(0, 1, 0), VersionUtil.getTargetedLocation(player, 30)).multiply(0.07);
 
 			double x = rand.nextDouble() / 5;
@@ -252,11 +291,6 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 			x = (rand.nextBoolean()) ? -x : x;
 			z = (rand.nextBoolean()) ? -z : z;
 
-			//fb.setVelocity(direction.clone().add(new Vector(x, 0.2, z)));
-			//fb.setDropItem(false);
-			//surgingMud.add(fb);
-			//fblocks.add(fb);
-			
 			fallingBlocks.add(new TempFallingBlock(tb.getLocation().add(0, 1, 0), Material.STAINED_CLAY, (byte) 12, direction.clone().add(new Vector(x, 0.2, z)), this));
 			
 			playEarthbendingSound(tb.getLocation());
@@ -266,7 +300,6 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	}
 
 	private void affect() {
-		//for (FallingBlock fb : surgingMud) {
 		for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
 			FallingBlock fb = tfb.getFallingBlock();
 			if (fb.isDead()) {
@@ -292,7 +325,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 						if (e.getEntityId() == player.getEntityId())
 							continue;
 
-						if (rand.nextInt(100) < blindChance && !blind.contains((Player) e)) {
+						if (rand.nextInt(100) < blindChance && !blind.contains(e)) {
 							((Player) e).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, this.blindTicks, 2));
 						}
 
@@ -304,57 +337,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 				}
 			}
 		}
-
-		//for (int i = 0; i < surgingMud.size(); i++)
-		//	if (surgingMud.get(i).isDead())
-		//		surgingMud.remove(i);
-
-		//if (surgingMud.isEmpty()) {
-		//	remove();
-		//	return;
-		//}
 	}
-
-	@Override
-	public void progress() {
-		if (!player.isOnline() || player.isDead()) {
-			remove();
-			return;
-		}
-
-		if (!bPlayer.canBendIgnoreBindsCooldowns(this)) {
-			remove();
-			return;
-		}
-		
-		if (mudFormed && started && System.currentTimeMillis() > lastSurgeTime + surgeInterval) {
-			surge();
-			affect();
-			if (TempFallingBlock.getFromAbility(this).isEmpty()) {
-				remove();
-				return;
-			}
-			return;
-		}
-
-		if (!mudFormed) {
-			createMudPool();
-		}
-		return;
-	}
-
-	/*
-	public static boolean isSurgingMud(FallingBlock fb) {
-		for (int id : getInstances(MudSurge.class).keySet()) {
-			MudSurge ms = (MudSurge) getAbility(id);
-			if (ms.surgingMud.contains(fb)) {
-				ms.surgingMud.remove(fb);
-				return true;
-			}
-		}
-		return false;
-	}
-	*/
 
 	@Override
 	public void remove() {
@@ -425,12 +408,12 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 
 	@Override
