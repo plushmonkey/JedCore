@@ -464,7 +464,9 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.Combustion.RegenTime", 10000);
 		config.addDefault("Abilities.Fire.Combustion.DamageBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.RegenBlocks", true);
+		config.addDefault("Abilities.Fire.Combustion.WaitForRegen", true);
 		config.addDefault("Abilities.Fire.Combustion.InstantExplodeIfHit", true);
+		config.addDefault("Abilities.Fire.Combustion.RemovalPolicy.SwappedSlots.Enabled", false);
 		
 		config.addDefault("Abilities.Fire.Discharge.Enabled", true);
 		config.addDefault("Abilities.Fire.Discharge.Description", "Left-Click to shoot bolts of electricity out "

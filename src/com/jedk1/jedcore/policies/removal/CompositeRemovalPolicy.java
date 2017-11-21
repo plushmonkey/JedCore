@@ -35,14 +35,10 @@ public class CompositeRemovalPolicy implements RemovalPolicy {
         return false;
     }
 
-    @Override
-    public void load(ConfigurationSection config) {
+    public void load(ConfigurationSection config, String prefix) {
         if (this.policies.isEmpty()) return;
 
-        String element = ability.getElement().getName();
-        String abilityName = ability.getName();
-
-        String pathPrefix = "Abilities." + element + "." + abilityName + ".RemovalPolicy.";
+        String pathPrefix = prefix + ".RemovalPolicy.";
 
         // Load the configuration section for each policy and pass it to the load method.
         for (Iterator<RemovalPolicy> iterator = policies.iterator(); iterator.hasNext(); ) {
@@ -50,7 +46,7 @@ public class CompositeRemovalPolicy implements RemovalPolicy {
             ConfigurationSection section = config.getConfigurationSection(pathPrefix + policy.getName());
 
             if (section != null) {
-                boolean enabled = section.getBoolean("Enabled", true);
+                boolean enabled = section.getBoolean("Enabled");
 
                 if (!enabled) {
                     iterator.remove();
@@ -60,6 +56,16 @@ public class CompositeRemovalPolicy implements RemovalPolicy {
                 policy.load(section);
             }
         }
+    }
+
+    @Override
+    public void load(ConfigurationSection config) {
+        if (this.policies.isEmpty()) return;
+
+        String element = ability.getElement().getName();
+        String abilityName = ability.getName();
+
+        load(config, "Abilities." + element + "." + abilityName);
     }
 
     public void addPolicy(RemovalPolicy policy) {
