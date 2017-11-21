@@ -86,7 +86,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 	public void selfCombust() {
 		if (this.state instanceof TravelState) {
-			this.state = new CombustState(location, true);
+			this.state = new CombustState(location);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 				if (instantExplodeIfHit && player.getHealth() < playerStartHealth) {
 					// Remove and combust at player's location
-					state = new CombustState(player.getLocation());
+					state = new CombustState(player.getLocation(), true);
 					return;
 				}
 
@@ -338,7 +338,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 			double modifier = 0;
 			if (misfire) {
-				modifier = config.getInt("Abilities.Fire.Combustion.misfireModifier");
+				modifier = config.getInt("Abilities.Fire.Combustion.MisfireModifier");
 			}
 
 			int destroyedCount = explosionMethod.explode(location, power + modifier, damage + modifier, fireTick);
