@@ -85,8 +85,8 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	}
 
 	public void selfCombust() {
-		if (!(this.state instanceof CombustState)) {
-			this.state = new CombustState(player.getLocation(), true);
+		if (this.state instanceof TravelState) {
+			this.state = new CombustState(location, true);
 		}
 	}
 
