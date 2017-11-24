@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class JedCoreConfig {
 
@@ -61,6 +62,11 @@ public class JedCoreConfig {
 		config.addDefault("Properties.AbilityCollisions.Enabled", true);
 		config.addDefault("Properties.PerWorldConfig", true);
 		config.addDefault("Properties.FireTickMethod", "larger");
+
+		config.addDefault("Properties.ChiRestrictor.Enabled", false);
+		config.addDefault("Properties.ChiRestrictor.ResetCooldown", true);
+		config.addDefault("Properties.ChiRestrictor.MeleeDistance", 7);
+		config.addDefault("Properties.ChiRestrictor.Whitelist", new ArrayList<String>());
 		
 		config.addDefault("Abilities.Avatar.ElementSphere.Enabled", true);
 		config.addDefault("Abilities.Avatar.ElementSphere.Description", "ElementSphere is a very all round ability, being "
