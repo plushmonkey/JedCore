@@ -230,6 +230,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		private Vector direction;
 		private int ticks;
 		private int range;
+		private boolean explodeOnDeath;
 
 		public TravelState() {
 			removalPolicy.removePolicyType(SwappedSlotsRemovalPolicy.class);
@@ -241,10 +242,31 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 			ConfigurationSection config = JedCoreConfig.getConfig(player);
 
 			range = config.getInt("Abilities.Fire.Combustion.Range");
+			explodeOnDeath = config.getBoolean("Abilities.Fire.Combustion.ExplodeOnDeath");
+
+			if (explodeOnDeath) {
+				removalPolicy.removePolicyType(CannotBendRemovalPolicy.class);
+				removalPolicy.removePolicyType(IsDeadRemovalPolicy.class);
+			}
 		}
 
 		@Override
 		public void update() {
+			if (explodeOnDeath && player.isDead()) {
+				state = new CombustState(location);
+				return;
+			}
+
+			// Manually handle the region protection check because the CannotBendRemovalPolicy no longer checks it
+			// when explodeOnDeath is true. This stops players from firing Combustion and then walking into a
+			// protected area.
+			if (explodeOnDeath) {
+				if (GeneralMethods.isRegionProtectedFromBuild(Combustion.this, player.getLocation())) {
+					remove();
+					return;
+				}
+			}
+
 			direction = player.getEyeLocation().getDirection().normalize();
 			++ticks;
 
@@ -412,8 +434,9 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 			for (Location l : GeneralMethods.getCircle(location, size, size, false, true, 0)) {
 				if (!GeneralMethods.isRegionProtectedFromBuild(Combustion.this, l)) {
-					destroyBlock(l);
-					++count;
+					if (destroyBlock(l)) {
+						++count;
+					}
 				}
 			}
 
@@ -453,7 +476,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		}
 
 		// Returns how many blocks were destroyed.
-		public abstract void destroyBlock(Location location);
+		public abstract boolean destroyBlock(Location location);
 	}
 
 	private class RegenExplosionMethod extends AbstractExplosionMethod {
@@ -465,7 +488,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		}
 
 		@Override
-		public void destroyBlock(Location l) {
+		public boolean destroyBlock(Location l) {
 			Block block = l.getBlock();
 
 			if (TempBlock.isTempBlock(block)) {
@@ -477,7 +500,11 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 				new RegenTempBlock(block, Material.AIR, (byte) 0, regenTime, false);
 				placeRandomBlock(l);
 				placeRandomFire(l);
+
+				return true;
 			}
+
+			return false;
 		}
 	}
 
@@ -487,7 +514,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		}
 
 		@Override
-		public void destroyBlock(Location l) {
+		public boolean destroyBlock(Location l) {
 			Block block = l.getBlock();
 
 			if (!MaterialUtil.isTransparent(block) && !blocks.contains(block.getType())) {
@@ -495,7 +522,11 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 				newBlock.setType(Material.AIR);
 				placeRandomBlock(l);
 				placeRandomFire(l);
+
+				return true;
 			}
+
+			return false;
 		}
 	}
 }

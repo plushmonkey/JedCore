@@ -472,6 +472,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.Combustion.RegenBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.WaitForRegen", true);
 		config.addDefault("Abilities.Fire.Combustion.InstantExplodeIfHit", true);
+		config.addDefault("Abilities.Fire.Combustion.ExplodeOnDeath", true);
 		config.addDefault("Abilities.Fire.Combustion.RemovalPolicy.SwappedSlots.Enabled", false);
 		
 		config.addDefault("Abilities.Fire.Discharge.Enabled", true);
