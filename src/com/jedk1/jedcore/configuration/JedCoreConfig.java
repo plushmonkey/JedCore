@@ -320,15 +320,17 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.LavaDisc.Cooldown", 7000);
 		config.addDefault("Abilities.Earth.LavaDisc.Duration", 1000);
 		config.addDefault("Abilities.Earth.LavaDisc.Damage", 4.0);
-		config.addDefault("Abilities.Earth.LavaDisc.Regen", 5000);
-		config.addDefault("Abilities.Earth.LavaDisc.SourceRegen", 10000);
 		config.addDefault("Abilities.Earth.LavaDisc.Particles", 3);
-		config.addDefault("Abilities.Earth.LavaDisc.LavaSourceOnly", false);
 		config.addDefault("Abilities.Earth.LavaDisc.ContinueAfterEntityHit", false);
-		config.addDefault("Abilities.Earth.LavaDisc.BlockDamage", true);
-		config.addDefault("Abilities.Earth.LavaDisc.LavaTrail", true);
 		config.addDefault("Abilities.Earth.LavaDisc.RecallLimit", 3);
-		config.addDefault("Abilities.Earth.LavaDisc.AdditionalMeltableBlocks", meltable);
+		config.addDefault("Abilities.Earth.LavaDisc.Destroy.RegenTime", 5000);
+		config.addDefault("Abilities.Earth.LavaDisc.Destroy.BlockDamage", true);
+		config.addDefault("Abilities.Earth.LavaDisc.Destroy.AdditionalMeltableBlocks", meltable);
+		config.addDefault("Abilities.Earth.LavaDisc.Destroy.LavaTrail", true);
+		config.addDefault("Abilities.Earth.LavaDisc.Destroy.TrailFlow", false);
+		config.addDefault("Abilities.Earth.LavaDisc.Source.RegenTime", 10000);
+		config.addDefault("Abilities.Earth.LavaDisc.Source.LavaOnly", false);
+		config.addDefault("Abilities.Earth.LavaDisc.Source.Range", 4.0);
 		
 		config.addDefault("Abilities.Earth.LavaFlux.Enabled", true);
 		config.addDefault("Abilities.Earth.LavaFlux.Description", "This offensive ability enables a Lavabender to create a wave of lava, "

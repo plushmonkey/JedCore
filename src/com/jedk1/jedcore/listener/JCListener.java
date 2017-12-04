@@ -6,6 +6,7 @@ import com.jedk1.jedcore.ability.avatar.elementsphere.ESEarth;
 import com.jedk1.jedcore.ability.chiblocking.Backstab;
 import com.jedk1.jedcore.ability.chiblocking.DaggerThrow;
 import com.jedk1.jedcore.ability.earthbending.EarthSurf;
+import com.jedk1.jedcore.ability.earthbending.LavaDisc;
 import com.jedk1.jedcore.ability.earthbending.MetalFragments;
 import com.jedk1.jedcore.ability.earthbending.MetalShred;
 import com.jedk1.jedcore.ability.earthbending.combo.MagmaBlast;
@@ -18,17 +19,14 @@ import com.jedk1.jedcore.scoreboard.BendingBoard;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.UpdateChecker;
-import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
-import com.projectkorra.projectkorra.airbending.AirSpout;
 import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
 import com.projectkorra.projectkorra.event.BendingReloadEvent;
 import com.projectkorra.projectkorra.event.HorizontalVelocityChangeEvent;
 import com.projectkorra.projectkorra.event.PlayerCooldownChangeEvent;
-import com.projectkorra.projectkorra.waterbending.WaterSpout;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -42,6 +40,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -91,6 +90,13 @@ public class JCListener implements Listener {
 				// Reset the cooldown of LavaFlow that was set before the call to start().
 				flow.getBendingPlayer().removeCooldown(flow);
 			}
+		}
+	}
+
+	@EventHandler
+	public void onFlow(BlockFromToEvent event) {
+		if (!LavaDisc.canFlowFrom(event.getBlock())) {
+			event.setCancelled(true);
 		}
 	}
 
