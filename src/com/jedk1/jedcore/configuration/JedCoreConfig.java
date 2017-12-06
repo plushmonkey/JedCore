@@ -67,6 +67,9 @@ public class JedCoreConfig {
 		config.addDefault("Properties.ChiRestrictor.ResetCooldown", true);
 		config.addDefault("Properties.ChiRestrictor.MeleeDistance", 7);
 		config.addDefault("Properties.ChiRestrictor.Whitelist", new ArrayList<String>());
+
+		config.addDefault("Properties.CooldownEnforcer.Enabled", false);
+		config.addDefault("Properties.CooldownEnforcer.OnReload", true);
 		
 		config.addDefault("Abilities.Avatar.ElementSphere.Enabled", true);
 		config.addDefault("Abilities.Avatar.ElementSphere.Description", "ElementSphere is a very all round ability, being "

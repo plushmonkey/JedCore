@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import com.jedk1.jedcore.util.FireTick;
+import com.jedk1.jedcore.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -21,9 +21,6 @@ import org.bukkit.util.Vector;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
-import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
@@ -286,6 +283,7 @@ public class JCMethods {
 		BendingBoard.updateOnline();
 		JedCore.plugin.initializeCollisions();
 		FireTick.loadMethod();
+		CooldownEnforcer.onConfigReload();
 
 		if (UpdateChecker.hasUpdate()) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
