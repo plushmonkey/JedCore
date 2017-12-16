@@ -5,10 +5,7 @@ import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.ability.avatar.elementsphere.ESEarth;
 import com.jedk1.jedcore.ability.chiblocking.Backstab;
 import com.jedk1.jedcore.ability.chiblocking.DaggerThrow;
-import com.jedk1.jedcore.ability.earthbending.EarthSurf;
-import com.jedk1.jedcore.ability.earthbending.LavaDisc;
-import com.jedk1.jedcore.ability.earthbending.MetalFragments;
-import com.jedk1.jedcore.ability.earthbending.MetalShred;
+import com.jedk1.jedcore.ability.earthbending.*;
 import com.jedk1.jedcore.ability.earthbending.combo.MagmaBlast;
 import com.jedk1.jedcore.ability.firebending.FireBreath;
 import com.jedk1.jedcore.ability.firebending.FirePunch;
@@ -29,13 +26,10 @@ import com.projectkorra.projectkorra.event.HorizontalVelocityChangeEvent;
 import com.projectkorra.projectkorra.event.PlayerCooldownChangeEvent;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -96,6 +90,19 @@ public class JCListener implements Listener {
 	@EventHandler
 	public void onFlow(BlockFromToEvent event) {
 		if (!LavaDisc.canFlowFrom(event.getBlock())) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerFallDamage(EntityDamageEvent event) {
+		if (event.isCancelled() || event.getCause() != DamageCause.FALL || !(event.getEntity() instanceof Player)) {
+			return;
+		}
+
+		Player player = (Player)event.getEntity();
+
+		if (MudSurge.onFallDamage(player)) {
 			event.setCancelled(true);
 		}
 	}

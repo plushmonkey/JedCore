@@ -420,6 +420,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.MudSurge.WaterSearchRadius", 5);
 		config.addDefault("Abilities.Earth.MudSurge.BlindTicks", 60);
 		config.addDefault("Abilities.Earth.MudSurge.MultipleHits", true);
+		config.addDefault("Abilities.Earth.MudSurge.AllowFallDamage", false);
 		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.SwappedSlots.Enabled", true);
 		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.OutOfRange.Enabled", true);
 		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.OutOfRange.Range", 25.0);
@@ -793,8 +794,10 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Chi.DaggerThrow.ParticleTrail", true);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.Enabled", true);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.Cooldown", 1000);
+		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.HitsRequired", 1);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.AirSpout.Enabled", true);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.AirSpout.Cooldown", 1000);
+		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.AirSpout.HitsRequired", 1);
 
 		String[] invalidWallRun = {Material.BARRIER.name()};
 		config.addDefault("Abilities.Passives.WallRun.Enabled", true);

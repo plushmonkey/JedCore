@@ -5,8 +5,11 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
+import com.projectkorra.projectkorra.BendingPlayer;
+import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -21,6 +24,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -179,6 +183,38 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	private boolean hasStarted() {
 		return this.started;
+	}
+
+	public static boolean isSurgeBlock(Block block) {
+		if (block.getType() != Material.STAINED_CLAY || block.getData() != 12) {
+			return false;
+		}
+
+		for (MudSurge surge : CoreAbility.getAbilities(MudSurge.class)) {
+			if (surge.mudArea.contains(block)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// Returns true if the event should be cancelled.
+	public static boolean onFallDamage(Player player) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null || !bPlayer.hasElement(Element.EARTH)) {
+			return false;
+		}
+
+		ConfigurationSection config = JedCoreConfig.getConfig(player);
+
+		boolean fallDamage = config.getBoolean("Abilities.Earth.MudSurge.AllowFallDamage");
+		if (fallDamage) {
+			return false;
+		}
+
+		Block block = player.getLocation().clone().subtract(0, 0.1, 0).getBlock();
+		return isSurgeBlock(block);
 	}
 
 	public static void mudSurge(Player player) {

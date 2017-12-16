@@ -37,6 +37,7 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	private long cooldown;
 	private boolean limitEnabled;
 	private int maxShots;
+	private int hits = 0;
 	private List<Arrow> arrows = new ArrayList<>();
 
 	public DaggerThrow(Player player) {
@@ -139,6 +140,7 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 		if (GeneralMethods.isRegionProtectedFromBuild((Player) arrow.getShooter(), "DaggerThrow", arrow.getLocation())) {
 			return;
 		}
+
 		arrow.setVelocity(new Vector(0, 0, 0));
 		entity.setNoDamageTicks(0);
 		double prevHealth = entity.getHealth();
@@ -154,11 +156,19 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 			return;
 		}
 
+		DaggerThrow dt = CoreAbility.getAbility(shooter, DaggerThrow.class);
+		if (dt == null) {
+			return;
+		}
+
+		++dt.hits;
+
 		Player target = (Player)entity;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 
 		for (AbilityInteraction interaction : interactions) {
 			if (!interaction.enabled) continue;
+			if (dt.hits < interaction.hitRequirement) continue;
 
 			CoreAbility abilityDefinition = AbilitySelector.getAbility(interaction.name);
 			if (abilityDefinition == null) continue;
@@ -288,6 +298,7 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	private class AbilityInteraction {
 		public boolean enabled;
 		public long cooldown;
+		public int hitRequirement;
 		public String name;
 
 		public AbilityInteraction(String abilityName) {
@@ -299,6 +310,7 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 			ConfigurationSection config = JedCoreConfig.getConfig(player);
 			this.enabled = config.getBoolean("Abilities.Chi.DaggerThrow.Interactions." + name + ".Enabled", true);
 			this.cooldown = config.getLong("Abilities.Chi.DaggerThrow.Interactions." + name + ".Cooldown", 1000);
+			this.hitRequirement = config.getInt("Abilities.Chi.DaggerThrow.Interactions." + name + ".HitsRequired", 1);
 		}
 	}
 }
