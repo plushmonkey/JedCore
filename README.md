@@ -3,6 +3,22 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.6.4
+- Fix bending board toggle.
+  - Ensure that the bending board isn't redrawn after being hidden.
+  - Ignore FastSwim cooldown events because it constantly spams them.
+- Refactor and improve LavaDisc.
+  - Add config option for blocking lava spread from destroyed blocks. This will prevent players from creating large lava fountains.
+  - Add config option for selecting source range.
+  - Change config location for several options. THey are moved under Source or Destroy depending on what they are used for.
+- Improve DaggerThrow by adding a config option for requiring multiple arrows to hit to activate DaggerThrow interactions.
+- Improve MudSurge by adding a config option for earthbenders taking fall damage on MudSurge source blocks.
+- Add CooldownEnforcer utility.
+  - Copies over cooldowns from a player's previous session. This stops players from logging off to reset their cooldowns.
+  - The cooldowns continue ticking down when the player is offline.
+  - Add config option to enable this at Properties.CooldownEnforcer.Enabled. It is disabled by default.
+  - Add config option for enabling it on plugin reload. This is useful to disable when needing to reset a cooldown to test it out.
+
 ### 2.6.3
 - Should work with ProjectKorra 1.8.3 - 1.8.6.
 - Should work with Spigot 1.9.4 - 1.12.2.
