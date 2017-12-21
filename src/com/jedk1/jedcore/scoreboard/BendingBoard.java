@@ -20,7 +20,7 @@ import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
 
 public class BendingBoard {
-
+	private static final List<String> IGNORE_ABILITIES = Arrays.asList("WaterWave", "FastSwim");
 	private static final String OTHER = "Other:";
 	public static Map<String, ChatColor> otherAbilities = new HashMap<>();
 	public static ConcurrentHashMap<Player, BendingBoard> boards = new ConcurrentHashMap<>();
@@ -68,6 +68,12 @@ public class BendingBoard {
 		toggleOn = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.Toggle.On"));
 		toggleOff = ChatColor.translateAlternateColorCodes('&', JedCoreConfig.board.getConfig().getString("Settings.Toggle.Off"));
 		disabledworlds = JedCoreConfig.board.getConfig().getBoolean("Settings.Display.DisabledWorlds");
+	}
+
+	public static boolean shouldIgnoreAbility(String abilityName) {
+		if (abilityName == null) return false;
+
+		return IGNORE_ABILITIES.contains(abilityName);
 	}
 
 	public static void loadOtherCooldowns() {
@@ -167,10 +173,17 @@ public class BendingBoard {
 
 	public void update(final int slot) {
 		if (!enabled) return;
+
 		new BukkitRunnable() {
 			public void run() {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 				if (bPlayer == null) return;
+
+				// Check if the player removed their bending board. It's possible for the board to update after hidden.
+				if (boards.get(player) == null) {
+					player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+					return;
+				}
 
 				HashMap<Integer, String> abilities = bPlayer.getAbilities();
 

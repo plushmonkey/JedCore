@@ -232,12 +232,12 @@ public class JCListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCooldownChange(PlayerCooldownChangeEvent event) {
 		if (event.getPlayer() == null) return;
-		if (event.getAbility() != null) {
-			// Fix a bug in ProjectKorra 1.8.4 that keeps IceWave around forever.
-			// It will continuously add a cooldown to WaterWave, which makes this spam tasks / scoreboard updates.
-			if (event.getAbility().equals("WaterWave")) {
-				return;
-			}
+
+		// Fix a bug in ProjectKorra 1.8.4 that keeps IceWave around forever.
+		// It will continuously add a cooldown to WaterWave, which makes this spam tasks / scoreboard updates.
+		// It also happens with FastSwim when the player is a waterbender.
+		if (BendingBoard.shouldIgnoreAbility(event.getAbility())) {
+			return;
 		}
 
 		BendingBoard.update(event.getPlayer());
