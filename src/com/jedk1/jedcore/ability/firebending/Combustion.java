@@ -1,6 +1,8 @@
 package com.jedk1.jedcore.ability.firebending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.collision.Sphere;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.FireTick;
@@ -231,6 +233,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		private int ticks;
 		private int range;
 		private boolean explodeOnDeath;
+		private double collisionRadius;
 
 		public TravelState() {
 			removalPolicy.removePolicyType(SwappedSlotsRemovalPolicy.class);
@@ -243,6 +246,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 			range = config.getInt("Abilities.Fire.Combustion.Range");
 			explodeOnDeath = config.getBoolean("Abilities.Fire.Combustion.ExplodeOnDeath");
+			collisionRadius = config.getDouble("Abilities.Fire.Combustion.CollisionRadius");
 
 			if (explodeOnDeath) {
 				removalPolicy.removePolicyType(CannotBendRemovalPolicy.class);
@@ -286,12 +290,16 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 			for (int i = 0; i < r; ++i) {
 				render();
 
-				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 1.6D)) {
-					if ((entity instanceof LivingEntity) && (entity.getEntityId() != player.getEntityId())) {
-						location = entity.getLocation();
-						state = new CombustState(location);
-						return;
-					}
+				Sphere collider = new Sphere(location.toVector(), collisionRadius);
+
+				boolean hit = CollisionDetector.checkEntityCollisions(player, collider, (entity) -> {
+					location = entity.getLocation();
+					state = new CombustState(location);
+					return true;
+				});
+
+				if (hit) {
+					return;
 				}
 
 				if (!MaterialUtil.isTransparent(location.getBlock()) || isWater(location.getBlock())) {

@@ -130,6 +130,10 @@ public class AABB {
                 min.getZ() < other.max.getZ());
     }
 
+    public boolean intersects(Sphere sphere) {
+        return sphere.intersects(this);
+    }
+
     private Vector min(Entity entity) {
         try {
             Object handle = getEntityHandle.invoke(CraftEntity.cast(entity));

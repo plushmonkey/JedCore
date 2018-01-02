@@ -2,13 +2,46 @@ package com.jedk1.jedcore.collision;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.*;
 
 public class CollisionDetector {
+    // Checks a sphere collider to see if it's hitting any entities near it.
+    // Calls the CollisionCallback when hitting a target.
+    // Returns true if it hits a target.
+    public static boolean checkEntityCollisions(Player player, Sphere collider, CollisionCallback function) {
+        double maxRange = collider.radius * 4;
+
+        World world = player.getWorld();
+        Location location = new Location(world, collider.center.getX(), collider.center.getY(), collider.center.getZ());
+
+        boolean hit = false;
+
+        for (Entity entity : location.getWorld().getNearbyEntities(location, maxRange, maxRange, maxRange)) {
+            if (!(entity instanceof LivingEntity)) continue;
+            if (entity instanceof ArmorStand) continue;
+            if (entity == player) continue;
+
+            AABB entityBounds = new AABB(entity).at(entity.getLocation());
+
+            if (collider.intersects(entityBounds)) {
+                if (function.onCollision((LivingEntity)entity)) {
+                    return true;
+                }
+                hit = true;
+            }
+        }
+
+        return hit;
+    }
+
     // Checks if the entity is on the ground. Uses NMS bounding boxes for accuracy.
     public static boolean isOnGround(Entity entity) {
         final double epsilon = 0.01;
@@ -63,5 +96,10 @@ public class CollisionDetector {
         }
 
         return Double.MAX_VALUE;
+    }
+
+    public interface CollisionCallback {
+        // return true to break out of the loop
+        boolean onCollision(LivingEntity e);
     }
 }

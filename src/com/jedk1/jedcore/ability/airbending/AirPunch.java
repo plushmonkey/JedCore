@@ -1,6 +1,8 @@
 package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.collision.Sphere;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -28,6 +30,7 @@ public class AirPunch extends AirAbility implements AddonAbility {
 	private int maxShots;
 	private double range;
 	private double damage;
+	private double collisionRadius;
 
 	private int shots;
 	private long lastShotTime;
@@ -58,6 +61,7 @@ public class AirPunch extends AirAbility implements AddonAbility {
 		maxShots = config.getInt("Abilities.Air.AirPunch.Shots");
 		range = config.getDouble("Abilities.Air.AirPunch.Range");
 		damage = config.getDouble("Abilities.Air.AirPunch.Damage");
+		collisionRadius = config.getDouble("Abilities.Air.AirPunch.CollisionRadius");
 		shots = maxShots;
 	}
 
@@ -117,13 +121,10 @@ public class AirPunch extends AirAbility implements AddonAbility {
 				getAirbendingParticles().display((float) Math.random() / 5, (float) Math.random() / 5, (float) Math.random() / 5, 0f, 2, loc, 257D);
 				playAirbendingSound(loc);
 
-				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(loc, 2.0)) {
-					if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
-						DamageHandler.damageEntity(entity, damage, this);
-						cancel = true;
-						break;
-					}
-				}
+				cancel = CollisionDetector.checkEntityCollisions(player, new Sphere(loc.toVector(), collisionRadius), (entity) -> {
+					DamageHandler.damageEntity(entity, damage, this);
+					return true;
+				});
 			}
 
 			if (cancel) {

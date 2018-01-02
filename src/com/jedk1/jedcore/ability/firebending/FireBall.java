@@ -1,5 +1,7 @@
 package com.jedk1.jedcore.ability.firebending;
 
+import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.collision.Sphere;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.AirShieldReflector;
 import com.jedk1.jedcore.util.FireTick;
@@ -8,8 +10,6 @@ import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.airbending.AirShield;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -34,6 +34,7 @@ public class FireBall extends FireAbility implements AddonAbility {
 	private double damage;
 	private boolean controllable;
 	private boolean fireTrail;
+	private double collisionRadius;
 
 	public FireBall(Player player){
 		super(player);
@@ -45,6 +46,7 @@ public class FireBall extends FireAbility implements AddonAbility {
 		
 		location = player.getEyeLocation();
 		direction = player.getEyeLocation().getDirection().normalize();
+
 		bPlayer.addCooldown(this);
 		start();
 	}
@@ -58,6 +60,7 @@ public class FireBall extends FireAbility implements AddonAbility {
 		damage = config.getDouble("Abilities.Fire.FireBall.Damage");
 		controllable = config.getBoolean("Abilities.Fire.FireBall.Controllable");
 		fireTrail = config.getBoolean("Abilities.Fire.FireBall.FireTrail");
+		collisionRadius = config.getDouble("Abilities.Fire.FireBall.CollisionRadius");
 	}
 	
 	@Override
@@ -66,16 +69,18 @@ public class FireBall extends FireAbility implements AddonAbility {
 			remove();
 			return;
 		}
+
 		if(distanceTravelled >= range){
 			remove();
 			return;
 		}
+
 		if (GeneralMethods.isRegionProtectedFromBuild(player, "FireBall", location)) {
 			remove();
 			return;
 		}
+
 		progressFireball();
-		return;
 	}
 	
 	private void progressFireball(){
@@ -101,14 +106,7 @@ public class FireBall extends FireAbility implements AddonAbility {
 				ParticleEffect.FLAME.display(new Vector(0, 0, 0), 0f, location, 257D);
 			}
 
-			boolean hitTarget = false;
-			
-			for(Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2)){
-				if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)){
-					doDamage((LivingEntity) entity);
-					hitTarget = true;
-				}
-			}
+			boolean hitTarget = CollisionDetector.checkEntityCollisions(player, new Sphere(location.toVector(), collisionRadius), this::doDamage);
 
 			if (!hitTarget) {
 				if (this.distanceTravelled > 2 && this.fireTrail) {
@@ -121,12 +119,13 @@ public class FireBall extends FireAbility implements AddonAbility {
 		}
 	}
 	
-	private void doDamage(LivingEntity entity){
+	private boolean doDamage(LivingEntity entity){
 		distanceTravelled = range;
 		DamageHandler.damageEntity(entity, damage, this);
 
 		FireTick.set(entity, Math.round(fireticks / 50));
 		new FireDamageTimer(entity, player);
+		return false;
 	}
 	
 	@Override

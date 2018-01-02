@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.collision.Sphere;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.AirShieldReflector;
 import com.jedk1.jedcore.util.FireTick;
@@ -14,9 +16,6 @@ import com.projectkorra.projectkorra.airbending.AirShield;
 import com.projectkorra.projectkorra.firebending.util.FireDamageTimer;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.jedk1.jedcore.JedCore;
@@ -37,6 +36,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 	private int fireticks;
 	private int range;
 	private double damage;
+	private double collisionRadius;
 
 	public int amount;
 	
@@ -61,6 +61,7 @@ public class FireShots extends FireAbility implements AddonAbility {
 		fireticks = config.getInt("Abilities.Fire.FireShots.FireDuration");
 		range = config.getInt("Abilities.Fire.FireShots.Range");
 		damage = config.getDouble("Abilities.Fire.FireShots.Damage");
+		collisionRadius = config.getDouble("Abilities.Fire.FireShots.CollisionRadius");
 	}
 	
 	public class FireShot {
@@ -108,14 +109,18 @@ public class FireShots extends FireAbility implements AddonAbility {
 				
 				ParticleEffect.SMOKE.display(location, 0.0F, 0.0F, 0.0F, 0.01F, 2);
 				ParticleEffect.FLAME.display(location, 0.0F, 0.0F, 0.0F, 0.02F, 5);
-				
-				for(Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 1.5)){
-					if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)){
-						DamageHandler.damageEntity(entity, damage, ability);
-						FireTick.set(entity, Math.round(fireticks / 50));
-						new FireDamageTimer(entity, player);
-						return false;
-					}
+
+				Sphere collider = new Sphere(location.toVector(), collisionRadius);
+
+				boolean hit = CollisionDetector.checkEntityCollisions(player, collider, (entity) -> {
+					DamageHandler.damageEntity(entity, damage, ability);
+					FireTick.set(entity, Math.round(fireticks / 50));
+					new FireDamageTimer(entity, player);
+					return true;
+				});
+
+				if (hit) {
+					return false;
 				}
 			}
 			return true;
