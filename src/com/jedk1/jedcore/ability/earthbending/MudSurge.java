@@ -42,6 +42,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	private int waterSearchRadius;
 	private boolean wetSource;
 	private long cooldown;
+	private double collisionRadius;
 
 	public static int surgeInterval = 300;
 	public static int mudPoolRadius = 2;
@@ -117,6 +118,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 		cooldown = config.getLong("Abilities.Earth.MudSurge.Cooldown");
 		blindTicks = config.getInt("Abilities.Earth.MudSurge.BlindTicks");
 		multipleHits = config.getBoolean("Abilities.Earth.MudSurge.MultipleHits");
+		collisionRadius = config.getDouble("Abilities.Earth.MudSurge.CollisionRadius");
 	}
 
 	@Override
@@ -400,15 +402,25 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	@Override
 	public void handleCollision(Collision collision) {
 		if (collision.isRemovingFirst()) {
-			Location location = collision.getLocationFirst();
+			Location location = collision.getLocationSecond();
+			double radius = collision.getAbilitySecond().getCollisionRadius();
 
-			Optional<TempFallingBlock> collidedObject = fallingBlocks.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
+			// Loop through all falling blocks because the collision system stops on the first collision.
+			for (Iterator<TempFallingBlock> iterator = fallingBlocks.iterator(); iterator.hasNext();) {
+				TempFallingBlock tfb = iterator.next();
 
-			if (collidedObject.isPresent()) {
-				fallingBlocks.remove(collidedObject.get());
-				collidedObject.get().remove();
+				// Check if this falling block is within collision radius
+				if (tfb.getLocation().distanceSquared(location) <= radius * radius) {
+					tfb.remove();
+					iterator.remove();
+				}
 			}
 		}
+	}
+
+	@Override
+	public double getCollisionRadius() {
+		return collisionRadius;
 	}
 
 	@Override

@@ -282,6 +282,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthShard.PrepareRange", 5);
 		config.addDefault("Abilities.Earth.EarthShard.AbilityRange", 30);
 		config.addDefault("Abilities.Earth.EarthShard.MaxShards", 3);
+		config.addDefault("Abilities.Earth.EarthShard.CollisionRadius", 2.0);
 		
 		config.addDefault("Abilities.Earth.EarthSurf.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthSurf.Description", "This ability allows an earth bender to "
@@ -296,6 +297,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthSurf.Duration.Duration", 7000);
 		config.addDefault("Abilities.Earth.EarthSurf.Duration.Enabled", false);
 		config.addDefault("Abilities.Earth.EarthSurf.RelaxedCollisions", true);
+		config.addDefault("Abilities.Earth.EarthSurf.RemoveOnAnyDamage", false);
 		config.addDefault("Abilities.Earth.EarthSurf.Speed", 0.55);
 		config.addDefault("Abilities.Earth.EarthSurf.HeightTolerance", 3);
 		config.addDefault("Abilities.Earth.EarthSurf.SpringStiffness", 0.35);
@@ -420,6 +422,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.MudSurge.WetSourceOnly", false);
 		config.addDefault("Abilities.Earth.MudSurge.WaterSearchRadius", 5);
 		config.addDefault("Abilities.Earth.MudSurge.BlindTicks", 60);
+		config.addDefault("Abilities.Earth.MudSurge.CollisionRadius", 2.0);
 		config.addDefault("Abilities.Earth.MudSurge.MultipleHits", true);
 		config.addDefault("Abilities.Earth.MudSurge.AllowFallDamage", false);
 		config.addDefault("Abilities.Earth.MudSurge.RemovalPolicy.SwappedSlots.Enabled", true);
@@ -751,6 +754,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Trail", 80);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.BottleSource", false);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.PlantSource", false);
+		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.RemoveOnAnyDamage", false);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Size.Normal", 1);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Size.AvatarState", 3);
 		config.addDefault("Abilities.Water.WaterCombo.WaterFlow.Size.FullmoonSmall", 2);

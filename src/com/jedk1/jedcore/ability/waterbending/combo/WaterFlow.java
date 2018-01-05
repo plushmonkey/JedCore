@@ -57,6 +57,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	private long avatarDuration; //60000;
 	private boolean canUseBottle;
 	private boolean canUsePlants;
+	private boolean removeOnAnyDamage;
 	
 	private long time;
 	private Location origin;
@@ -65,7 +66,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	private Vector direction;
 	private Block sourceblock;
 	private boolean frozen;
-	private double initHealth;
+	private double prevHealth;
 	private int headsize;
 	private boolean usingBottle;
 	private ConcurrentHashMap<Block, Location> directions = new ConcurrentHashMap<Block, Location>();
@@ -95,7 +96,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 			headsize = size;
 			trail = trail * size;
 			range = maxrange;
-			initHealth = player.getHealth();
+			prevHealth = player.getHealth();
 			time = System.currentTimeMillis();
 
 			int augment = (int) Math.round(getNightFactor(player.getWorld()));
@@ -147,6 +148,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		stayrange = config.getInt("Abilities.Water.WaterCombo.WaterFlow.MaxDistanceFromSource");
 		canUseBottle = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.BottleSource");
 		canUsePlants = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.PlantSource");
+		removeOnAnyDamage = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.RemoveOnAnyDamage");
 		fullmoonCooldown = config.getInt("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Modifier.Cooldown");
 		fullmoonDuration = config.getInt("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Modifier.Duration");
 		fullmoonEnabled = config.getBoolean("Abilities.Water.WaterCombo.WaterFlow.FullMoon.Enabled");
@@ -233,10 +235,16 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 			remove();
 			return;
 		}
-		if (initHealth > player.getHealth()) {
+		if (prevHealth > player.getHealth()) {
 			remove();
 			return;
 		}
+
+		if (removeOnAnyDamage) {
+			// Only update the previous health if any damage should remove it.
+			prevHealth = player.getHealth();
+		}
+
 		if (!frozen) {
 			if (player.isSneaking()) {
 				if (range >= minrange) {

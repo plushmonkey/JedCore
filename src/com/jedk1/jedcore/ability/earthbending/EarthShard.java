@@ -1,9 +1,6 @@
 package com.jedk1.jedcore.ability.earthbending;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
@@ -45,6 +42,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	private boolean isPreparing = true;
 	private boolean isThrown = false;
 	private Location origin;
+	private double collisionRadius;
 
 	private List<TempBlock> tblockTracker = new ArrayList<>();
 	private List<TempBlock> readyBlocksTracker = new ArrayList<>();
@@ -86,6 +84,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 		metalDmg = config.getDouble("Abilities.Earth.EarthShard.Damage.Metal");
 		maxShards = config.getInt("Abilities.Earth.EarthShard.MaxShards");
 		cooldown = config.getLong("Abilities.Earth.EarthShard.Cooldown");
+		collisionRadius = config.getDouble("Abilities.Earth.EarthShard.CollisionRadius");
 	}
 
 	public void select() {
@@ -302,15 +301,25 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 	@Override
 	public void handleCollision(Collision collision) {
 		if (collision.isRemovingFirst()) {
-			Location location = collision.getLocationFirst();
+			Location location = collision.getLocationSecond();
+			double radius = collision.getAbilitySecond().getCollisionRadius();
 
-			Optional<TempFallingBlock> collidedObject = fallingBlocks.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
+			// Loop through all falling blocks because the collision system stops on the first collision.
+			for (Iterator<TempFallingBlock> iterator = fallingBlocks.iterator(); iterator.hasNext();) {
+				TempFallingBlock tfb = iterator.next();
 
-			if (collidedObject.isPresent()) {
-				fallingBlocks.remove(collidedObject.get());
-				collidedObject.get().remove();
+				// Check if this falling block is within collision radius
+				if (tfb.getLocation().distanceSquared(location) <= radius * radius) {
+					tfb.remove();
+					iterator.remove();
+				}
 			}
 		}
+	}
+
+	@Override
+	public double getCollisionRadius() {
+		return collisionRadius;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	private static final double TARGET_HEIGHT = 1.5;
 
 	private Location location;
-	private double initHealth;
+	private double prevHealth;
 
 	//Player Positioning
 	private double distOffset = 2.5;
@@ -38,6 +38,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	private long duration;
 	private boolean cooldownEnabled;
 	private boolean durationEnabled;
+	private boolean removeOnAnyDamage;
 	private double speed;
 	private double springStiffness;
 	private Set<Block> ridingBlocks = new HashSet<>();
@@ -64,7 +65,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		this.canFly = player.getAllowFlight() && player.getGameMode() == GameMode.CREATIVE;
 
 		if (canStart()) {
-			initHealth = player.getHealth();
+			prevHealth = player.getHealth();
 			player.setAllowFlight(true);
 			player.setFlying(false);
 			start();
@@ -86,6 +87,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		duration = config.getLong("Abilities.Earth.EarthSurf.Duration.Duration");
 		cooldownEnabled = config.getBoolean("Abilities.Earth.EarthSurf.Cooldown.Enabled");
 		durationEnabled = config.getBoolean("Abilities.Earth.EarthSurf.Duration.Enabled");
+		removeOnAnyDamage = config.getBoolean("Abilities.Earth.EarthSurf.RemoveOnAnyDamage");
 		speed = config.getDouble("Abilities.Earth.EarthSurf.Speed");
 		springStiffness = config.getDouble("Abilities.Earth.EarthSurf.SpringStiffness");
 
@@ -110,8 +112,12 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 		this.player.setFlying(false);
 
-		if (!collisionDetector.isColliding(player) && player.getHealth() >= initHealth) {
+		if (!collisionDetector.isColliding(player) && player.getHealth() >= prevHealth) {
 			movePlayer();
+
+			if (removeOnAnyDamage) {
+				prevHealth = player.getHealth();
+			}
 		} else {
 			remove();
 		}
