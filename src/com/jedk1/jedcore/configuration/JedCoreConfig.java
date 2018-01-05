@@ -184,7 +184,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirPunch.Shots", 4);
 		config.addDefault("Abilities.Air.AirPunch.Range", 30);
 		config.addDefault("Abilities.Air.AirPunch.Damage", 1.0);
-		config.addDefault("Abilities.Air.AirPunch.CollisionRadius", 0.3);
+		config.addDefault("Abilities.Air.AirPunch.CollisionRadius", 0.75);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.Enabled", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveFirst", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveSecond", false);
@@ -478,7 +478,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.Combustion.Warmup", 1500);
 		config.addDefault("Abilities.Fire.Combustion.Cooldown", 5000);
 		config.addDefault("Abilities.Fire.Combustion.RegenTime", 10000);
-		config.addDefault("Abilities.Fire.Combustion.CollisionRadius", 0.5);
+		config.addDefault("Abilities.Fire.Combustion.CollisionRadius", 1.3);
 		config.addDefault("Abilities.Fire.Combustion.DamageBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.RegenBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.WaitForRegen", true);
@@ -500,7 +500,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireBall.FireDuration", 2000);
 		config.addDefault("Abilities.Fire.FireBall.Controllable", false);
 		config.addDefault("Abilities.Fire.FireBall.FireTrail", true);
-		config.addDefault("Abilities.Fire.FireBall.CollisionRadius", 0.4);
+		config.addDefault("Abilities.Fire.FireBall.CollisionRadius", 1.1);
 		config.addDefault("Abilities.Fire.FireBall.Collisions.FireShield.Enabled", true);
 		config.addDefault("Abilities.Fire.FireBall.Collisions.FireShield.RemoveFirst", true);
 		config.addDefault("Abilities.Fire.FireBall.Collisions.FireShield.RemoveSecond", false);
@@ -565,7 +565,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireShots.FireBalls", 4);
 		config.addDefault("Abilities.Fire.FireShots.FireDuration", 3000);
 		config.addDefault("Abilities.Fire.FireShots.Damage", 2.0);
-		config.addDefault("Abilities.Fire.FireShots.CollisionRadius", 0.3);
+		config.addDefault("Abilities.Fire.FireShots.CollisionRadius", 0.9);
 		config.addDefault("Abilities.Fire.FireShots.Collisions.FireShield.Enabled", true);
 		config.addDefault("Abilities.Fire.FireShots.Collisions.FireShield.RemoveFirst", true);
 		config.addDefault("Abilities.Fire.FireShots.Collisions.FireShield.RemoveSecond", false);
