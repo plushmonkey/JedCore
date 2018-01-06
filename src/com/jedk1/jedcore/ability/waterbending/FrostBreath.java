@@ -26,7 +26,6 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
 import com.projectkorra.projectkorra.waterbending.Torrent;
-import com.projectkorra.projectkorra.waterbending.ice.PhaseChange;
 
 public class FrostBreath extends IceAbility implements AddonAbility {
 
@@ -201,7 +200,15 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 					TempBlock temp = new TempBlock(block, Material.ICE, (byte) 8);
 					Torrent.getFrozenBlocks().put(temp, player);
 				} else if (isTransparent(l.getBlock()) && l.clone().add(0, -1, 0).getBlock().getType().isSolid() && !Arrays.asList(invalidBlocks).contains(l.clone().add(0, -1, 0).getBlock().getType())) {
-					new RegenTempBlock(block, Material.SNOW, (byte) 0, snowDuration, !bendSnow);
+					boolean createTemp = !bendSnow;
+
+					// Stop this from overwriting LavaFlow TempBlocks.
+					// This fixes a bug where using FrostBreath against LavaFlow creates a permanent hole in the ground.
+					if (isLava(block) && TempBlock.isTempBlock(block)) {
+						createTemp = true;
+					}
+
+					new RegenTempBlock(block, Material.SNOW, (byte) 0, snowDuration, createTemp);
 				}
 			}
 		}
