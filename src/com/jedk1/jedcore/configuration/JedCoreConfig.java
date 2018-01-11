@@ -767,8 +767,6 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WakeFishing.Cooldown", 10000);
 		config.addDefault("Abilities.Water.WakeFishing.Duration", 20000);
 		config.addDefault("Abilities.Water.WakeFishing.Range", 5);
-
-		config.addDefault("Abilities.Water.WaterBlast.Enabled", false);
 		
 		config.addDefault("Abilities.Water.WaterCombo.Maelstrom.Enabled", true);
 		config.addDefault("Abilities.Water.WaterCombo.Maelstrom.Description", "Create a swirling mass of water that drags any entity that enters it to the bottom "
@@ -818,6 +816,11 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.PlantSource", true);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants", true);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.BottleSource", false);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.AbilityCollisionRadius", 1.6);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.EntityCollisionRadius", 1.6);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.Collisions.FireShield.Enabled", false);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.Collisions.FireShield.RemoveFirst", true);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.Collisions.FireShield.RemoveSecond", false);
 		
 		config.addDefault("Abilities.Water.Ice.Passive.Skate.Enabled", true);
 		config.addDefault("Abilities.Water.Ice.Passive.Skate.SpeedFactor", 4);

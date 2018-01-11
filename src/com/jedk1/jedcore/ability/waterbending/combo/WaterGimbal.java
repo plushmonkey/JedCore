@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.ability.waterbending.WaterBlast;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.jedk1.jedcore.util.CollisionInitializer;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -41,11 +42,13 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	private double ringsize;
 	private double range;
 	private double damage;
-	private int speed;
+	private double speed;
 	private int animspeed;
 	private boolean plant;
 	private boolean requireAdjacentPlants;
 	private boolean canUseBottle;
+	private double abilityCollisionRadius;
+	private double entityCollisionRadius;
 	
 	private int step;
 	private double velocity = 0.15;
@@ -61,7 +64,11 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	private Location origin2;
 	private boolean usingBottle;
 	
-	Random rand = new Random();
+	private Random rand = new Random();
+
+	static {
+		CollisionInitializer.abilityMap.put("WaterGimbal", "");
+	}
 
 	public WaterGimbal(Player player) {
 		super(player);
@@ -96,11 +103,13 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		ringsize = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.RingSize");
 		range = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Range");
 		damage = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Damage");
-		speed = config.getInt("Abilities.Water.WaterCombo.WaterGimbal.Speed");
+		speed = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Speed");
 		animspeed = config.getInt("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed");
 		plant = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.PlantSource");
 		requireAdjacentPlants = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants");
 		canUseBottle = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.BottleSource");
+		abilityCollisionRadius = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.AbilityCollisionRadius");
+		entityCollisionRadius = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.EntityCollisionRadius");
 	}
 
 
@@ -125,14 +134,14 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 			getGimbalBlocks(player.getLocation());
 			if (!leftvisible && !leftconsumed) {
 				if (origin1.getBlockY() <= player.getEyeLocation().getBlockY()) {
-					new WaterBlast(player, origin1, range, damage, speed, this);
+					new WaterBlast(player, origin1, range, damage, speed, entityCollisionRadius, abilityCollisionRadius, this);
 					leftconsumed = true;
 				}
 			}
 
 			if (!rightvisible && !rightconsumed) {
 				if (origin2.getBlockY() <= player.getEyeLocation().getBlockY()) {
-					new WaterBlast(player, origin2, range, damage, speed, this);
+					new WaterBlast(player, origin2, range, damage, speed, entityCollisionRadius, abilityCollisionRadius, this);
 					rightconsumed = true;
 				}
 			}

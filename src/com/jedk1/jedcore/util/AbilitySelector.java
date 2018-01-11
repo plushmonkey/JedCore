@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.util;
 
+import com.jedk1.jedcore.ability.waterbending.WaterBlast;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.earthbending.*;
 import com.projectkorra.projectkorra.firebending.*;
@@ -36,6 +37,8 @@ public class AbilitySelector {
         specialAbilities.put("RaiseEarthWall", CoreAbility.getAbility(RaiseEarthWall.class));
         specialAbilities.put("Collapse", CoreAbility.getAbility(Collapse.class));
         specialAbilities.put("CollapseWall", CoreAbility.getAbility(CollapseWall.class));
+
+        specialAbilities.put("WaterGimbal", CoreAbility.getAbility(WaterBlast.class));
     }
 
     public static CoreAbility getAbility(String abilityName) {

@@ -3,6 +3,7 @@ package com.jedk1.jedcore.util;
 import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ProjectKorra;
+import com.projectkorra.projectkorra.ability.ComboAbility;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.firebending.FireBlast;
@@ -16,6 +17,8 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 public class CollisionInitializer<T extends CoreAbility> {
+    // This is used for special mappings where collisions are stored in a separate place.
+    public static Map<String, String> abilityMap = new HashMap<>();
     private Class<T> type;
 
     public CollisionInitializer(Class<T> type) {
@@ -37,14 +40,17 @@ public class CollisionInitializer<T extends CoreAbility> {
             }
         }
 
-        String elementName = element.getName();
-        String collisionPath = "Abilities." + elementName + "." + abilityName + ".Collisions";
+        if (abilityMap.containsKey(abilityName)) {
+            abilityName = abilityMap.get(abilityName);
+        }
+
+        String collisionPath = getCollisionPath(abilityName, element);
 
         ConfigurationSection section = JedCore.plugin.getConfig().getConfigurationSection(collisionPath);
         for (String key : section.getKeys(false)) {
             ConfigurationSection abilityConfig = section.getConfigurationSection(key);
 
-            boolean enabled = abilityConfig.getBoolean("Enabled", true);
+            boolean enabled = abilityConfig.getBoolean("Enabled");
             if (!enabled) continue;
 
             boolean removeFirst = abilityConfig.getBoolean("RemoveFirst");
@@ -60,5 +66,24 @@ public class CollisionInitializer<T extends CoreAbility> {
         }
 
         return true;
+    }
+
+    private String getCollisionPath(String abilityName, Element element) {
+        CoreAbility ability = CoreAbility.getAbility(abilityName);
+        if (ability == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Abilities.").append(element.getName()).append(".");
+
+        if (ability instanceof ComboAbility) {
+            sb.append(element.getName()).append("Combo.");
+        }
+
+        sb.append(abilityName).append(".Collisions");
+
+        return sb.toString();
     }
 }
