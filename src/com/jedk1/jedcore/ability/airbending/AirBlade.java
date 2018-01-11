@@ -1,6 +1,8 @@
 package com.jedk1.jedcore.ability.airbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.collision.Sphere;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -8,13 +10,12 @@ import com.projectkorra.projectkorra.ability.AirAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AirBlade extends AirAbility implements AddonAbility {
 
@@ -25,6 +26,7 @@ public class AirBlade extends AirAbility implements AddonAbility {
 	private long cooldown;
 	private double range;
 	private double damage;
+	private double entityCollisionRadius;
 
 	public AirBlade(Player player) {
 		super(player);
@@ -46,6 +48,7 @@ public class AirBlade extends AirAbility implements AddonAbility {
 		cooldown = config.getLong("Abilities.Air.AirBlade.Cooldown");
 		range = config.getDouble("Abilities.Air.AirBlade.Range");
 		damage = config.getDouble("Abilities.Air.AirBlade.Damage");
+		entityCollisionRadius = config.getDouble("Abilities.Air.AirBlade.EntityCollisionRadius");
 	}
 	
 	@Override
@@ -54,12 +57,13 @@ public class AirBlade extends AirAbility implements AddonAbility {
 			remove();
 			return;
 		}
+
 		if (travelled >= range) {
 			remove();
 			return;
 		}
+
 		progressBlade();
-		return;
 	}
 
 	private void progressBlade() {
@@ -73,7 +77,7 @@ public class AirBlade extends AirAbility implements AddonAbility {
 				return;
 			}
 
-			if (!isPassable(location.getBlock())) {
+			if (!isTransparent(location.getBlock())) {
 				remove();
 				return;
 			}
@@ -96,14 +100,19 @@ public class AirBlade extends AirAbility implements AddonAbility {
 				playAirbendingParticles(tempLoc, 1, (float) Math.random() / 2, (float) Math.random() / 2, (float) Math.random() / 2);
 
 				if (j == 0) {
+					// Only check collisions for each block.
 					if (!lastLoc.getBlock().getLocation().equals(tempLoc.getBlock().getLocation())) {
 						lastLoc = tempLoc;
-						for (Entity entity : GeneralMethods.getEntitiesAroundPoint(tempLoc, 1)) {
-							if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
-								DamageHandler.damageEntity(entity, damage, this);
-								remove();
-								return;
-							}
+
+						boolean hit = CollisionDetector.checkEntityCollisions(player, new Sphere(tempLoc.toVector(), entityCollisionRadius), (entity) -> {
+							DamageHandler.damageEntity(entity, damage, this);
+							remove();
+							return true;
+						});
+
+						if (hit) {
+							remove();
+							return;
 						}
 					}
 				}
@@ -111,20 +120,41 @@ public class AirBlade extends AirAbility implements AddonAbility {
 		}
 	}
 
-	private boolean isPassable(Block block) {
-		if (isTransparent(block))
-			return true;
-		return false;
-	}
-
 	public Player getPlayer() {
 		return player;
 	}
-	
+
+	@Override
 	public Location getLocation() {
 		return location;
 	}
-	
+
+	@Override
+	public List<Location> getLocations() {
+		List<Location> locations = new ArrayList<>();
+
+		double pitch = -location.getPitch();
+		for (double i = -90 + pitch; i <= 90 + pitch; i += 8) {
+			Location tempLoc = location.clone();
+			tempLoc.setPitch(0);
+			Vector tempDir = tempLoc.getDirection().clone();
+			tempDir.setY(0);
+			Vector newDir = tempDir.clone().multiply(growth * Math.cos(Math.toRadians(i)));
+			tempLoc.add(newDir);
+			tempLoc.setY(tempLoc.getY() + (growth * Math.sin(Math.toRadians(i))));
+
+			locations.add(tempLoc);
+		}
+
+		return locations;
+	}
+
+	@Override
+	public double getCollisionRadius() {
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getDouble("Abilities.Air.AirBlade.AbilityCollisionRadius");
+	}
+
 	public long getCooldown() {
 		return cooldown;
 	}
@@ -161,17 +191,17 @@ public class AirBlade extends AirAbility implements AddonAbility {
 	@Override
 	public String getDescription() {
 		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
-	   return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirBlade.Description");
+		return "* JedCore Addon *\n" + config.getString("Abilities.Air.AirBlade.Description");
 	}
 	
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 	
 	@Override

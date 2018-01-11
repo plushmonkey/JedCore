@@ -197,6 +197,12 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 	}
 
 	@Override
+	public double getCollisionRadius() {
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getDouble("Abilities.Chi.DaggerThrow.AbilityCollisionRadius");
+	}
+
+	@Override
 	public void handleCollision(Collision collision) {
 		if (collision.isRemovingFirst()) {
 			Location location = collision.getLocationFirst();
@@ -243,12 +249,12 @@ public class DaggerThrow extends ChiAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 	
 	@Override

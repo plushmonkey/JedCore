@@ -10,6 +10,7 @@ import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.airbending.AirShield;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -119,7 +120,9 @@ public class FireBall extends FireAbility implements AddonAbility {
 		}
 	}
 	
-	private boolean doDamage(LivingEntity entity){
+	private boolean doDamage(Entity entity){
+		if (!(entity instanceof LivingEntity)) return false;
+
 		distanceTravelled = range;
 		DamageHandler.damageEntity(entity, damage, this);
 

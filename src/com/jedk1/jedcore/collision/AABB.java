@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AABB {
+public class AABB implements Collider {
     public static AABB PlayerBounds = new AABB(new Vector(-0.3, 0.0, -0.3), new Vector(0.3, 1.8, 0.3));
     public static AABB BlockBounds = new AABB(new Vector(0.0, 0.0, 0.0), new Vector(1.0, 1.0, 1.0));
 
@@ -75,6 +75,28 @@ public class AABB {
         return at(location.toVector());
     }
 
+    public AABB grow(double x, double y, double z) {
+        Vector change = new Vector(x, y, z);
+
+        return new AABB(min.clone().subtract(change), max.clone().add(change));
+    }
+
+    public AABB scale(double x, double y, double z) {
+        Vector extents = getHalfExtents();
+        Vector newExtents = extents.clone().multiply(new Vector(x, y, z));
+
+        Vector diff = newExtents.clone().subtract(extents);
+        return grow(diff.getX(), diff.getY(), diff.getZ());
+    }
+
+    public AABB scale(double amount) {
+        Vector extents = getHalfExtents();
+        Vector newExtents = extents.clone().multiply(amount);
+
+        Vector diff = newExtents.clone().subtract(extents);
+        return grow(diff.getX(), diff.getY(), diff.getZ());
+    }
+
     public Vector min() {
         return this.min;
     }
@@ -132,6 +154,18 @@ public class AABB {
 
     public boolean intersects(Sphere sphere) {
         return sphere.intersects(this);
+    }
+
+    @Override
+    public Vector getPosition() {
+        return mid();
+    }
+
+    @Override
+    public Vector getHalfExtents() {
+        Vector half = max.clone().subtract(min).multiply(0.5);
+        // Return a vector of half extents that reach from mid to box sides.
+        return new Vector(Math.abs(half.getX()), Math.abs(half.getY()), Math.abs(half.getZ()));
     }
 
     private Vector min(Entity entity) {

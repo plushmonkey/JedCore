@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.util;
 
 import com.jedk1.jedcore.JedCore;
+import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
@@ -27,7 +28,16 @@ public class CollisionInitializer<T extends CoreAbility> {
         if (ability == null) return false;
 
         String abilityName = ability.getName();
-        String elementName = ability.getElement().getName();
+
+        Element element = ability.getElement();
+        if (element instanceof Element.SubElement) {
+            element = ((Element.SubElement) element).getParentElement();
+            if (element == null) {
+                element = ability.getElement();
+            }
+        }
+
+        String elementName = element.getName();
         String collisionPath = "Abilities." + elementName + "." + abilityName + ".Collisions";
 
         ConfigurationSection section = JedCore.plugin.getConfig().getConfigurationSection(collisionPath);

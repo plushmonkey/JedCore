@@ -2,7 +2,7 @@ package com.jedk1.jedcore.collision;
 
 import org.bukkit.util.Vector;
 
-public class Sphere {
+public class Sphere implements Collider {
     public Vector center;
     public double radius;
 
@@ -34,6 +34,16 @@ public class Sphere {
 
         // Spheres will be colliding if their distance apart is less than the sum of the radii.
         return distSq <= rsum * rsum;
+    }
+
+    @Override
+    public Vector getPosition() {
+        return center.clone();
+    }
+
+    @Override
+    public Vector getHalfExtents() {
+        return new Vector(radius, radius, radius);
     }
 
     public boolean contains(Vector point) {

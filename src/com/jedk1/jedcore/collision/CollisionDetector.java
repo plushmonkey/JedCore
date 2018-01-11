@@ -13,28 +13,42 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class CollisionDetector {
-    // Checks a sphere collider to see if it's hitting any entities near it.
+    public static boolean checkEntityCollisions(Player player, Collider collider, CollisionCallback function) {
+        return checkEntityCollisions(player, collider, function, true);
+    }
+
+    // Checks a collider to see if it's hitting any entities near it.
     // Calls the CollisionCallback when hitting a target.
     // Returns true if it hits a target.
-    public static boolean checkEntityCollisions(Player player, Sphere collider, CollisionCallback function) {
-        double maxRange = collider.radius * 4;
+    public static boolean checkEntityCollisions(Player player, Collider collider, CollisionCallback callback, boolean livingOnly) {
+        // This is used to increase the lookup volume for nearby entities.
+        // Entity locations can be out of the collider volume while still intersecting.
+        final double ExtentBuffer = 4.0;
+
+        // Create the extent vector to use as size of bounding box to find nearby entities.
+        Vector extent = collider.getHalfExtents().add(new Vector(ExtentBuffer, ExtentBuffer, ExtentBuffer));
 
         World world = player.getWorld();
-        Location location = new Location(world, collider.center.getX(), collider.center.getY(), collider.center.getZ());
+        Vector pos = collider.getPosition();
+        Location location = new Location(world, pos.getX(), pos.getY(), pos.getZ());
 
         boolean hit = false;
 
-        for (Entity entity : location.getWorld().getNearbyEntities(location, maxRange, maxRange, maxRange)) {
-            if (!(entity instanceof LivingEntity)) continue;
-            if (entity instanceof ArmorStand) continue;
+        for (Entity entity : location.getWorld().getNearbyEntities(location, extent.getX(), extent.getY(), extent.getZ())) {
             if (entity == player) continue;
+
+            if (livingOnly) {
+                if (!(entity instanceof LivingEntity)) continue;
+                if (entity instanceof ArmorStand) continue;
+            }
 
             AABB entityBounds = new AABB(entity).at(entity.getLocation());
 
             if (collider.intersects(entityBounds)) {
-                if (function.onCollision((LivingEntity)entity)) {
+                if (callback.onCollision(entity)) {
                     return true;
                 }
+
                 hit = true;
             }
         }
@@ -100,6 +114,6 @@ public class CollisionDetector {
 
     public interface CollisionCallback {
         // return true to break out of the loop
-        boolean onCollision(LivingEntity e);
+        boolean onCollision(Entity e);
     }
 }

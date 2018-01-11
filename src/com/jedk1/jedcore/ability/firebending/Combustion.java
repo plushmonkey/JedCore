@@ -103,6 +103,12 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	}
 
 	@Override
+	public double getCollisionRadius() {
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getDouble("Abilities.Fire.Combustion.AbilityCollisionRadius");
+	}
+
+	@Override
 	public String getName() {
 		return "Combustion";
 	}
@@ -233,7 +239,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		private int ticks;
 		private int range;
 		private boolean explodeOnDeath;
-		private double collisionRadius;
+		private double entityCollisionRadius;
 
 		public TravelState() {
 			removalPolicy.removePolicyType(SwappedSlotsRemovalPolicy.class);
@@ -246,7 +252,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 			range = config.getInt("Abilities.Fire.Combustion.Range");
 			explodeOnDeath = config.getBoolean("Abilities.Fire.Combustion.ExplodeOnDeath");
-			collisionRadius = config.getDouble("Abilities.Fire.Combustion.CollisionRadius");
+			entityCollisionRadius = config.getDouble("Abilities.Fire.Combustion.EntityCollisionRadius");
 
 			if (explodeOnDeath) {
 				removalPolicy.removePolicyType(CannotBendRemovalPolicy.class);
@@ -290,7 +296,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 			for (int i = 0; i < r; ++i) {
 				render();
 
-				Sphere collider = new Sphere(location.toVector(), collisionRadius);
+				Sphere collider = new Sphere(location.toVector(), entityCollisionRadius);
 
 				boolean hit = CollisionDetector.checkEntityCollisions(player, collider, (entity) -> {
 					location = entity.getLocation();

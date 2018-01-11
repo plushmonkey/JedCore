@@ -136,6 +136,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirBlade.Cooldown", 3000);
 		config.addDefault("Abilities.Air.AirBlade.Range", 30.0);
 		config.addDefault("Abilities.Air.AirBlade.Damage", 4.0);
+		config.addDefault("Abilities.Air.AirBlade.EntityCollisionRadius", 1.0);
+		config.addDefault("Abilities.Air.AirBlade.AbilityCollisionRadius", 1.0);
 		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.Enabled",true);
 		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.RemoveFirst",true);
 		config.addDefault("Abilities.Air.AirBlade.Collisions.FireBlast.RemoveSecond",true);
@@ -184,7 +186,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.AirPunch.Shots", 4);
 		config.addDefault("Abilities.Air.AirPunch.Range", 30);
 		config.addDefault("Abilities.Air.AirPunch.Damage", 1.0);
-		config.addDefault("Abilities.Air.AirPunch.CollisionRadius", 0.75);
+		config.addDefault("Abilities.Air.AirPunch.EntityCollisionRadius", 1.0);
+		config.addDefault("Abilities.Air.AirPunch.AbilityCollisionRadius", 1.0);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.Enabled", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveFirst", true);
 		config.addDefault("Abilities.Air.AirPunch.Collisions.FireBlast.RemoveSecond", false);
@@ -220,6 +223,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Air.SonicBlast.Effects.BlindnessDuration", 5000);
 		config.addDefault("Abilities.Air.SonicBlast.Effects.NauseaDuration", 5000);
 		config.addDefault("Abilities.Air.SonicBlast.Cooldown", 6000);
+		config.addDefault("Abilities.Air.SonicBlast.EntityCollisionRadius", 1.3);
+		config.addDefault("Abilities.Air.SonicBlast.AbilityCollisionRadius", 1.3);
 		config.addDefault("Abilities.Air.SonicBlast.Range", 20);
 		config.addDefault("Abilities.Air.SonicBlast.ChargeSwapping", true);
 		
@@ -250,7 +255,34 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthKick.Cooldown", 2000);
 		config.addDefault("Abilities.Earth.EarthKick.EarthBlocks", 10);
 		config.addDefault("Abilities.Earth.EarthKick.Damage", 2.0);
-		
+		config.addDefault("Abilities.Earth.EarthKick.EntityCollisionRadius", 1.5);
+		config.addDefault("Abilities.Earth.EarthKick.AbilityCollisionRadius", 1.5);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.FireBlast.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.FireBlast.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.FireBlast.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.EarthBlast.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.EarthBlast.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.EarthBlast.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.WaterManipulation.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.WaterManipulation.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.WaterManipulation.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirSwipe.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirSwipe.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirSwipe.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.Combustion.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.Combustion.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.Combustion.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.WaterSpout.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.WaterSpout.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.WaterSpout.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirSpout.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirSpout.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirSpout.RemoveSecond", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirWheel.Enabled", true);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirWheel.RemoveFirst", false);
+		config.addDefault("Abilities.Earth.EarthKick.Collisions.AirWheel.RemoveSecond", true);
+
+
 		config.addDefault("Abilities.Earth.EarthLine.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthLine.Description", "To use, place your cursor over an earth-bendable block on the ground, "
 			+ "then Sneak (Default: Shift) to select the block. After selecting the block you may release Sneak. "
@@ -478,7 +510,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.Combustion.Warmup", 1500);
 		config.addDefault("Abilities.Fire.Combustion.Cooldown", 5000);
 		config.addDefault("Abilities.Fire.Combustion.RegenTime", 10000);
-		config.addDefault("Abilities.Fire.Combustion.CollisionRadius", 1.3);
+		config.addDefault("Abilities.Fire.Combustion.EntityCollisionRadius", 1.3);
+		config.addDefault("Abilities.Fire.Combustion.AbilityCollisionRadius", 1.3);
 		config.addDefault("Abilities.Fire.Combustion.DamageBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.RegenBlocks", true);
 		config.addDefault("Abilities.Fire.Combustion.WaitForRegen", true);
@@ -491,6 +524,10 @@ public class JedCoreConfig {
 				+ "of your fingertips zapping what ever it hits!");
 		config.addDefault("Abilities.Fire.Discharge.Damage", 3.0);
 		config.addDefault("Abilities.Fire.Discharge.Cooldown", 5000);
+		config.addDefault("Abilities.Fire.Discharge.Duration", 1000);
+		config.addDefault("Abilities.Fire.Discharge.SlotSwapping", false);
+		config.addDefault("Abilities.Fire.Discharge.EntityCollisionRadius", 1.0);
+		config.addDefault("Abilities.Fire.Discharge.AbilityCollisionRadius", 1.0);
 		
 		config.addDefault("Abilities.Fire.FireBall.Enabled", true);
 		config.addDefault("Abilities.Fire.FireBall.Description", "To use, simply Left-Click to shoot a fireball at your target!");
@@ -800,6 +837,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Chi.DaggerThrow.MaxDaggers.Amount", 6);
 		config.addDefault("Abilities.Chi.DaggerThrow.Damage", 1.0);
 		config.addDefault("Abilities.Chi.DaggerThrow.ParticleTrail", true);
+		config.addDefault("Abilities.Chi.DaggerThrow.AbilityCollisionRadius", 0.5);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.Enabled", true);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.Cooldown", 1000);
 		config.addDefault("Abilities.Chi.DaggerThrow.Interactions.WaterSpout.HitsRequired", 1);

@@ -1,9 +1,11 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.collision.AABB;
+import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.jedk1.jedcore.util.BlockUtil;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
@@ -17,9 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -31,26 +31,29 @@ import java.util.Random;
 import static java.util.stream.Collectors.toList;
 
 public class EarthKick extends EarthAbility implements AddonAbility {
-
-	private List<TempFallingBlock> temps = new ArrayList<TempFallingBlock>();
+	private List<TempFallingBlock> temps = new ArrayList<>();
 
 	private Material material;
 	private byte materialData;
 	private Location location;
-	private Vector direction;
-	Random rand = new Random();
+	private Random rand = new Random();
 
 	private long cooldown;
 	private int earthBlocks;
-	private static double damage ;
+	private double damage;
+	private double entityCollisionRadius;
 
 	public EarthKick(Player player) {
 		super(player);
+
 		if (!bPlayer.canBend(this)) {
 			return;
 		}
+
 		setFields();
+
 		location = player.getLocation();
+
 		if ((player.getLocation().getPitch() > 30) && prepare()) {
 			start();
 			launchBlocks();
@@ -63,16 +66,24 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 		cooldown = config.getLong("Abilities.Earth.EarthKick.Cooldown");
 		earthBlocks = config.getInt("Abilities.Earth.EarthKick.EarthBlocks");
 		damage = config.getDouble("Abilities.Earth.EarthKick.Damage");
+		entityCollisionRadius = config.getDouble("Abilities.Earth.EarthKick.EntityCollisionRadius");
+
+		if (entityCollisionRadius < 1.0) {
+			entityCollisionRadius = 1.0;
+		}
 	}
 
 	@SuppressWarnings("deprecation")
 	private boolean prepare() {
 		Block block = BlockSource.getEarthSourceBlock(player, 3, ClickType.SHIFT_DOWN);
+
 		if (block != null && !isMetal(block)) {
 			material = block.getType();
 			materialData = block.getData();
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -82,24 +93,27 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 			remove();
 			return;
 		}
+
 		if (!bPlayer.canBendIgnoreCooldowns(this)) {
 			remove();
 			return;
 		}
+
 		bPlayer.addCooldown(this);
 		track();
+
 		if (temps.isEmpty()) {
 			remove();
-			return;
 		}
-		return;
 	}
 
 	private void launchBlocks() {
 		location.setPitch(0);
-		direction = location.getDirection();
+		Vector direction = location.getDirection();
 		location.add(direction.clone().multiply(1.0));
+
 		ParticleEffect.CRIT.display(location, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 10);
+
 		int yaw = Math.round(player.getLocation().getYaw());
 
 		playEarthbendingSound(location);
@@ -117,9 +131,11 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	}
 
 	public void track() {
-		List<Integer> ids = new ArrayList<Integer>();
+		List<Integer> ids = new ArrayList<>();
+
 		for (TempFallingBlock tfb : temps) {
 			FallingBlock fb = tfb.getFallingBlock();
+
 			if (fb == null || fb.isDead()) {
 				ids.add(temps.indexOf(tfb));
 				continue;
@@ -130,33 +146,19 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 				ParticleEffect.BLOCK_CRACK.display(new BlockData(material, materialData), new Vector(0, 0, 0), 0.2F, fb.getLocation(), 257D);
 			}
 
-			blockMove(fb.getLocation(), player);
-			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(fb.getLocation(), 2)) {
-				if (entity instanceof LivingEntity && entity.getUniqueId() != player.getUniqueId()) {
-					DamageHandler.damageEntity(entity, damage, this);
-				}
-			}
+			AABB collider = BlockUtil.getFallingBlockBoundsFull(fb).scale(entityCollisionRadius);
+
+			CollisionDetector.checkEntityCollisions(player, collider, (entity) -> {
+				DamageHandler.damageEntity(entity, damage, this);
+				return false;
+			});
 		}
+
 		for (int id : ids) {
 			if (id < temps.size()) {
 				temps.remove(id);
 			}
 		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private static void blockMove(Location l, Player p) {
-		List<String> abilityNames = new ArrayList<String>();
-		abilityNames.add("FireBlast");
-		abilityNames.add("EarthBlast");
-		abilityNames.add("WaterManipulation");
-		abilityNames.add("AirSwipe");
-		abilityNames.add("Combustion");
-		abilityNames.add("WaterSpout");
-		abilityNames.add("AirSpout");
-		abilityNames.add("AirWheel");
-
-		GeneralMethods.blockAbilities(p, abilityNames, l, 1.5);
 	}
 
 	@Override
@@ -172,6 +174,12 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	@Override
 	public List<Location> getLocations() {
 		return temps.stream().map(TempFallingBlock::getLocation).collect(toList());
+	}
+
+	@Override
+	public double getCollisionRadius() {
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+		return config.getDouble("Abilities.Earth.EarthKick.AbilityCollisionRadius");
 	}
 
 	@Override
@@ -221,12 +229,12 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 
 	@Override
