@@ -25,10 +25,10 @@ public class FireTick {
 
         FireTickMethod newMethod = methods.get(methodName.toLowerCase());
         if (newMethod != null) {
-            JedCore.plugin.getLogger().info("Using " + methodName + " as FireTickMethod.");
+            JedCore.logDebug("Using " + methodName + " as FireTickMethod.");
             method = newMethod;
         } else {
-            JedCore.plugin.getLogger().info(methodName + " not a known FireTickMethod. Defaulting to larger method.");
+            JedCore.plugin.getLogger().warning(methodName + " not a known FireTickMethod. Defaulting to larger method.");
             method = new LargerFireTickMethod();
         }
     }

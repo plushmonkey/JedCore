@@ -32,7 +32,7 @@ public class UpdateChecker {
 	
 	public static void fetch() {
 		//if (!JedCore.plugin.getConfig().getBoolean("Settings.Updater.Check")) {
-			JedCore.log.info("JedCore update checker is disabled, skipping compatibility checks.");
+			//JedCore.log.info("JedCore update checker is disabled, skipping compatibility checks.");
 			//JedCore.log.info("Please enable the update checker to ensure your JedCore version is compatible with the ProjectKorra version you are running.");
 		downloadURL = "https://github.com/plushmonkey/JedCore";
 		//	return;

@@ -62,6 +62,7 @@ public class JedCoreConfig {
 		config.addDefault("Properties.AbilityCollisions.Enabled", true);
 		config.addDefault("Properties.PerWorldConfig", true);
 		config.addDefault("Properties.FireTickMethod", "larger");
+		config.addDefault("Properties.LogDebug", false);
 
 		config.addDefault("Properties.ChiRestrictor.Enabled", false);
 		config.addDefault("Properties.ChiRestrictor.ResetCooldown", true);

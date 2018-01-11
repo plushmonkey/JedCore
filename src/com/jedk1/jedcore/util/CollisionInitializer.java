@@ -6,15 +6,10 @@ import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.ComboAbility;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
-import com.projectkorra.projectkorra.firebending.FireBlast;
-import com.projectkorra.projectkorra.firebending.FireBlastCharged;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static java.util.stream.Collectors.toList;
 
 public class CollisionInitializer<T extends CoreAbility> {
     // This is used for special mappings where collisions are stored in a separate place.
@@ -59,7 +54,7 @@ public class CollisionInitializer<T extends CoreAbility> {
             CoreAbility secondAbility = AbilitySelector.getAbility(key);
 
             if (secondAbility != null) {
-                JedCore.plugin.getLogger().info("Initializing collision for " + abilityName + " => " + key);
+                JedCore.logDebug("Initializing collision for " + abilityName + " => " + key);
 
                 ProjectKorra.getCollisionManager().addCollision(new Collision(ability, secondAbility, removeFirst, removeSecond));
             }

@@ -272,6 +272,7 @@ public class JCMethods {
 	public static void reload() {
 		JedCore.log.info("JedCore Reloaded.");
 		JedCore.plugin.reloadConfig();
+		JedCore.logDebug = JedCoreConfig.getConfig((World)null).getBoolean("Properties.LogDebug");
 		JedCoreConfig.board.reloadConfig();
 		CoreAbility.registerPluginAbilities(JedCore.plugin, "com.jedk1.jedcore.ability");
 		registerDisabledWorlds();

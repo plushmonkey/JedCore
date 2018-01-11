@@ -5,6 +5,7 @@ import java.util.logging.*;
 
 import com.google.common.reflect.ClassPath;
 import com.jedk1.jedcore.util.*;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.jedk1.jedcore.command.Commands;
@@ -22,7 +23,8 @@ public class JedCore extends JavaPlugin {
 	public static Logger log;
 	public static String dev;
 	public static String version;
-	
+	public static boolean logDebug;
+
 	@Override
 	public void onEnable() {
 		if (!isJava8orHigher()) {
@@ -34,7 +36,9 @@ public class JedCore extends JavaPlugin {
 		plugin = this;
 		JedCore.log = this.getLogger();
 		new JedCoreConfig(this);
-		
+
+		logDebug = JedCoreConfig.getConfig((World)null).getBoolean("Properties.LogDebug");
+
 		UpdateChecker.fetch();
 		
 		if (!isSpigot()) {
@@ -116,5 +120,11 @@ public class JedCore extends JavaPlugin {
 	public void onDisable() {
 		RegenTempBlock.revertAll();
 		TempFallingBlock.removeAllFallingBlocks();
+	}
+
+	public static void logDebug(String message) {
+		if (logDebug) {
+			plugin.getLogger().info(message);
+		}
 	}
 }
