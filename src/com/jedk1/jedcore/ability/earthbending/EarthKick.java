@@ -3,6 +3,7 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.collision.AABB;
 import com.jedk1.jedcore.collision.CollisionDetector;
+import com.jedk1.jedcore.collision.CollisionUtil;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.BlockUtil;
 import com.jedk1.jedcore.util.TempFallingBlock;
@@ -146,7 +147,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 				ParticleEffect.BLOCK_CRACK.display(new BlockData(material, materialData), new Vector(0, 0, 0), 0.2F, fb.getLocation(), 257D);
 			}
 
-			AABB collider = BlockUtil.getFallingBlockBoundsFull(fb).scale(entityCollisionRadius);
+			AABB collider = BlockUtil.getFallingBlockBoundsFull(fb).scale(entityCollisionRadius * 2.0);
 
 			CollisionDetector.checkEntityCollisions(player, collider, (entity) -> {
 				DamageHandler.damageEntity(entity, damage, this);
@@ -184,16 +185,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void handleCollision(Collision collision) {
-		if (collision.isRemovingFirst()) {
-			Location location = collision.getLocationFirst();
-
-			Optional<TempFallingBlock> collidedObject = temps.stream().filter(temp -> temp.getLocation().equals(location)).findAny();
-
-			if (collidedObject.isPresent()) {
-				temps.remove(collidedObject.get());
-				collidedObject.get().remove();
-			}
-		}
+		CollisionUtil.handleFallingBlockCollisions(collision, temps);
 	}
 
 	@Override

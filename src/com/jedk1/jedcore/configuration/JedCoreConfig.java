@@ -315,7 +315,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthShard.PrepareRange", 5);
 		config.addDefault("Abilities.Earth.EarthShard.AbilityRange", 30);
 		config.addDefault("Abilities.Earth.EarthShard.MaxShards", 3);
-		config.addDefault("Abilities.Earth.EarthShard.CollisionRadius", 2.0);
+		config.addDefault("Abilities.Earth.EarthShard.AbilityCollisionRadius", 2.0);
+		config.addDefault("Abilities.Earth.EarthShard.EntityCollisionRadius", 1.4);
 		
 		config.addDefault("Abilities.Earth.EarthSurf.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthSurf.Description", "This ability allows an earth bender to "

@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.collision.CollisionUtil;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.TempFallingBlock;
@@ -401,21 +402,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void handleCollision(Collision collision) {
-		if (collision.isRemovingFirst()) {
-			Location location = collision.getLocationSecond();
-			double radius = collision.getAbilitySecond().getCollisionRadius();
-
-			// Loop through all falling blocks because the collision system stops on the first collision.
-			for (Iterator<TempFallingBlock> iterator = fallingBlocks.iterator(); iterator.hasNext();) {
-				TempFallingBlock tfb = iterator.next();
-
-				// Check if this falling block is within collision radius
-				if (tfb.getLocation().distanceSquared(location) <= radius * radius) {
-					tfb.remove();
-					iterator.remove();
-				}
-			}
-		}
+		CollisionUtil.handleFallingBlockCollisions(collision, fallingBlocks);
 	}
 
 	@Override

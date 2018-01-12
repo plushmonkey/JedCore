@@ -114,7 +114,7 @@ public class WaterBlast extends WaterAbility implements AddonAbility {
 
 			// Only damage entities that are more than 3 blocks away.
 			if (travelled >= 3) {
-				AABB collider = AABB.BlockBounds.at(location).scale(entityCollisionRadius);
+				AABB collider = AABB.BlockBounds.at(location).scale(entityCollisionRadius * 2);
 
 				boolean hit = CollisionDetector.checkEntityCollisions(player, collider, (entity) -> {
 					DamageHandler.damageEntity(entity, damage, ability);
