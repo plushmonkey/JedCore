@@ -11,6 +11,7 @@ import com.projectkorra.projectkorra.ability.FireAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -29,6 +30,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 	private double speed;
 	private boolean ignite;
 	private int fireTicks;
+	private double requiredHeight;
 
 	public FireSki(Player player) {
 		super(player);
@@ -46,11 +48,11 @@ public class FireSki extends FireAbility implements AddonAbility {
 			return;
 		}
 
-		if (CollisionDetector.isOnGround(player) || CollisionDetector.distanceAboveGround(player) < 0.7) {
+		setFields();
+
+		if (CollisionDetector.isOnGround(player) || CollisionDetector.distanceAboveGround(player) < requiredHeight) {
 			return;
 		}
-
-		setFields();
 		
 		couldFly = player.getAllowFlight();
 		wasFlying = player.isFlying();
@@ -72,6 +74,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 		speed = config.getDouble("Abilities.Fire.FireSki.Speed");
 		ignite = config.getBoolean("Abilities.Fire.FireSki.IgniteEntities");
 		fireTicks = config.getInt("Abilities.Fire.FireSki.FireTicks");
+		requiredHeight = config.getDouble("Abilities.Fire.FireSki.RequiredHeight");
 	}
 
 	private void allowFlight() {
@@ -269,5 +272,10 @@ public class FireSki extends FireAbility implements AddonAbility {
 	public boolean isEnabled() {
 		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
 		return config.getBoolean("Abilities.Fire.FireSki.Enabled");
+	}
+
+	public static boolean isPunchActivated(World world) {
+		ConfigurationSection config = JedCoreConfig.getConfig(world);
+		return config.getBoolean("Abilities.Fire.FireSki.PunchActivated");
 	}
 }

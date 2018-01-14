@@ -619,6 +619,8 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Fire.FireSki.Speed", 0.7);
 		config.addDefault("Abilities.Fire.FireSki.IgniteEntities", true);
 		config.addDefault("Abilities.Fire.FireSki.FireTicks", 60);
+		config.addDefault("Abilities.Fire.FireSki.RequiredHeight", 0.7);
+		config.addDefault("Abilities.Fire.FireSki.PunchActivated", false);
 		
 		config.addDefault("Abilities.Fire.LightningBurst.Enabled", true);
 		config.addDefault("Abilities.Fire.LightningBurst.Description", "To use the most explosive lightning move available to a firebender, hold "

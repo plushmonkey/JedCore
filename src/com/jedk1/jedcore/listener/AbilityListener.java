@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jedk1.jedcore.util.VersionUtil;
+import com.projectkorra.projectkorra.firebending.FireJet;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,7 +87,55 @@ public class AbilityListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true) 
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	// Abilities that should bypass punch cancels should be handled here.
+	public void onPlayerSwingBypassCancel(PlayerAnimationEvent event) {
+		Player player = event.getPlayer();
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null) {
+			return;
+		}
+
+		if (Suffocate.isBreathbent(player) || bPlayer.isChiBlocked()) {
+			return;
+		}
+
+		if (Bloodbending.isBloodbent(player) || VersionUtil.isStopped(player)) {
+			return;
+		}
+
+		CoreAbility coreAbil = bPlayer.getBoundAbility();
+		if (coreAbil == null) {
+			return;
+		}
+
+		if (!bPlayer.canBendIgnoreCooldowns(coreAbil)) {
+			return;
+		}
+
+		if (coreAbil instanceof FireAbility && bPlayer.isElementToggled(Element.FIRE)) {
+			if (GeneralMethods.isWeapon(player.getInventory().getItemInMainHand().getType()) && !ProjectKorra.plugin.getConfig().getBoolean("Properties.Fire.CanBendWithWeapons")) {
+				return;
+			}
+
+			// FireSki bypasses punch cancel because the normal version is activated from sneaking alone.
+			// The punch activation exists just so people don't accidentally activate it, so they should have the same
+			// requirements for activation.
+			if (coreAbil instanceof FireJet && FireSki.isPunchActivated(player.getWorld())) {
+				if (player.isSneaking()) {
+					FireSki ski = new FireSki(player);
+					if (ski.isStarted() && !bPlayer.isOnCooldown("FireJet")) {
+						// The event only needs to be cancelled when FireSki is set to have no cooldown.
+						// This is to prevent FireJet from activating from the same swing event.
+						event.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 		if (event.isCancelled()) return;
 
@@ -361,7 +410,15 @@ public class AbilityListener implements Listener {
 					new FireComet(player);
 				}
 				if (abil.equalsIgnoreCase("firejet")) {
-					new FireSki(player);
+					if (FireSki.isPunchActivated(player.getWorld())) {
+						FireSki fs = CoreAbility.getAbility(player, FireSki.class);
+
+						if (fs != null) {
+							fs.remove();
+						}
+					} else {
+						new FireSki(player);
+					}
 				}
 				if (abil.equalsIgnoreCase("fireshots")) {
 					new FireShots(player);
