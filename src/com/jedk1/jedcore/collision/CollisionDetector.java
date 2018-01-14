@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.collision;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,10 +37,14 @@ public class CollisionDetector {
 
         for (Entity entity : location.getWorld().getNearbyEntities(location, extent.getX(), extent.getY(), extent.getZ())) {
             if (entity == player) continue;
+            if (entity instanceof ArmorStand) continue;
 
-            if (livingOnly) {
-                if (!(entity instanceof LivingEntity)) continue;
-                if (entity instanceof ArmorStand) continue;
+            if (entity instanceof Player && ((Player) entity).getGameMode().equals(GameMode.SPECTATOR)) {
+                continue;
+            }
+
+            if (livingOnly && !(entity instanceof LivingEntity)) {
+                continue;
             }
 
             AABB entityBounds = new AABB(entity).at(entity.getLocation());
