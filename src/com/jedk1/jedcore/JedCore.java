@@ -114,7 +114,18 @@ public class JedCore extends JavaPlugin {
 	}
 	
 	private boolean isJava8orHigher() {
-		return Integer.valueOf(System.getProperty("java.version").substring(2, 3)) >= 8;
+		String[] versionTokens = System.getProperty("java.version").split("\\.|_|-b");
+
+		// This is usually "1", but Java 9 changes versioning to use "9".
+		int main = Integer.valueOf(versionTokens[0]);
+
+		if (main > 1) {
+			return true;
+		}
+
+		int major = Integer.valueOf(versionTokens[1]);
+
+		return major >= 8;
 	}
 	
 	public void onDisable() {
