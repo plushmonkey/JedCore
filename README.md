@@ -3,6 +3,46 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.6.5
+- Fix version check so it works with Java 9.
+- Significantly improve some collision checks.
+- Use AABB/Sphere collision tests for AirPunch, Combustion, FireBall, and FireShots.
+- Make ability and entity collision radii configurable for AirBlade, AirPunch, SonicBlast, Combustion, Discharge, and EarthKick.
+- Make ability collision radius configurable for DaggerThrow.
+- Improve AirBlade.
+  - Improve AirBlade ability collisions by properly implementing getLocations and getCollisionRadius.
+  - Change AirBlade to use Sphere-AABB entity collision detection. This allows it to hit the player's head when aimed above.
+- Change SonicBlast to use Sphere-AABB entity collision detection.
+- Improve Discharge.
+  - Change Discharge to use Sphere-AABB entity collision detection.
+  - Fix Discharge ability-ability collision detection by properly implementing getLocations and getCollisionRadius.
+  - Make duration and slot swapping configurable for Discharge.
+- Improve EarthKick.
+  - Change EarthKick to using AABB-AABB entity collision detection.
+  - Update EarthKick to use the new collision system. Everything is configurable under Abilities.Earth.EarthKick.Collisions. All of the old hardcoded collisions are set by default.
+- Fix EarthShard and MudSurge collisions.
+  - Check all falling blocks when these abilities collide. The collision system only detects a single collision from the location set every update, so they all must be checked. This fixes collisions with shields.
+- Fix collision initialization for SubElement abilities.
+- Add config option to EarthSurf and WaterFlow for removing them when any damage is taken instead of dropping below initial health.
+- Fix FrostBreath lava interaction.
+  - Don't create non-TempBlock snow layer when the block is a lava TempBlock. This fixes an interaction with LavaFlow where it could create a giant permanent hole in the ground.
+- Improve WaterGimbal.
+  - Improve WaterGimbal so the speed can be a double.
+  - Fix WaterGimbal blasts so they properly end when colliding with blocks.
+  - Change WaterGimbal blasts so they use AABB-AABB entity collision.
+  - Implement getLocation and getCollisionRadius for WaterGimbal blasts. This fixes ability collisions.
+  - Remove WaterBlast enabled configuration and set it to be a hidden ability.
+  - Fix WaterGimbal collision initializer so it properly attaches collisions to WaterBlast.
+- Make FireSki more configurable
+  - Add configuration option for changing required height for activation.
+  - Add configuration option for changing the activation to require punching. This makes it so FireSki only activates when the player jumps in the air and punches while also sneaking. This is to make it harder to accidentally activate.
+- Fix CollisionInitializer so it properly loads element combo collisions.
+- Fix CollisionInitializer so it doesn't override disabled collisions.
+- Clean up log messages
+  - Add configuration option for logging debug messages.
+  - Hide collision initialization and fire tick method by default.
+  - Remove the updater log output.
+
 ### 2.6.4
 - Fix bending board toggle.
   - Ensure that the bending board isn't redrawn after being hidden.
