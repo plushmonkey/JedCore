@@ -179,10 +179,6 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Vector looking = new Vector(x1 - x0, 0.0D, z1 - z0);
 		Vector push = new Vector(x1 - x0, 0.34999999999999998D, z1 - z0);
 		if (location.distance(sourceblock.getLocation()) < range) {
-			if (VersionUtil.isPassiveSand(location.getBlock())) {
-				VersionUtil.revertSand(location.getBlock());
-			}
-
 			Material cloneType = location.getBlock().getType();
 			Location locationYUP = location.clone().add(0.0D, 0.1D, 0.0D);
 

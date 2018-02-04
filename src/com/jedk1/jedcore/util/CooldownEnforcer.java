@@ -35,6 +35,7 @@ public class CooldownEnforcer implements Listener {
             cooldownField.setAccessible(true);
         } catch (ClassNotFoundException|NoSuchFieldException e) {
             JedCore.log.warning("Failed to load BendingPlayer#cooldowns field. Disabling CooldownEnforcer.");
+            cooldownField = null;
         }
 
         onConfigReload();
@@ -77,8 +78,8 @@ public class CooldownEnforcer implements Listener {
 
         playerCache.remove(newBendingPlayer.getUUID());
 
-        Map<String, Long> cooldowns = oldBendingPlayer.getCooldowns();
         try {
+            Object cooldowns = cooldownField.get(oldBendingPlayer);
             cooldownField.set(newBendingPlayer, cooldowns);
         } catch (IllegalAccessException e) {
 
