@@ -3,36 +3,56 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.earthbending.EarthArmor;
+import com.projectkorra.projectkorra.util.TempArmor;
 import com.projectkorra.projectkorra.util.TempPotionEffect;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MetalArmor extends EarthAbility implements AddonAbility {
+	private static final int GOLD_BLOCK_COLOR = 0xF2F204;
+	private static final List<Integer> METAL_COLORS = Arrays.asList(
+			0xa39d91, 0xf4f4f4, 0xa2a38f, 0xF2F204, 0xb75656, 0xfff4f4
+	);
 
 	private boolean useIronArmor;
-	private int strength;
-	private Material head;
+	private int resistStrength;
+	private int resistDuration;
 
 	public MetalArmor(Player player) {
 		super(player);
-		if (!bPlayer.canBendIgnoreCooldowns(getAbility("EarthArmor")) || !bPlayer.canMetalbend()) {
+
+		if (bPlayer == null || !bPlayer.canBendIgnoreCooldowns(CoreAbility.getAbility(EarthArmor.class)) || !bPlayer.canMetalbend()) {
 			return;
 		}
-		if (!hasAbility(player, EarthArmor.class)) {
+
+		if (!CoreAbility.hasAbility(player, EarthArmor.class)) {
 			return;
 		}
-		this.useIronArmor = false;
-		this.strength = 3;
-		this.head = ((EarthArmor) getAbility(player, EarthArmor.class)).getHeadBlock().getType();
+
+		setFields();
 		start();
+	}
+
+	private void setFields() {
+		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
+
+		useIronArmor = config.getBoolean("Abilities.Earth.EarthArmor.UseIronArmor");
+		resistStrength = config.getInt("Abilities.Earth.EarthArmor.Resistance.Strength");
+		resistDuration = config.getInt("Abilities.Earth.EarthArmor.Resistance.Duration");
 	}
 
 	@Override
@@ -41,18 +61,21 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 			remove();
 			return;
 		}
-		if (!hasAbility(player, EarthArmor.class)) {
+
+		if (!CoreAbility.hasAbility(player, EarthArmor.class)) {
 			remove();
 			return;
 		}
-		EarthArmor ea = (EarthArmor) getAbility(player, EarthArmor.class);
+
+		EarthArmor ea = CoreAbility.getAbility(player, EarthArmor.class);
 		if (!bPlayer.isToggled()) {
 			remove();
 			ea.remove();
 			return;
 		}
+
 		if (ea.isFormed()) {
-			if (isMetal(head)) {
+			if (isMetalHelmet()) {
 				ItemStack[] armors = { new ItemStack(Material.CHAINMAIL_BOOTS, 1),
 						new ItemStack(Material.CHAINMAIL_LEGGINGS, 1),
 						new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1),
@@ -64,18 +87,45 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 							new ItemStack(Material.IRON_CHESTPLATE, 1),
 							new ItemStack(Material.IRON_HELMET, 1) };
 				}
-				if(useIronArmor && head.equals(Material.GOLD_BLOCK)){
+
+				if(useIronArmor && getHelmetColor().equals(Color.fromRGB(GOLD_BLOCK_COLOR))) {
 					armors = new ItemStack[]{ new ItemStack(Material.GOLD_BOOTS, 1),
 							new ItemStack(Material.GOLD_LEGGINGS, 1),
 							new ItemStack(Material.GOLD_CHESTPLATE, 1),
 							new ItemStack(Material.GOLD_HELMET, 1) };
 				}
+
 				player.getInventory().setArmorContents(armors);
-				PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) 40, strength - 1);
+				PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, resistDuration / 50, resistStrength - 1);
 				new TempPotionEffect(player, resistance);
 			}
+
 			remove();
 		}
+	}
+
+	private boolean isMetalHelmet() {
+		Color color = getHelmetColor();
+
+		return METAL_COLORS.contains(color.asRGB());
+	}
+
+	private Color getHelmetColor() {
+		if (!TempArmor.hasTempArmor(player)) {
+			return Color.BLACK;
+		}
+
+		ItemStack helm = player.getInventory().getHelmet();
+		if (helm.getType() != Material.LEATHER_HELMET) {
+			return Color.BLACK;
+		}
+
+		LeatherArmorMeta meta = (LeatherArmorMeta)helm.getItemMeta();
+		if (meta == null) {
+			return Color.BLACK;
+		}
+
+		return meta.getColor();
 	}
 
 	@Override
@@ -125,12 +175,12 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 
 	@Override

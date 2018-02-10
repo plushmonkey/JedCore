@@ -244,7 +244,8 @@ public class JedCoreConfig {
 		
 		config.addDefault("Abilities.Earth.EarthArmor.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthArmor.Description", "If the block is metal, then you will get metal armor!");
-		config.addDefault("Abilities.Earth.EarthArmor.MetalStrength", 3);
+		config.addDefault("Abilities.Earth.EarthArmor.Resistance.Strength", 2);
+		config.addDefault("Abilities.Earth.EarthArmor.Resistance.Duration", 4000);
 		config.addDefault("Abilities.Earth.EarthArmor.UseIronArmor", false);
 		
 		config.addDefault("Abilities.Earth.EarthKick.Enabled", true);

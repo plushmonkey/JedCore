@@ -142,8 +142,11 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 			count++;
 			if (count >= maxFragments) {
 				counters.remove(source);
-				source.getWorld().spawnFallingBlock(source.getLocation(), source.getType(), source.getData());
-				TempBlock.get(source).revertBlock();
+				source.getWorld().spawnFallingBlock(source.getLocation().add(0.5, 0, 0.5), source.getType(), source.getData());
+				TempBlock tempBlock = TempBlock.get(source);
+				if (tempBlock != null) {
+					tempBlock.revertBlock();
+				}
 				sources.remove(source);
 				source.getWorld().playSound(source.getLocation(), Sound.ENTITY_ITEM_BREAK, 10, 5);
 			} else {
@@ -204,10 +207,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 			return;
 
 		if (isEarthbendable(player, block)) {
-			//FallingBlock fb = player.getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
-			//fb.setVelocity(new Vector(0, 0.8, 0));
-			//fblockTracker.add(fb);
-			new TempFallingBlock(block.getLocation(), block.getType(), block.getData(), new Vector(0, 0.8, 0), this);
+			new TempFallingBlock(block.getLocation().add(0.5, 0, 0.5), block.getType(), block.getData(), new Vector(0, 0.8, 0), this);
 			block.setType(Material.AIR);
 
 			playMetalbendingSound(block.getLocation());
