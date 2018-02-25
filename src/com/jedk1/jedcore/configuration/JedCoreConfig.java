@@ -425,6 +425,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.MetalHook.Cooldown", 3000);
 		config.addDefault("Abilities.Earth.MetalHook.Range", 30);
 		config.addDefault("Abilities.Earth.MetalHook.MaxHooks", 3);
+		config.addDefault("Abilities.Earth.MetalHook.TotalHooks", 0);
 		config.addDefault("Abilities.Earth.MetalHook.RequireItems", true);
 		
 		config.addDefault("Abilities.Earth.MetalShred.Enabled", true);

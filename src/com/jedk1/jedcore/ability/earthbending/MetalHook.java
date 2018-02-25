@@ -28,17 +28,20 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 	private long cooldown;
 	private int range;
 	private int maxhooks;
+	private int totalHooks;
+	private int hooksUsed;
 	private boolean nosource;
 
 	private boolean canFly;
 	private boolean hasFly;
 	private boolean hasHook;
+	private boolean wasSprinting;
 	private long time;
 
 	private Location destination;
 
-	private ConcurrentHashMap<Arrow, Boolean> hooks = new ConcurrentHashMap<Arrow, Boolean>();
-	private List<UUID> hookIds = new ArrayList<UUID>();
+	private ConcurrentHashMap<Arrow, Boolean> hooks = new ConcurrentHashMap<>();
+	private List<UUID> hookIds = new ArrayList<>();
 
 	public MetalHook(Player player) {
 		super(player);
@@ -48,16 +51,23 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		}
 
 		if (hasAbility(player, MetalHook.class)) {
-			MetalHook mh = (MetalHook) getAbility(player, MetalHook.class);
+			MetalHook mh = getAbility(player, MetalHook.class);
 			mh.launchHook();
 			return;
 		}
 
 		setFields();
-		if (!hasRequiredInv()) return;
+
+		if (!hasRequiredInv()) {
+			return;
+		}
+
 		canFly = player.getAllowFlight();
 		hasFly = player.isFlying();
+		wasSprinting = player.isSprinting();
+
 		player.setAllowFlight(true);
+
 		start();
 		launchHook();
 	}
@@ -68,6 +78,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		cooldown = config.getLong("Abilities.Earth.MetalHook.Cooldown");
 		range = config.getInt("Abilities.Earth.MetalHook.Range");
 		maxhooks = config.getInt("Abilities.Earth.MetalHook.MaxHooks");
+		totalHooks = config.getInt("Abilities.Earth.MetalHook.TotalHooks");
 		nosource = config.getBoolean("Abilities.Earth.MetalHook.RequireItem");
 	}
 
@@ -79,20 +90,26 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 			remove();
 			return;
 		}
+
 		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || hooks.isEmpty()) {
 			removeAllArrows();
 			resetFlight();
 			remove();
 			return;
 		}
-		if (player.isSprinting()) {
+
+		if (!wasSprinting && player.isSprinting()) {
 			removeAllArrows();
 			resetFlight();
 			remove();
 			return;
 		}
+
+		wasSprinting = player.isSprinting();
+
 		if (player.isSneaking()) {
 			player.setVelocity(new Vector());
+
 			if (System.currentTimeMillis() > (time + 1000)) {
 				removeAllArrows();
 				resetFlight();
@@ -102,7 +119,9 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		} else {
 			time = System.currentTimeMillis();
 		}
+
 		Vector target = new Vector();
+
 		for (Arrow a : hooks.keySet()) {
 			if (a != null) {
 				if (a.isDead() || player.getWorld() != a.getWorld() || player.getLocation().add(0,1,0).distance(a.getLocation()) > range) {
@@ -111,9 +130,11 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 					a.remove();
 					continue;
 				}
+
 				Location loc = a.getLocation();
 				Vector vec = a.getVelocity();
 				Location loc2 = new Location(loc.getWorld(), loc.getX()+vec.getX(), loc.getY()+vec.getY(), loc.getZ()+vec.getZ());
+
 				if (loc2.getBlock().getType() != Material.AIR) {
 					hooks.replace(a, hooks.get(a), true);
 					hasHook = true;
@@ -125,6 +146,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				for (Location location : JCMethods.getLinePoints(player.getLocation().add(0, 1, 0), a.getLocation(), ((int) player.getLocation().add(0,1,0).distance(a.getLocation()) * 2))) {
 					GeneralMethods.displayColoredParticle(location, "#CCCCCC");
 				}
+
 				if (hooks.get(a)) {
 					target.add(GeneralMethods.getDirection(player.getLocation().add(0, 1, 0), a.getLocation()));
 				}
@@ -132,24 +154,37 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				hooks.remove(a);
 			}
 		}
+
 		if (hasHook) {
 			destination = player.getLocation().clone().add(target);
-			//ParticleEffect.FLAME.display(0, 0, 0, 0, 1, destination, 257D);
+
 			if (player.getLocation().distance(destination) > 2) {
 				player.setFlying(false);
 				double velocity = 0.8;
+
 				player.setVelocity(target.clone().normalize().multiply(velocity));
 			} else if (player.getLocation().distance(destination) < 2 && player.getLocation().distance(destination) >= 1) {
 				player.setFlying(false);
 				double velocity = 0.35;
+
 				player.setVelocity(target.clone().normalize().multiply(velocity));
 			} else {
 				player.setVelocity(new Vector(0, 0, 0));
+
 				if (player.getAllowFlight()) {
 					player.setFlying(true);
 				}
 			}
 		}
+	}
+
+	@Override
+	public void remove() {
+		if (player.isOnline()) {
+			bPlayer.addCooldown(this);
+		}
+
+		super.remove();
 	}
 
 	public void launchHook() {
@@ -167,8 +202,15 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				}
 			}
 		}
+
+		if (totalHooks > 0 && hooksUsed++ > totalHooks) {
+			remove();
+			return;
+		}
+
 		Arrow a = player.getWorld().spawnArrow(player.getEyeLocation().add(player.getLocation().getDirection().multiply(2)), dir, 3, 0f);
 		a.setMetadata("metalhook", new FixedMetadataValue(JedCore.plugin, "1"));
+
 		hooks.put(a, false);
 		hookIds.add(a.getUniqueId());
 	}
@@ -186,19 +228,24 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 
 	public boolean hasRequiredInv() {
 		if (nosource) return true;
+
 		if (player.getInventory().getChestplate() != null) {
 			Material[] chestplates = {Material.IRON_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE};
 			Material playerChest = player.getInventory().getChestplate().getType();
+
 			if (Arrays.asList(chestplates).contains(playerChest)) {
 				return true;
 			}
 		}
+
 		Material[] metals = {Material.IRON_INGOT, Material.IRON_BLOCK};
+
 		for (ItemStack items : player.getInventory()) {
 			if (items != null && Arrays.asList(metals).contains(items.getType())) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -253,12 +300,12 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 
 	@Override
