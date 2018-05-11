@@ -8,6 +8,7 @@ import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
+import com.projectkorra.projectkorra.util.TempBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -57,6 +58,8 @@ public class Drain extends WaterAbility implements AddonAbility {
 	private double blastDamage; // 1.5
 	private double blastSpeed; // 2
 
+	private boolean drainTemps;
+
 	private long time;
 	private int absorbed = 0;
 	private int charge = 7;
@@ -101,6 +104,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 		blastDamage = config.getDouble("Abilities.Water.Drain.BlastDamage");
 		blastSpeed = config.getDouble("Abilities.Water.Drain.BlastSpeed");
 		useRain = config.getBoolean("Abilities.Water.Drain.AllowRainSource");
+		drainTemps = config.getBoolean("Abilities.Water.Drain.DrainTempBlocks");
 	}
 	
 	public boolean isValidBiome(Biome biome) {
@@ -252,7 +256,9 @@ public class Drain extends WaterAbility implements AddonAbility {
 					if (usePlants && isSmallPlant(block) && !isObstructed(block.getLocation(), player.getLocation().add(0, 1, 0))) {
 						drainPlant(block);
 					} else if (isWater(block) && (block.getData() == (byte) 0x0)) {
-						drainWater(block);
+						if (drainTemps || !TempBlock.isTempBlock(block)) {
+							drainWater(block);
+						}
 					}
 				}
 			}

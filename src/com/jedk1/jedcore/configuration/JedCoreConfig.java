@@ -692,6 +692,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.Drain.BlastDamage", 1.5);
 		config.addDefault("Abilities.Water.Drain.BlastRange", 20);
 		config.addDefault("Abilities.Water.Drain.MaxBlasts", 4);
+		config.addDefault("Abilities.Water.Drain.DrainTempBlocks", true);
 		
 		config.addDefault("Abilities.Water.FrostBreath.Enabled", true);
 		config.addDefault("Abilities.Water.FrostBreath.Description", "As demonstrated by Katara, a Waterbender is able to freeze their breath, "
