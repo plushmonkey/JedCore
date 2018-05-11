@@ -164,11 +164,21 @@ public class FireComet extends FireAbility implements AddonAbility {
 	@SuppressWarnings("deprecation")
 	public void blast() {
 		List<BlockState> blocks = new ArrayList<>();
-
 		for (Location loc : GeneralMethods.getCircle(location, (int) blastRadius, 0, false, true, 0)) {
-			if (JCMethods.isUnbreakable(loc.getBlock())) continue;
-			if (GeneralMethods.isRegionProtectedFromBuild(this, loc)) continue;
-
+			if (JCMethods.isUnbreakable(loc.getBlock())) {
+				return;
+			}
+			// return if unbreakable
+			if (GeneralMethods.isRegionProtectedFromBuild(this, loc)
+					|| GeneralMethods.isRegionProtectedFromBuild(this, location)
+					|| GeneralMethods.isRegionProtectedFromBuild(this, launchLoc)) {
+				remove();
+				break;
+			}
+			/* Check if the ability is going throught a protected region if so remove to prevent the blast.
+			* However if the region is only of one block the blast will fire, breaking the blocks and damaging entities,
+			* because of the used method to make the blast itself. (getCircle)
+                        */
 			blocks.add(loc.getBlock().getState());
 			new RegenTempBlock(loc.getBlock(), Material.AIR, (byte) 0, getRegenDelay(), false);
 		}
@@ -177,14 +187,10 @@ public class FireComet extends FireAbility implements AddonAbility {
 			if (e instanceof Player && e == player) {
 				continue;
 			}
-
-			if (GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation())) {
-				continue;
-			}
-
 			if (e instanceof LivingEntity) {
 				DamageHandler.damageEntity(e, getDamage(), this);
 			}
+
 		}
 
 		ParticleEffect.FLAME.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
@@ -351,7 +357,7 @@ public class FireComet extends FireAbility implements AddonAbility {
 
 	@Override
 	public Location getLocation() {
-		return null;
+		return location;
 	}
 
 	@Override
