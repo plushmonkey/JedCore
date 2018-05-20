@@ -158,13 +158,13 @@ public class BendingBoard {
 	}
 	
 	public static boolean isDisabled(Player player) {
-		return disabled.contains(player.getUniqueId());
+		return !enabled || disabled.contains(player.getUniqueId());
 	}
 	
 	public void remove() {
 		scoreboard.reset();
 		boards.remove(player);
-		player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 	}
 
 	public void update() {
@@ -181,7 +181,7 @@ public class BendingBoard {
 
 				// Check if the player removed their bending board. It's possible for the board to update after hidden.
 				if (boards.get(player) == null) {
-					player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+					player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 					return;
 				}
 
