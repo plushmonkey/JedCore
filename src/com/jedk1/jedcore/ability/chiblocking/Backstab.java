@@ -39,7 +39,7 @@ public class Backstab extends ChiAbility implements AddonAbility {
 
 		double angle = toTarget.angle(targetDirection);
 
-		if (angle <= activationAngle) {
+		if (angle <= activationAngle && target.getLocation().distanceSquared(player.getLocation()) <= 5 * 5) {
 			bPlayer.addCooldown(ability);
 
 			if (target instanceof Player) {
