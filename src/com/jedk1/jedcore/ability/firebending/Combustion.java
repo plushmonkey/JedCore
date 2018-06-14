@@ -409,7 +409,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 				Material.ENDER_PORTAL, Material.ENDER_PORTAL_FRAME, Material.FIRE, Material.WALL_SIGN, Material.SIGN_POST,
 				Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA, Material.BANNER,
 				Material.WALL_BANNER, Material.DROPPER, Material.FURNACE, Material.DISPENSER, Material.HOPPER,
-				Material.BEACON, Material.BARRIER, Material.MOB_SPAWNER
+				Material.BEACON, Material.BARRIER, Material.MOB_SPAWNER, Material.BURNING_FURNACE
 		);
 
 		private boolean destroy;
