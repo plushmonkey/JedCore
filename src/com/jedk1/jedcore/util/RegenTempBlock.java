@@ -47,6 +47,9 @@ public class RegenTempBlock {
 		if (EarthPassive.isPassiveSand(block)) {
 			EarthPassive.revertSand(block);
 		}
+		if (block.getState() instanceof Container) {
+			return;
+		}
 		if (blocks.containsKey(block)) {
 			blocks.replace(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));
 			block.setType(material);
