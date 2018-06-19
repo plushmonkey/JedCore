@@ -6,6 +6,7 @@ import com.projectkorra.projectkorra.util.TempBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +47,9 @@ public class RegenTempBlock {
 	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp, RegenCallback callback) {
 		if (EarthPassive.isPassiveSand(block)) {
 			EarthPassive.revertSand(block);
+		}
+		if (block.getState() instanceof Container) {
+			return;
 		}
 		if (blocks.containsKey(block)) {
 			blocks.replace(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));
