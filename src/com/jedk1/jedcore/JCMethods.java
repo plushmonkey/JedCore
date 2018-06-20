@@ -1,9 +1,6 @@
 package com.jedk1.jedcore;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import com.jedk1.jedcore.util.*;
 import org.bukkit.Bukkit;
@@ -138,17 +135,28 @@ public class JCMethods {
 	 * @param amount
 	 * @return
 	 */
-	public static boolean removeItemFromInventory(Player player, Material material, int amount){
-		for(ItemStack i : player.getInventory().getContents()){
-			if(i != null && i.getType() == material){
-				if (i.getAmount() == amount) {
-					player.getInventory().removeItem(i);
-				} else if (i.getAmount() > amount) {
-					i.setAmount(i.getAmount() - amount);
+	public static boolean removeItemFromInventory(Player player, Material material, int amount) {
+		for (ItemStack item : player.getInventory().getContents()) {
+			if (item != null && item.getType() == material) {
+				if (item.getAmount() == amount) {
+					Map<Integer, ? extends ItemStack> remaining = player.getInventory().removeItem(item);
+
+					if (!remaining.isEmpty()) {
+						ItemStack offhand = player.getInventory().getItemInOffHand();
+
+						// Spigot seems to not handle offhand correctly with removeItem, so try to manually remove it.
+						if (offhand != null && offhand.getType() == material && offhand.getAmount() == amount) {
+							player.getInventory().setItemInOffHand(null);
+						}
+					}
+				} else if (item.getAmount() > amount) {
+					item.setAmount(item.getAmount() - amount);
 				}
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
