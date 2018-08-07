@@ -10,7 +10,6 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.BlockUtil;
 import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.ability.util.Collision;
-import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -137,8 +136,8 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			Material material = getCorrectType(block);
 			byte data = block.getData();
 
-			if (EarthPassive.isPassiveSand(block)) {
-				EarthPassive.revertSand(block);
+			if (VersionUtil.isPassiveSand(block)) {
+				VersionUtil.revertSand(block);
 			}
 
 			Location loc = block.getLocation().add(0.5, 0, 0.5);

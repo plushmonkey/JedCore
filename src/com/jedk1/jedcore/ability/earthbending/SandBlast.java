@@ -8,7 +8,6 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.SandAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
-import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -89,8 +88,8 @@ public class SandBlast extends SandAbility implements AddonAbility {
 			if (isSand(source) && source.getRelative(BlockFace.UP).getType().equals(Material.AIR)) {
 				this.sourceType = source.getType();
 				this.sourceData = source.getData();
-				if (EarthPassive.isPassiveSand(source)) {
-					EarthPassive.revertSand(source);
+				if (VersionUtil.isPassiveSand(source)) {
+					VersionUtil.revertSand(source);
 				}
 				tempblock = new TempBlock(source, Material.SANDSTONE, (byte) 0);
 				return true;
