@@ -3,6 +3,32 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.7.0
+- Update to ProjectKorra 1.8.7. It should continue to work with previous versions as well.
+- Improve MetalArmor and MetalFragments.
+  - Fix MetalArmor so it properly detects if the player sourced metal blocks.
+  - Add config option to MetalArmor for setting the duration of the resistance.
+  - Fix MetalArmor so it actually reads the config values.
+  - Fix NullPointerException with MetalArmor.
+  - Fix MetalFragments so it aligns the falling block with the actual block. This fixes the bug where it would always drop the block into an item.
+  - Fix NullPointerException with MetalFragments.
+- Improve MetalHook.
+  - Fix MetalHook cooldown activation.
+  - Add configuration option for setting total hook count for MetalHook. This can be used to set a concrete action that ends MetalHook and forces it to go on cooldown. Set it to 0 to disable it.
+  - Improve MetalHook so it can be activated while sprinting. Toggling sprint off and on will end the ability still.
+- Improve FireComet region checks.
+  - Add a region protection check to FireComet to prevent players from walking into protected regions while it's charged.
+  - Add a region protection check to FireComet to prevent it from damaging players in protected areas.
+- Add configuration option to not Drain TempBlocks. It could be used to create flowing water.
+- Improve bending board.
+  - When boards are disabled or if a player toggles their board off, set their scoreboard back to the main server-controlled scoreboard. This allows players to be found on teams when their board is disabled.
+  - Fix an exception that occurs when bending board is disabled.
+- Stop Backstab from activating out of melee range.
+- Fix Combustion blowing up burning furnaces.
+- Fix container duplication exploit.
+- Handle offhand while removing items from inventory.
+  - This fixes a bug where DaggerThrow could be used without consuming arrows.
+  
 ### 2.6.5
 - Fix version check so it works with Java 9.
 - Significantly improve some collision checks.
