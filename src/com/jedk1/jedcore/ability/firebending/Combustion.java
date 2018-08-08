@@ -41,7 +41,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	public Combustion(Player player) {
 		super(player);
 
-		if (!bPlayer.canBend(this) || !bPlayer.canCombustionbend() || hasAbility(player, Combustion.class)) {
+		if (this.player == null || !bPlayer.canBend(this) || !bPlayer.canCombustionbend() || hasAbility(player, Combustion.class)) {
 			return;
 		}
 

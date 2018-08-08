@@ -45,7 +45,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	
 	public Bloodbending(Player player) {
 		super(player);
-		if (!isEligible(player, true)) {
+		if (this.player == null || !isEligible(player, true)) {
 			return;
 		}
 		setFields();
