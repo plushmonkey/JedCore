@@ -5,7 +5,7 @@ import com.projectkorra.projectkorra.util.TempBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +45,7 @@ public class RegenTempBlock {
 		if (VersionUtil.isPassiveSand(block)) {
 			VersionUtil.revertSand(block);
 		}
-		if (block.getState() instanceof Container) {
+		if (block.getState() instanceof InventoryHolder) {
 			return;
 		}
 		if (blocks.containsKey(block)) {
