@@ -2,6 +2,7 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.jedk1.jedcore.util.VersionUtil;
@@ -37,6 +38,8 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	private double preparerange;
 	private int affectingradius;
 	private double damage;
+	private CompositeRemovalPolicy removalPolicy;
+
 
 	public EarthLine(Player player) {
 		super(player);
@@ -60,7 +63,16 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	
 	public void setFields() {
 		ConfigurationSection config = JedCoreConfig.getConfig(this.player);
-		
+
+		this.removalPolicy = new CompositeRemovalPolicy(this,
+				new CannotBendRemovalPolicy(this.bPlayer, this, true, true),
+				new IsOfflineRemovalPolicy(this.player),
+				new IsDeadRemovalPolicy(this.player),
+				new SwappedSlotsRemovalPolicy<>(bPlayer, EarthLine.class)
+		);
+
+		this.removalPolicy.load(config);
+
 		cooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown");
 		range = config.getInt("Abilities.Earth.EarthLine.Range");
 		preparerange = config.getInt("Abilities.Earth.EarthLine.PrepareRange");
@@ -149,28 +161,30 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	public void progress() {
 		if (!progressing)
 			return;
-		if (player.isDead() || !player.isOnline()) {
+
+		if (removalPolicy.shouldRemove()) {
 			remove();
 			return;
 		}
-		if (!bPlayer.canBendIgnoreCooldowns(this)) {
-			remove();
-			return;
-		}
+
 		if (sourceblock == null || GeneralMethods.isRegionProtectedFromBuild(player, "EarthBlast", location)) {
 			remove();
 			return;
 		}
+
 		if (player.getWorld() != sourceblock.getWorld()) {
 			remove();
 			return;
 		}
+
 		if (sourceblock.getLocation().distance(player.getLocation()) > preparerange) {
 			remove();
 			return;
 		}
-		if (player.isSneaking())
+
+		if (player.isSneaking() && bPlayer.getBoundAbilityName().equalsIgnoreCase("EarthLine")) {
 			endLocation = getTargetLocation(player);
+		}
 
 		double x1 = endLocation.getX();
 		double z1 = endLocation.getZ();

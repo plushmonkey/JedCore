@@ -296,6 +296,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.EarthLine.PrepareRange", 7);
 		config.addDefault("Abilities.Earth.EarthLine.AffectingRadius", 2);
 		config.addDefault("Abilities.Earth.EarthLine.Damage", 3.0);
+		config.addDefault("Abilities.Earth.EarthLine.RemovalPolicy.SwappedSlots.Enabled", false);
 		
 		config.addDefault("Abilities.Earth.EarthPillar.Enabled", true);
 		config.addDefault("Abilities.Earth.EarthPillar.Description", "With this ability bound, tap Sneak (Default: Shift) on any Earthbendable "
@@ -372,6 +373,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.LavaDisc.Source.RegenTime", 10000);
 		config.addDefault("Abilities.Earth.LavaDisc.Source.LavaOnly", false);
 		config.addDefault("Abilities.Earth.LavaDisc.Source.Range", 4.0);
+		config.addDefault("Abilities.Earth.LavaDisc.RemovalPolicy.SwappedSlots.Enabled", true);
 		
 		config.addDefault("Abilities.Earth.LavaFlux.Enabled", true);
 		config.addDefault("Abilities.Earth.LavaFlux.Description", "This offensive ability enables a Lavabender to create a wave of lava, "

@@ -82,11 +82,13 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 		trailFlow = config.getBoolean("Abilities.Earth.LavaDisc.Destroy.TrailFlow");
 
 		this.removalPolicy = new CompositeRemovalPolicy(this,
-				new CannotBendRemovalPolicy(this.bPlayer, this, false, true),
+				new CannotBendRemovalPolicy(this.bPlayer, this, true, true),
 				new IsOfflineRemovalPolicy(this.player),
 				new IsDeadRemovalPolicy(this.player),
 				new SwappedSlotsRemovalPolicy<>(bPlayer, LavaDisc.class)
 		);
+
+		this.removalPolicy.load(config);
 	}
 
 	private boolean prepare() {

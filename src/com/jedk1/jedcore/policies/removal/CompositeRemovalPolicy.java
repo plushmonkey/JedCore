@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.policies.removal;
 
+import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -62,10 +63,13 @@ public class CompositeRemovalPolicy implements RemovalPolicy {
     public void load(ConfigurationSection config) {
         if (this.policies.isEmpty()) return;
 
-        String element = ability.getElement().getName();
-        String abilityName = ability.getName();
+        Element element = ability.getElement();
+        if (element instanceof Element.SubElement) {
+            element = ((Element.SubElement) element).getParentElement();
+        }
 
-        load(config, "Abilities." + element + "." + abilityName);
+        String abilityName = ability.getName();
+        load(config, "Abilities." + element.getName() + "." + abilityName);
     }
 
     public void addPolicy(RemovalPolicy policy) {

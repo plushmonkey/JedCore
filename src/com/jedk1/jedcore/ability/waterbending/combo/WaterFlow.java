@@ -183,7 +183,9 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		if (sourceblock != null) {
 			boolean isGoodSource = GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock));
 
-			if (isGoodSource || isPlant(sourceblock)) {
+			// canUsePlants needs to be checked here due to a bug with PK dynamic source caching.
+			// getWaterSourceBlock can return a plant even if canUsePlants is passed as false.
+			if (isGoodSource || (canUsePlants && isPlant(sourceblock))) {
 				head = sourceblock.getLocation().clone();
 				origin = sourceblock.getLocation().clone();
 				if (isPlant(sourceblock)) {
