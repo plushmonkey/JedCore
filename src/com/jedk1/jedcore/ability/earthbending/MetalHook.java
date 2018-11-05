@@ -3,7 +3,6 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
@@ -190,7 +189,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 	public void launchHook() {
 		if (!hasRequiredInv()) return;
 
-		Vector dir = GeneralMethods.getDirection(player.getEyeLocation(), VersionUtil.getTargetedLocation(player, range));
+		Vector dir = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, range));
 
 		if (!hookIds.isEmpty() && hookIds.size() > (maxhooks - 1)) {
 			for (Arrow a : hooks.keySet()) {

@@ -5,10 +5,10 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -99,8 +99,8 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	private void focusBlock() {
 		if (sourceblock.getType() == Material.SAND) {
-			if (VersionUtil.isPassiveSand(this.sourceblock)) {
-				VersionUtil.revertSand(this.sourceblock);
+			if (DensityShift.isPassiveSand(this.sourceblock)) {
+				DensityShift.revertSand(this.sourceblock);
 				this.sourcetype = this.sourceblock.getType();
 			} else {
 				sourcetype = Material.SAND;
@@ -118,7 +118,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	private void breakSourceBlock() {
 		sourceblock.setType(sourcetype);
-		new RegenTempBlock(sourceblock, Material.AIR, (byte) 0, 5000L);
+		new RegenTempBlock(sourceblock, Material.AIR, Material.AIR.createBlockData(), 5000L);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Entity target = GeneralMethods.getTargetedEntity(player, range, player.getNearbyEntities(range, range, range));
 		Location location;
 		if (target == null) {
-			location = VersionUtil.getTargetedLocation(player, range);
+			location = GeneralMethods.getTargetedLocation(player, range);
 		} else {
 			location = ((LivingEntity) target).getEyeLocation();
 		}
@@ -198,9 +198,9 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 			playEarthbendingSound(location);
 
-			new RegenTempBlock(location.getBlock(), Material.AIR, (byte) 0, 700L);
+			new RegenTempBlock(location.getBlock(), Material.AIR, Material.AIR.createBlockData(), 700L);
 
-			new TempFallingBlock(locationYUP, cloneType, (byte) 0, push, this);
+			new TempFallingBlock(locationYUP, cloneType.createBlockData(), push, this);
 
 			location.add(looking.normalize());
 			if (location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {

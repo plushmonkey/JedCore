@@ -2,7 +2,6 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
@@ -101,32 +100,32 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		}
 
 		if (!up.getType().isSolid()) {
-			TempBlock tbu = new TempBlock(up, b.getType(), b.getData());
+			TempBlock tbu = new TempBlock(up, b.getType(), b.getBlockData());
 			tblocks.add(tbu);
 		}
 
 		if (!awayup.getType().isSolid()) {
-			TempBlock tbau = new TempBlock(awayup, away.getType(), away.getData());
+			TempBlock tbau = new TempBlock(awayup, away.getType(), away.getBlockData());
 			tblocks.add(tbau);
 		}
 
 		if (isMetal(b)) {
-			TempBlock tbd = new TempBlock(b, Material.AIR, (byte) 0);
+			TempBlock tbd = new TempBlock(b, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tbd);
 		}
 
 		if (isMetal(away)) {
-			TempBlock tba = new TempBlock(away, Material.AIR, (byte) 0);
+			TempBlock tba = new TempBlock(away, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tba);
 		}
 
 		if (isMetal(deeperb)) {
-			TempBlock tbdb = new TempBlock(deeperb, Material.AIR, (byte) 0);
+			TempBlock tbdb = new TempBlock(deeperb, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tbdb);
 		}
 
 		if (isMetal(deepera)) {
-			TempBlock tbda = new TempBlock(deepera, Material.AIR, (byte) 0);
+			TempBlock tbda = new TempBlock(deepera, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tbda);
 		}
 
@@ -145,22 +144,22 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		}
 
 		if (!side.getType().isSolid()) {
-			TempBlock tbs = new TempBlock(side, b.getType(), b.getData());
+			TempBlock tbs = new TempBlock(side, b.getType(), b.getBlockData());
 			tblocks.add(tbs);
 		}
 
 		if (!underside.getType().isSolid()) {
-			TempBlock tbus = new TempBlock(underside, under.getType(), under.getData());
+			TempBlock tbus = new TempBlock(underside, under.getType(), under.getBlockData());
 			tblocks.add(tbus);
 		}
 
 		if (isMetal(b)) {
-			TempBlock tb1 = new TempBlock(b, Material.AIR, (byte) 0);
+			TempBlock tb1 = new TempBlock(b, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tb1);
 		}
 
 		if (isMetal(under)) {
-			TempBlock tb2 = new TempBlock(under, Material.AIR, (byte) 0);
+			TempBlock tb2 = new TempBlock(under, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tb2);
 		}
 
@@ -174,7 +173,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 			return;
 
 		if (!b.getType().isSolid()) {
-			TempBlock tbb = new TempBlock(b, Material.IRON_BLOCK, (byte) 0);
+			TempBlock tbb = new TempBlock(b, Material.IRON_BLOCK, Material.IRON_BLOCK.createBlockData());
 			tblocks.add(tbb);
 		}
 
@@ -182,7 +181,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 			stopCoil = true;
 
 		if (!under.getType().isSolid()) {
-			TempBlock tbu = new TempBlock(under, Material.IRON_BLOCK, (byte) 0);
+			TempBlock tbu = new TempBlock(under, Material.IRON_BLOCK, Material.IRON_BLOCK.createBlockData());
 			tblocks.add(tbu);
 		}
 
@@ -255,7 +254,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 			lastExtendTime = System.currentTimeMillis();
 			if (length > 0) {
 
-				Block b = lastBlock.getRelative(GeneralMethods.getCardinalDirection(GeneralMethods.getDirection(lastBlock.getLocation(), VersionUtil.getTargetedLocation(player, fullLength))));
+				Block b = lastBlock.getRelative(GeneralMethods.getCardinalDirection(GeneralMethods.getDirection(lastBlock.getLocation(), GeneralMethods.getTargetedLocation(player, fullLength))));
 
 				peelCoil(b);
 

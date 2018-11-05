@@ -94,9 +94,9 @@ public class IceClaws extends IceAbility implements AddonAbility {
 			head.add(origin.clone().getDirection().multiply(.5));
 			if (origin.distance(head) >= range) return false;
 			if (!isTransparent(head.getBlock())) return false;
-			GeneralMethods.displayColoredParticle(head, "66FFFF");
-			GeneralMethods.displayColoredParticle(head, "CCFFFF");
-			ParticleEffect.SNOW_SHOVEL.display(0f, 0f, 0f, 0f, 1, head, 257D);
+			GeneralMethods.displayColoredParticle("66FFFF", head);
+			GeneralMethods.displayColoredParticle("CCFFFF", head);
+			ParticleEffect.SNOW_SHOVEL.display(head, 1, 0, 0, 0, 0);
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(head, 1.5)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
 					freezeEntity((LivingEntity) entity);
@@ -131,7 +131,7 @@ public class IceClaws extends IceAbility implements AddonAbility {
 
 	private void displayChargeUp() {
 		Location location = getRightHandPos().toVector().add(player.getEyeLocation().getDirection().clone().multiply(.75D)).toLocation(player.getWorld());
-		ParticleEffect.WATER_SPLASH.display((float) Math.random()/3, (float) Math.random()/3, (float) Math.random()/3, 0.0F, 1, location, 256D);
+		ParticleEffect.WATER_SPLASH.display(location, 1, Math.random()/3, Math.random()/3, Math.random()/3, 0.0);
 	}
 
 	public static boolean freezeEntity(Player player, LivingEntity entity) {

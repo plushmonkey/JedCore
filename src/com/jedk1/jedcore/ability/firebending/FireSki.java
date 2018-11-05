@@ -163,15 +163,15 @@ public class FireSki extends FireAbility implements AddonAbility {
 
 		for (Location l : JCMethods.getLinePoints(player.getEyeLocation().add(0, -0.5, 0).add(getRightHeadDirection(player).multiply(0.2)), right1, 6)) {
 			size += 0.05;
-			ParticleEffect.SMOKE.display(l, (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), 0.08F, 1);
-			ParticleEffect.FLAME.display(l, (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), 0.08F, 4);
+			ParticleEffect.SMOKE_NORMAL.display(l, 1, (Math.random() * size + 0.01), (Math.random() * size + 0.01), (Math.random() * size + 0.01), 0.08);
+			ParticleEffect.FLAME.display(l, 4, (Math.random() * size + 0.01), (Math.random() * size + 0.01), (Math.random() * size + 0.01), 0.08);
 		}
 
 		size = 0;
 		for (Location l : JCMethods.getLinePoints(player.getEyeLocation().add(0, -0.5, 0).add(getLeftHeadDirection(player).multiply(0.2)), left1, 6)) {
 			size += 0.05;
-			ParticleEffect.SMOKE.display(l, (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), 0.08F, 1);
-			ParticleEffect.FLAME.display(l, (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), (float) (Math.random() * size + 0.01), 0.08F, 4);
+			ParticleEffect.SMOKE_NORMAL.display(l, 1, (Math.random() * size + 0.01), (Math.random() * size + 0.01), (Math.random() * size + 0.01), 0.08);
+			ParticleEffect.FLAME.display(l, 4, (Math.random() * size + 0.01), (Math.random() * size + 0.01), (Math.random() * size + 0.01), 0.08);
 		}
 	}
 

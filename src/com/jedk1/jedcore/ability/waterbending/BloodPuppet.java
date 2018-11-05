@@ -3,7 +3,7 @@ package com.jedk1.jedcore.ability.waterbending;
 import java.util.*;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -137,7 +137,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 			if (bloodpuppetThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
-				location = VersionUtil.getTargetedLocationTransparent(player, i);
+				location = GeneralMethods.getTargetedLocation(player, i, ElementalAbility.getTransparentMaterials());
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
 			if (entities.contains(player)) {
@@ -330,8 +330,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 							Player p = (Player) puppet;
 
 							switch (p.getItemInHand().getType()) {
-								case WOOD_SWORD:
-								case GOLD_SWORD:
+								case WOODEN_SWORD:
+								case GOLDEN_SWORD:
 									damage = 5;
 									break;
 								case STONE_SWORD:
@@ -384,7 +384,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 
 		Location newlocation = puppet.getLocation();
 
-		Location location = VersionUtil.getTargetedLocation(player, distance + 1);
+		Location location = GeneralMethods.getTargetedLocation(player, distance + 1);
 		double distance = location.distance(newlocation);
 		double dx, dy, dz;
 		dx = location.getX() - newlocation.getX();

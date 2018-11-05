@@ -2,7 +2,6 @@ package com.jedk1.jedcore.ability.avatar.elementsphere;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
@@ -85,7 +84,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 				return;
 
 			if (!player.isDead() && controllable)
-				direction = GeneralMethods.getDirection(player.getLocation(), VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER)).normalize();
+				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, range, Material.WATER)).normalize();
 
 			location = location.add(direction.clone().multiply(1));
 			if (GeneralMethods.isSolid(location.getBlock()) || isWater(location.getBlock())) {
@@ -93,8 +92,8 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 				return;
 			}
 
-			ParticleEffect.LARGE_SMOKE.display(location, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.01F, 2);
-			ParticleEffect.FLAME.display(location, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.02F, 5);
+			ParticleEffect.SMOKE_LARGE.display(location, 2, Math.random(), Math.random(), Math.random(), 0.01);
+			ParticleEffect.FLAME.display(location, 5, Math.random(), Math.random(), Math.random(), 0.02);
 			FireAbility.playFirebendingSound(location);
 
 			placeFire();

@@ -45,7 +45,7 @@ public class IcePassive {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			if (bPlayer != null && bPlayer.canIcebend() && bPlayer.isElementToggled(Element.WATER) && bPlayer.hasElement(Element.WATER) && !JCMethods.isDisabledWorld(player.getWorld())) {
 				if (player.isSprinting() && IceAbility.isIce(player.getLocation().getBlock().getRelative(BlockFace.DOWN)) && player.isOnGround()) {
-					ParticleEffect.SNOW_SHOVEL.display((float) Math.random()/2, (float) Math.random()/2, (float) Math.random()/2, 0F, 15, player.getLocation().clone().add(0, 0.2, 0), 257D);
+					ParticleEffect.SNOW_SHOVEL.display(player.getLocation().clone().add(0, 0.2, 0), 15, Math.random()/2, Math.random()/2, Math.random()/2, 0);
 					player.removePotionEffect(PotionEffectType.SPEED);
 					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, speedFactor));	
 				}

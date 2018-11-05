@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -140,7 +141,7 @@ public class Maelstrom extends WaterAbility implements AddonAbility, ComboAbilit
 		}
 		for (Block b : pool) {
 			if (wave.contains(b)) continue;
-			new RegenTempBlock(b, Material.AIR, (byte) 0, 100);
+			new RegenTempBlock(b, Material.AIR, Material.AIR.createBlockData(), 100);
 		}
 	}
 
@@ -171,8 +172,8 @@ public class Maelstrom extends WaterAbility implements AddonAbility, ComboAbilit
 				Block b = loc.getBlock();
 				for (int j = 0; j < 2; j++) {
 					wave.add(b.getRelative(BlockFace.DOWN, j));
-					new RegenTempBlock(b.getRelative(BlockFace.DOWN, j), Material.WATER, (byte) 1, 0);
-					ParticleEffect.WATER_SPLASH.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0, 3, loc, 257D);
+					new RegenTempBlock(b.getRelative(BlockFace.DOWN, j), Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(1)), 0);
+					ParticleEffect.WATER_SPLASH.display(loc, 3, Math.random(), Math.random(), Math.random(), 0);
 				}
 			}
 			newAngle+=15;

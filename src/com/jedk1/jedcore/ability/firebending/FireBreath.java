@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.FireTick;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -62,7 +65,7 @@ public class FireBreath extends FireAbility implements AddonAbility {
 			playerDamage = playerDamage * 1.5;
 			mobDamage = mobDamage * 2;
 			duration = duration * 3;
-		} else if (isSozinsComet(player.getWorld())) {
+		} else if (JCMethods.isSozinsComet(player.getWorld())) {
 			range = range * 2;
 			playerDamage = playerDamage * 1.5;
 			mobDamage = mobDamage * 2;
@@ -181,29 +184,33 @@ public class FireBreath extends FireAbility implements AddonAbility {
 					ticks = 0;
 				if (isInRange(ticks, 0, 50)) {
 					for (int i = 0; i < 6; i++)
-						ParticleEffect.RED_DUST.display((float) 140, (float) 32, (float) 32, 0.005F, 0, getOffsetLocation(loc, offset), 257D);
+						displayParticle(getOffsetLocation(loc, offset), 1, 140, 32, 32);
 				} else if (isInRange(ticks, 51, 100)) {
 					for (int i = 0; i < 6; i++)
-						ParticleEffect.RED_DUST.display((float) 196, (float) 93, (float) 0, 0.005F, 0, getOffsetLocation(loc, offset), 257D);
+						displayParticle(getOffsetLocation(loc, offset), 1, 196, 93, 0);
 				} else if (isInRange(ticks, 101, 150)) {
 					for (int i = 0; i < 6; i++)
-						ParticleEffect.RED_DUST.display((float) 186, (float) 166, (float) 37, 0.005F, 0, getOffsetLocation(loc, offset), 257D);
+						displayParticle(getOffsetLocation(loc, offset), 1, 186, 166, 37);
 				} else if (isInRange(ticks, 151, 200)) {
 					for (int i = 0; i < 6; i++)
-						ParticleEffect.RED_DUST.display((float) 36, (float) 171, (float) 47, 0.005F, 0, getOffsetLocation(loc, offset), 257D);
+						displayParticle(getOffsetLocation(loc, offset), 1, 36, 171, 47);
 				} else if (isInRange(ticks, 201, 250)) {
 					for (int i = 0; i < 6; i++)
-						ParticleEffect.RED_DUST.display((float) 36, (float) 142, (float) 171, 0.005F, 0, getOffsetLocation(loc, offset), 257D);
+						displayParticle(getOffsetLocation(loc, offset), 1, 36, 142, 171);
 				} else if (isInRange(ticks, 251, 300)) {
 					for (int i = 0; i < 6; i++)
-						ParticleEffect.RED_DUST.display((float) 128, (float) 36, (float) 171, 0.005F, 0, getOffsetLocation(loc, offset), 257D);
+						displayParticle(getOffsetLocation(loc, offset), 1, 128, 36, 171);
 				}
 
 			} else {
-				ParticleEffect.SMOKE.display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
-				ParticleEffect.FLAME.display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
+				ParticleEffect.SMOKE_NORMAL.display(loc, particles, Math.random(), Math.random(), Math.random(), size);
+				ParticleEffect.FLAME.display(loc, particles, Math.random(), Math.random(), Math.random(), size);
 			}
 		}
+	}
+
+	private void displayParticle(Location location, int amount, int r, int g, int b) {
+		ParticleEffect.REDSTONE.display(location, amount, r, g, b, 0.005, new Particle.DustOptions(Color.fromRGB(r, g, b), 1));
 	}
 
 	private boolean isInRange(int x, int min, int max) {

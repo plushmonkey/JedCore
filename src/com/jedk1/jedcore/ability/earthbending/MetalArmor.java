@@ -89,10 +89,10 @@ public class MetalArmor extends EarthAbility implements AddonAbility {
 				}
 
 				if(useIronArmor && getHelmetColor().equals(Color.fromRGB(GOLD_BLOCK_COLOR))) {
-					armors = new ItemStack[]{ new ItemStack(Material.GOLD_BOOTS, 1),
-							new ItemStack(Material.GOLD_LEGGINGS, 1),
-							new ItemStack(Material.GOLD_CHESTPLATE, 1),
-							new ItemStack(Material.GOLD_HELMET, 1) };
+					armors = new ItemStack[]{ new ItemStack(Material.GOLDEN_BOOTS, 1),
+							new ItemStack(Material.GOLDEN_LEGGINGS, 1),
+							new ItemStack(Material.GOLDEN_CHESTPLATE, 1),
+							new ItemStack(Material.GOLDEN_HELMET, 1) };
 				}
 
 				player.getInventory().setArmorContents(armors);

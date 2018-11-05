@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -443,6 +444,16 @@ public class SubsectionConfigurationDecorator implements ConfigurationSection {
         }
 
         return parent.getMapList(path);
+    }
+
+    @Override
+    public <T extends ConfigurationSerializable> T getSerializable(String s, Class<T> aClass) {
+        return parent.getSerializable(s, aClass);
+    }
+
+    @Override
+    public <T extends ConfigurationSerializable> T getSerializable(String s, Class<T> aClass, T t) {
+        return parent.getSerializable(s, aClass, t);
     }
 
     @Override

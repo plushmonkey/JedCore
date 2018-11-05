@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Random;
 
 public class WakeFishing extends WaterAbility implements AddonAbility {
+	private final static Material[] FISH_TYPES = {
+			Material.COD, Material.PUFFERFISH, Material.TROPICAL_FISH, Material.SALMON
+	};
 
 	private Block focusedBlock;
 	private Location location;
@@ -100,16 +103,18 @@ public class WakeFishing extends WaterAbility implements AddonAbility {
 		if (point == 32)
 			point = 0;
 		for (int i = 0; i < 4; i++) {
-			ParticleEffect.SPLASH.display(getCirclePoints(focusedBlock.getLocation().clone().add(0.5, 0, 0.5), 32, (i * 90), 1).get(point), 0f, 0f, 0f, 0.05F, 3);
-			ParticleEffect.WAKE.display(getCirclePoints(focusedBlock.getLocation().clone().add(0.5, -0.6, 0.5), 32, (i * 90), 1).get(point), 0f, 0f, 0f, 0.02F, 1);
+			ParticleEffect.WATER_SPLASH.display(getCirclePoints(focusedBlock.getLocation().clone().add(0.5, 0, 0.5), 32, (i * 90), 1).get(point), 3, 0, 0, 0, 0.05);
+			ParticleEffect.WATER_WAKE.display(getCirclePoints(focusedBlock.getLocation().clone().add(0.5, -0.6, 0.5), 32, (i * 90), 1).get(point), 1, 0, 0, 0, 0.02);
 		}
 
-		ParticleEffect.SMOKE.display(focusedBlock.getLocation().clone().add(.5, .5, .5), 0F, 0F, 0F, 0.001F, 2);
+		ParticleEffect.SMOKE_NORMAL.display(focusedBlock.getLocation().clone().add(.5, .5, .5), 2, 0, 0, 0, 0.001);
 	}
 
 	private void spawnFishRandom() {
 		if (rand.nextInt(50) == 0) {
-			ItemStack fish = new ItemStack(Material.RAW_FISH, 1, (byte) rand.nextInt(3));
+			Material fishType = FISH_TYPES[rand.nextInt(FISH_TYPES.length)];
+			ItemStack fish = new ItemStack(fishType, 1);
+
 			Item item = player.getWorld().dropItemNaturally(focusedBlock.getLocation().clone().add(.5, 1.5, .5), fish);
 			Vector v = player.getEyeLocation().toVector().subtract(focusedBlock.getLocation().clone().add(.5, 1.5, .5).toVector());
 			item.setVelocity(v.multiply(.15));

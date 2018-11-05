@@ -174,16 +174,16 @@ public class AirBreath extends AirAbility implements AddonAbility {
 			}
 
 			if (isWater(loc.getBlock())) {
-				ParticleEffect.BUBBLE.display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
+				ParticleEffect.WATER_BUBBLE.display(loc, particles, Math.random(), Math.random(), Math.random(), size);
 			}
 
 			JCMethods.extinguishBlocks(player, "AirBreath", range, 2, extinguishFire, coolLava);
 
 			if (getAirbendingParticles() == ParticleEffect.CLOUD) {
-				ParticleEffect.CLOUD.display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
-				ParticleEffect.SPELL.display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
+				ParticleEffect.CLOUD.display(loc, particles, Math.random(), Math.random(), Math.random(), size);
+				ParticleEffect.SPELL.display(loc, particles, Math.random(), Math.random(), Math.random(), size);
 			} else {
-				getAirbendingParticles().display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
+				getAirbendingParticles().display(loc, particles, Math.random(), Math.random(), Math.random(), size);
 			}
 		}
 	}

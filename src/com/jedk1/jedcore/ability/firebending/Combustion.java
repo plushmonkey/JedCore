@@ -201,7 +201,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 				}
 
 				if (charged) {
-					ParticleEffect.LARGE_SMOKE.display(player.getLocation(), (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 1);
+					ParticleEffect.SMOKE_LARGE.display(player.getLocation(), 1, Math.random(), Math.random(), Math.random(), 0.1);
 				}
 			} else {
 				if (charged) {
@@ -225,8 +225,8 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 				double z = size * Math.sin(angle);
 
 				Location loc = player.getLocation().add(x, 1.0D, z);
-				ParticleEffect.FLAME.display(loc, 0.0F, 0.0F, 0.0F, 0.01F, 3);
-				ParticleEffect.SMOKE.display(loc, 0.0F, 0.0F, 0.0F, 0.01F, 4);
+				ParticleEffect.FLAME.display(loc, 3, 0.0, 0.0, 0.0, 0.01);
+				ParticleEffect.SMOKE_NORMAL.display(loc, 4, 0.0, 0.0, 0.0, 0.01);
 			}
 		}
 	}
@@ -323,11 +323,11 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		}
 
 		private void render() {
-			ParticleEffect.FLAME.display(location, 0.0F, 0.0F, 0.0F, 0.03F, 1);
-			ParticleEffect.LARGE_SMOKE.display(location, 0.0F, 0.0F, 0.0F, 0.06F, 1);
-			ParticleEffect.FIREWORKS_SPARK.display(location, 0.0F, 0.0F, 0.0F, 0.06F, 1);
+			ParticleEffect.FLAME.display(location, 1, 0.0, 0.0, 0.0, 0.03);
+			ParticleEffect.SMOKE_LARGE.display(location, 1, 0.0, 0.0, 0.0F, 0.06);
+			ParticleEffect.FIREWORKS_SPARK.display(location, 1, 0.0, 0.0, 0.0F, 0.06);
 
-			location.getWorld().playSound(location, Sound.ENTITY_FIREWORK_BLAST, 1.0F, 0.01F);
+			location.getWorld().playSound(location, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.0F, 0.01F);
 		}
 	}
 
@@ -405,11 +405,10 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 	private abstract class AbstractExplosionMethod implements ExplosionMethod {
 		protected List<Material> blocks = Arrays.asList(
-				Material.AIR, Material.BEDROCK, Material.CHEST, Material.TRAPPED_CHEST, Material.OBSIDIAN, Material.PORTAL,
-				Material.ENDER_PORTAL, Material.ENDER_PORTAL_FRAME, Material.FIRE, Material.WALL_SIGN, Material.SIGN_POST,
-				Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA, Material.BANNER,
-				Material.WALL_BANNER, Material.DROPPER, Material.FURNACE, Material.DISPENSER, Material.HOPPER,
-				Material.BEACON, Material.BARRIER, Material.MOB_SPAWNER, Material.BURNING_FURNACE
+				Material.AIR, Material.BEDROCK, Material.CHEST, Material.TRAPPED_CHEST, Material.OBSIDIAN,
+				Material.NETHER_PORTAL, Material.END_PORTAL, Material.END_PORTAL_FRAME, Material.FIRE,
+				Material.WALL_SIGN, Material.SIGN, Material.WATER, Material.LAVA, Material.DROPPER, Material.FURNACE,
+				Material.DISPENSER, Material.HOPPER, Material.BEACON, Material.BARRIER, Material.SPAWNER
 		);
 
 		private boolean destroy;
@@ -434,11 +433,11 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 		}
 
 		private void render(Location location) {
-			ParticleEffect.FLAME.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
-			ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
-			ParticleEffect.FIREWORKS_SPARK.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
-			ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, location, 257D);
-			ParticleEffect.EXPLOSION_HUGE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 5, location, 257D);
+			ParticleEffect.FLAME.display(location, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.SMOKE_LARGE.display(location, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.FIREWORKS_SPARK.display(location, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.SMOKE_LARGE.display(location, 20, Math.random(), Math.random(), Math.random());
+			ParticleEffect.EXPLOSION_HUGE.display(location, 20, Math.random(), Math.random(), Math.random(), 0.5);
 
 			location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
 		}
@@ -511,7 +510,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 			}
 
 			if (!MaterialUtil.isTransparent(block) && !blocks.contains(block.getType())) {
-				new RegenTempBlock(block, Material.AIR, (byte) 0, regenTime, false);
+				new RegenTempBlock(block, Material.AIR, Material.AIR.createBlockData(), regenTime, false);
 				placeRandomBlock(l);
 				placeRandomFire(l);
 

@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -96,7 +97,7 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 		} else {
 			if (System.currentTimeMillis() > time + duration) {
 				for (Location location : flux) {
-					new RegenTempBlock(location.getBlock(), Material.STONE, (byte) 0, cleanup + rand.nextInt(1000));
+					new RegenTempBlock(location.getBlock(), Material.STONE, Material.STONE.createBlockData(), cleanup + rand.nextInt(1000));
 				}
 				remove();
 				return;
@@ -156,15 +157,15 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 	private void progressFlux() {
 		for (Location location : flux) {
 			if (flux.indexOf(location) <= step) {
-				new RegenTempBlock(location.getBlock(), Material.STATIONARY_LAVA, (byte) 1, duration + cleanup);
+				new RegenTempBlock(location.getBlock(), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(1)), duration + cleanup);
 				this.location = location;
 				if (flux.indexOf(location) == step) {
 					Block above = location.getBlock().getRelative(BlockFace.UP);
-					ParticleEffect.LAVA.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0f, 2, above.getLocation(), 257D);
+					ParticleEffect.LAVA.display(above.getLocation(), 2, Math.random(), Math.random(), Math.random(), 0);
 					applyDamageFromWave(above.getLocation());
 					if (wave) {
 						if (isTransparent(above)) {
-							new RegenTempBlock(location.getBlock().getRelative(BlockFace.UP), Material.STATIONARY_LAVA, (byte) 1, (speed * 150));
+							new RegenTempBlock(location.getBlock().getRelative(BlockFace.UP), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(1)), (speed * 150));
 						}
 					}
 				}

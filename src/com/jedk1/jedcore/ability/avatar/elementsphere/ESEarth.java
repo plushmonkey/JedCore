@@ -52,7 +52,7 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 		bPlayer.addCooldown("ESEarth", getCooldown());
 		currES.setEarthUses(currES.getEarthUses() - 1);
 		Location location = player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(1));
-		tfb = new TempFallingBlock(location, Material.DIRT, (byte) 0, location.getDirection().multiply(3), this);
+		tfb = new TempFallingBlock(location, Material.DIRT.createBlockData(), location.getDirection().multiply(3), this);
 		start();
 	}
 
@@ -102,18 +102,20 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			if (!isUnbreakable(l.getBlock()) && !GeneralMethods.isRegionProtectedFromBuild(player, "ElementSphere", l) && EarthAbility.isEarthbendable(player, l.getBlock())) {
 				ParticleEffect.SMOKE_LARGE.display(l, 0, 0, 0, 0.1F, 2);
 				//new RegenTempBlock(l.getBlock(), Material.AIR, (byte) 0, (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
-				new RegenTempBlock(l.getBlock(), Material.AIR, (byte) 0, (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000), false);
+				new RegenTempBlock(l.getBlock(), Material.AIR, Material.AIR.createBlockData(), (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000), false);
 			}
 
 			if (GeneralMethods.isSolid(l.getBlock().getRelative(BlockFace.DOWN)) && !isUnbreakable(l.getBlock()) && l.getBlock().getType().equals(Material.AIR) && rand.nextInt(20) == 0 && EarthAbility.isEarthbendable(player, l.getBlock().getRelative(BlockFace.DOWN))) {
-				new RegenTempBlock(l.getBlock(), l.getBlock().getRelative(BlockFace.DOWN).getType(), (byte) 0, (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
+				Material type = l.getBlock().getRelative(BlockFace.DOWN).getType();
+				new RegenTempBlock(l.getBlock(), type, type.createBlockData(), (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
 			}
 		}
 
 		tempfallingblock.remove();
 	}
 
-	static Material[] unbreakables = { Material.BEDROCK, Material.BARRIER, Material.PORTAL, Material.ENDER_PORTAL, Material.ENDER_PORTAL_FRAME, Material.ENDER_CHEST, Material.CHEST, Material.TRAPPED_CHEST };
+	static Material[] unbreakables = { Material.BEDROCK, Material.BARRIER, Material.NETHER_PORTAL, Material.END_PORTAL,
+			Material.END_PORTAL_FRAME, Material.ENDER_CHEST, Material.CHEST, Material.TRAPPED_CHEST };
 
 	public static boolean isUnbreakable(Block block) {
 		if (Arrays.asList(unbreakables).contains(block.getType()))

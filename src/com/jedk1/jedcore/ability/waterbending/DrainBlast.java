@@ -3,7 +3,6 @@ package com.jedk1.jedcore.ability.waterbending;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
@@ -11,6 +10,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -60,7 +60,7 @@ public class DrainBlast extends WaterAbility implements AddonAbility {
 				return;
 
 			if (!player.isDead())
-				direction = GeneralMethods.getDirection(player.getLocation(), VersionUtil.getTargetedLocation(player, blastRange, Material.WATER, Material.STATIONARY_WATER)).normalize();
+				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, blastRange, Material.WATER)).normalize();
 			location = location.add(direction.clone().multiply(1));
 			if (GeneralMethods.isSolid(location.getBlock()) || !isTransparent(location.getBlock())) {
 				travelled = blastRange;
@@ -68,7 +68,7 @@ public class DrainBlast extends WaterAbility implements AddonAbility {
 			}
 
 			playWaterbendingSound(location);
-			new RegenTempBlock(location.getBlock(), Material.STATIONARY_WATER, (byte) 0, 100L);
+			new RegenTempBlock(location.getBlock(), Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 100L);
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
@@ -122,12 +122,12 @@ public class DrainBlast extends WaterAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import com.projectkorra.projectkorra.ability.Ability;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.util.Vector;
 
@@ -12,21 +13,20 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TempFallingBlock {
-
-	public static ConcurrentHashMap<FallingBlock, TempFallingBlock> instances = new ConcurrentHashMap<FallingBlock, TempFallingBlock>();
+	public static ConcurrentHashMap<FallingBlock, TempFallingBlock> instances = new ConcurrentHashMap<>();
 	
 	private FallingBlock fallingblock;
 	private Ability ability;
 	private long creation;
 	private boolean expire;
 	
-	public TempFallingBlock(Location location, Material material, byte data, Vector veloctiy, Ability ability) {
-		this(location, material, data, veloctiy, ability, false);
+	public TempFallingBlock(Location location, BlockData data, Vector veloctiy, Ability ability) {
+		this(location, data, veloctiy, ability, false);
 	}
 	
 	@SuppressWarnings("deprecation")
-	public TempFallingBlock(Location location, Material material, byte data, Vector veloctiy, Ability ability, boolean expire) {
-		this.fallingblock = location.getWorld().spawnFallingBlock(location, material, data);
+	public TempFallingBlock(Location location, BlockData data, Vector veloctiy, Ability ability, boolean expire) {
+		this.fallingblock = location.getWorld().spawnFallingBlock(location, data.clone());
 		this.fallingblock.setVelocity(veloctiy);
 		this.fallingblock.setDropItem(false);
 		this.ability = ability;
@@ -96,7 +96,7 @@ public class TempFallingBlock {
 	}
 
 	@SuppressWarnings("deprecation")
-	public byte getData() {
+	public BlockData getData() {
 		return fallingblock.getBlockData();
 	}
 	

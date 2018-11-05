@@ -226,9 +226,9 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 				tempLoc.add(newDir);
 				tempLoc.setY(tempLoc.getY() + 2 + (2 * Math.sin(Math.toRadians(j))));
 				if (rand.nextInt(30) == 0) {
-					ParticleEffect.MOB_SPELL.display((float) 255, (float) 255, (float) 255, 0.003F, 0, tempLoc, 257D);
+					ParticleEffect.SPELL_MOB.display(tempLoc, 0, 255, 255, 255, 0.003);
 				} else {
-					ParticleEffect.MOB_SPELL_AMBIENT.display(tempLoc, 0, 0, 0, 0, 1);
+					ParticleEffect.SPELL_MOB_AMBIENT.display(tempLoc, 1, 0, 0, 0, 0);
 				}
 			}
 

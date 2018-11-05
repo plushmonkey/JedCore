@@ -1,10 +1,10 @@
 package com.jedk1.jedcore.ability.firebending;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.collision.Sphere;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LightningAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -12,9 +12,6 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -53,7 +50,7 @@ public class Discharge extends LightningAbility implements AddonAbility {
 		
 		if (bPlayer.isAvatarState()) {
 			this.cooldown = 0;
-		} else if (isSozinsComet(player.getWorld())) {
+		} else if (JCMethods.isSozinsComet(player.getWorld())) {
 			this.cooldown = 0;
 		}
 

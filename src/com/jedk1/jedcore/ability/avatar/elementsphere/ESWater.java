@@ -3,7 +3,6 @@ package com.jedk1.jedcore.ability.avatar.elementsphere;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
@@ -12,6 +11,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -78,7 +78,7 @@ public class ESWater extends AvatarAbility implements AddonAbility {
 				return;
 
 			if (!player.isDead())
-				direction = GeneralMethods.getDirection(player.getLocation(), VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER)).normalize();
+				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, range, Material.WATER)).normalize();
 			location = location.add(direction.clone().multiply(1));
 			if (GeneralMethods.isSolid(location.getBlock()) || !isTransparent(location.getBlock())) {
 				travelled = range;
@@ -86,7 +86,7 @@ public class ESWater extends AvatarAbility implements AddonAbility {
 			}
 
 			WaterAbility.playWaterbendingSound(location);
-			new RegenTempBlock(location.getBlock(), Material.STATIONARY_WATER, (byte) 8, 100L);
+			new RegenTempBlock(location.getBlock(), Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 100L);
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {

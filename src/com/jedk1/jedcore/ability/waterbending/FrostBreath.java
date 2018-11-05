@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,22 +30,20 @@ import com.projectkorra.projectkorra.util.TempBlock;
 import com.projectkorra.projectkorra.waterbending.Torrent;
 
 public class FrostBreath extends IceAbility implements AddonAbility {
-
 	private long time;
 	private Material[] invalidBlocks = {
-			Material.ICE, 
-			Material.LAVA, 
-			Material.STATIONARY_LAVA, 
+			Material.ICE,
+			Material.LAVA,
 			Material.AIR };
 	private Biome[] invalidBiomes = {
-			Biome.DESERT, 
+			Biome.DESERT,
 			Biome.DESERT_HILLS,
-			Biome.HELL, 
-			Biome.MESA,
-			Biome.MESA_CLEAR_ROCK,
-			Biome.MESA_ROCK,
-			Biome.SAVANNA, 
-			Biome.SAVANNA_ROCK
+			Biome.NETHER,
+			Biome.BADLANDS,
+			Biome.BADLANDS_PLATEAU,
+			Biome.ERODED_BADLANDS,
+			Biome.SAVANNA,
+			Biome.SAVANNA_PLATEAU
 	};
 
 	private long cooldown;
@@ -160,7 +160,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 							Block block = l2.getBlock();
 
 							RegenTempBlock.revert(block);
-							new RegenTempBlock(block, Material.ICE, (byte) 0, freezeDuration);
+							new RegenTempBlock(block, Material.ICE, Material.ICE.createBlockData(), freezeDuration);
 							Torrent.getFrozenBlocks().put(TempBlock.get(block), player);
 						}
 					}
@@ -182,9 +182,9 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 				freezeGround(loc);
 			}
 
-			ParticleEffect.SNOW_SHOVEL.display(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), Float.valueOf((float) size), particles);
-			ParticleEffect.MOB_SPELL.display((float) 220, (float) 220, (float) 220, 0.003F, 0, getOffsetLocation(loc, offset), 257D);
-			ParticleEffect.MOB_SPELL.display((float) 150, (float) 150, (float) 255, 0.0035F, 0, getOffsetLocation(loc, offset), 257D);
+			ParticleEffect.SNOW_SHOVEL.display(loc, particles, Math.random(), Math.random(), Math.random(), size);
+			ParticleEffect.SPELL_MOB.display(getOffsetLocation(loc, offset), 0, 220, 220, 220, 0.003, new Particle.DustOptions(Color.fromRGB(220, 220, 220), 1));
+			ParticleEffect.SPELL_MOB.display(getOffsetLocation(loc, offset), 0, 150, 150, 255, 0.0035, new Particle.DustOptions(Color.fromRGB(150, 150, 255), 1));
 		}
 	}
 
@@ -197,7 +197,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 			if (!GeneralMethods.isRegionProtectedFromBuild(player, "FrostBreath", l)) {
 				Block block = l.getBlock();
 				if (isWater(l.getBlock())) {
-					TempBlock temp = new TempBlock(block, Material.ICE, (byte) 8);
+					TempBlock temp = new TempBlock(block, Material.ICE, Material.ICE.createBlockData());
 					Torrent.getFrozenBlocks().put(temp, player);
 				} else if (isTransparent(l.getBlock()) && l.clone().add(0, -1, 0).getBlock().getType().isSolid() && !Arrays.asList(invalidBlocks).contains(l.clone().add(0, -1, 0).getBlock().getType())) {
 					boolean createTemp = !bendSnow;
@@ -208,7 +208,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 						createTemp = true;
 					}
 
-					new RegenTempBlock(block, Material.SNOW, (byte) 0, snowDuration, createTemp);
+					new RegenTempBlock(block, Material.SNOW, Material.SNOW.createBlockData(), snowDuration, createTemp);
 				}
 			}
 		}

@@ -5,10 +5,10 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.TempBlock;
 
 import org.bukkit.GameMode;
@@ -212,26 +212,26 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 					continue;
 				}
 
-				if (VersionUtil.isPassiveSand(block)) {
-					VersionUtil.revertSand(block);
+				if (DensityShift.isPassiveSand(block)) {
+					DensityShift.revertSand(block);
 				}
 
 				if (!GeneralMethods.isSolid(block.getLocation().add(0, 1, 0).getBlock()) && block.getLocation().add(0, 1, 0).getBlock().getType() != null && block.getLocation().add(0, 1, 0).getBlock().getType() != Material.AIR) {
-					if (VersionUtil.isPassiveSand(block.getRelative(BlockFace.UP))) {
-						VersionUtil.revertSand(block.getRelative(BlockFace.UP));
+					if (DensityShift.isPassiveSand(block.getRelative(BlockFace.UP))) {
+						DensityShift.revertSand(block.getRelative(BlockFace.UP));
 					}
 
-					new TempBlock(block.getRelative(BlockFace.UP), Material.AIR, (byte) 0);
+					new TempBlock(block.getRelative(BlockFace.UP), Material.AIR, Material.AIR.createBlockData());
 				}
 
 				if (GeneralMethods.isSolid(block)) {
 					ridingBlocks.add(block);
-					new RegenTempBlock(block, Material.AIR, (byte) 0, 1000L, true, b -> ridingBlocks.remove(b));
+					new RegenTempBlock(block, Material.AIR, Material.AIR.createBlockData(), 1000L, true, b -> ridingBlocks.remove(b));
 				} else {
-					new RegenTempBlock(block, Material.AIR, (byte) 0, 1000L);
+					new RegenTempBlock(block, Material.AIR, Material.AIR.createBlockData(), 1000L);
 				}
 
-				new TempFallingBlock(temp, getBlockBeneath(bL).getType(), getBlockBeneath(bL).getData(), new Vector(0, 0.25, 0), this, true);
+				new TempFallingBlock(temp, getBlockBeneath(bL).getBlockData(), new Vector(0, 0.25, 0), this, true);
 				
 				for (Entity e : GeneralMethods.getEntitiesAroundPoint(loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld()), 1.5D)) {
 					if (e instanceof LivingEntity && e.getEntityId() != player.getEntityId()) {

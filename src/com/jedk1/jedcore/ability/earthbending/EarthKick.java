@@ -14,11 +14,11 @@ import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -26,7 +26,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import static java.util.stream.Collectors.toList;
@@ -35,7 +34,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	private List<TempFallingBlock> temps = new ArrayList<>();
 
 	private Material material;
-	private byte materialData;
+	private BlockData materialData;
 	private Location location;
 	private Random rand = new Random();
 
@@ -80,7 +79,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 
 		if (block != null && !isMetal(block)) {
 			material = block.getType();
-			materialData = block.getData();
+			materialData = block.getBlockData().clone();
 
 			return true;
 		}
@@ -113,7 +112,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 		Vector direction = location.getDirection();
 		location.add(direction.clone().multiply(1.0));
 
-		ParticleEffect.CRIT.display(location, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 10);
+		ParticleEffect.CRIT.display(location, 10, Math.random(), Math.random(), Math.random(), 0.1);
 
 		int yaw = Math.round(player.getLocation().getYaw());
 
@@ -127,7 +126,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 			Location location1 = location.clone().add(new Vector(v.getX() * 2, v.getY(), v.getZ() * 2));
 			Vector dir = location1.setDirection(location.getDirection()).getDirection();
 
-			temps.add(new TempFallingBlock(location, material, materialData, dir, this));
+			temps.add(new TempFallingBlock(location, materialData, dir, this));
 		}
 	}
 
@@ -143,8 +142,8 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 			}
 
 			for (int i = 0; i < 2; i++) {
-				ParticleEffect.BLOCK_CRACK.display(new BlockData(material, materialData), new Vector(0, 0, 0), 0.1F, fb.getLocation(), 257D);
-				ParticleEffect.BLOCK_CRACK.display(new BlockData(material, materialData), new Vector(0, 0, 0), 0.2F, fb.getLocation(), 257D);
+				ParticleEffect.BLOCK_CRACK.display(fb.getLocation(), 1, 0.0, 0.0, 0.0, 0.1, materialData);
+				ParticleEffect.BLOCK_CRACK.display(fb.getLocation(), 1, 0.0, 0.0, 0.0, 0.2, materialData);
 			}
 
 			AABB collider = BlockUtil.getFallingBlockBoundsFull(fb).scale(entityCollisionRadius * 2.0);

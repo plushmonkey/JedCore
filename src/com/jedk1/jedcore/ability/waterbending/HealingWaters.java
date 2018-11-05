@@ -58,14 +58,14 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 				if(entity instanceof LivingEntity && inWater(entity)){
 					Location playerLoc = entity.getLocation();
 					playerLoc.add(0, 1, 0);
-					ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.0F, 3);
+					ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
 					ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
 					giveHPToEntity((LivingEntity) entity);
 				}
 			}else{
 				Location playerLoc = player.getLocation();
 				playerLoc.add(0, 1, 0);
-				ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.0F, 3);
+				ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
 				ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
 				giveHP(player);
 			}
@@ -77,7 +77,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 					if(dLe.getHealth() < dLe.getMaxHealth()){
 						Location playerLoc = entity.getLocation();
 						playerLoc.add(0, 1, 0);
-						ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.0F, 3);
+						ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
 						ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
 						giveHPToEntity((LivingEntity) entity);
 						entity.setFireTicks(0);
@@ -89,7 +89,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 			}else{
 				Location playerLoc = player.getLocation();
 				playerLoc.add(0, 1, 0);
-				ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.0F, 3);
+				ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
 				ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
 				giveHP(player);
 				player.setFireTicks(0);

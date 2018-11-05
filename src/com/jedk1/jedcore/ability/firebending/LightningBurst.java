@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.firebending;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -40,7 +41,7 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 		}
 		
 		setFields();
-		if (bPlayer.isAvatarState() || isSozinsComet(player.getWorld())) {
+		if (bPlayer.isAvatarState() || JCMethods.isSozinsComet(player.getWorld())) {
 			chargeup = 0;
 			cooldown = 0;
 			

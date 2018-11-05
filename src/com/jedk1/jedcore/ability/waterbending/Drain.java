@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.waterbending;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
@@ -14,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,18 +28,16 @@ import java.util.List;
 import java.util.Random;
 
 public class Drain extends WaterAbility implements AddonAbility {
-
-	private List<Location> locations = new ArrayList<Location>();
-	//private static Integer[] plantIds = { 6, 18, 31, 32, 37, 38, 39, 40, 59, 81, 83, 86, 99, 100, 103, 104, 105, 106, 111, 161, 175 };
-	Biome[] invalidBiomes = { 
-			Biome.DESERT, 
+	private List<Location> locations = new ArrayList<>();
+	private static final Biome[] INVALID_BIOMES = {
+			Biome.DESERT,
 			Biome.DESERT_HILLS,
-			Biome.HELL, 
-			Biome.MESA,
-			Biome.MESA_CLEAR_ROCK,
-			Biome.MESA_ROCK,
-			Biome.SAVANNA, 
-			Biome.SAVANNA_ROCK
+			Biome.NETHER,
+			Biome.BADLANDS,
+			Biome.BADLANDS_PLATEAU,
+			Biome.ERODED_BADLANDS,
+			Biome.SAVANNA,
+			Biome.SAVANNA_PLATEAU
 	};
 
 	private long regenDelay;
@@ -108,7 +108,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 	}
 	
 	public boolean isValidBiome(Biome biome) {
-		return !Arrays.asList(invalidBiomes).contains(biome);
+		return !Arrays.asList(INVALID_BIOMES).contains(biome);
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 			Block block = location.getBlock();
 			//revert.put(block, 0l);
 			//new TempBlock(block, Material.STATIONARY_WATER, (byte) charge);
-			new RegenTempBlock(block, Material.STATIONARY_WATER, (byte) charge, 100l);
+			new RegenTempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(charge)), 100l);
 		}
 	}
 
@@ -253,7 +253,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 							}
 						}
 					}
-					if (usePlants && isSmallPlant(block) && !isObstructed(block.getLocation(), player.getLocation().add(0, 1, 0))) {
+					if (usePlants && JCMethods.isSmallPlant(block) && !isObstructed(block.getLocation(), player.getLocation().add(0, 1, 0))) {
 						drainPlant(block);
 					} else if (isWater(block) && (block.getData() == (byte) 0x0)) {
 						if (drainTemps || !TempBlock.isTempBlock(block)) {
@@ -288,14 +288,14 @@ public class Drain extends WaterAbility implements AddonAbility {
 	}
 
 	private void drainPlant(Block block) {
-		if (isSmallPlant(block)) {
-			if (isSmallPlant(block.getRelative(BlockFace.DOWN))) {
-				if (block.getType().equals(Material.DOUBLE_PLANT)) {
+		if (JCMethods.isSmallPlant(block)) {
+			if (JCMethods.isSmallPlant(block.getRelative(BlockFace.DOWN))) {
+				if (JCMethods.isDoublePlant(block.getType())) {
 					block = block.getRelative(BlockFace.DOWN);
 					//revert.put(block, System.currentTimeMillis() + regenDelay);
 					locations.add(block.getLocation().clone().add(.5, .5, .5));
 					//new TempBlock(block, Material.DEAD_BUSH, (byte) 0);
-					new RegenTempBlock(block, Material.DEAD_BUSH, (byte) 0, regenDelay);
+					new RegenTempBlock(block, Material.DEAD_BUSH, Material.DEAD_BUSH.createBlockData(), regenDelay);
 					return;
 				}
 				block = block.getRelative(BlockFace.DOWN);
@@ -303,14 +303,14 @@ public class Drain extends WaterAbility implements AddonAbility {
 			//revert.put(block, System.currentTimeMillis() + regenDelay);
 			locations.add(block.getLocation().clone().add(.5, .5, .5));
 			//new TempBlock(block, Material.DEAD_BUSH, (byte) 0);
-			new RegenTempBlock(block, Material.DEAD_BUSH, (byte) 0, regenDelay);
+			new RegenTempBlock(block, Material.DEAD_BUSH, Material.DEAD_BUSH.createBlockData(), regenDelay);
 		}
 	}
 
 	private void drainWater(Block block) {
 		if (isTransparent(block.getRelative(BlockFace.UP)) && !isWater(block.getRelative(BlockFace.UP))) {
 			locations.add(block.getLocation().clone().add(.5, .5, .5));
-			new RegenTempBlock(block, Material.WATER, (byte) 1, regenDelay);
+			new RegenTempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(1)), regenDelay);
 		}
 	}
 
@@ -323,8 +323,8 @@ public class Drain extends WaterAbility implements AddonAbility {
 					playerLoc = player.getEyeLocation().add(player.getLocation().getDirection().multiply(holdRange)).subtract(0, .8, 0);
 				Vector dir = GeneralMethods.getDirection(l, playerLoc);
 				l = l.add(dir.multiply(absorbSpeed));
-				ParticleEffect.WATER_SPLASH.display(new Vector(0, 0, 0), 0F, l, 256D);
-				GeneralMethods.displayColoredParticle(l, "0099FF");
+				ParticleEffect.WATER_SPLASH.display(l, 1, 0, 0, 0, 0);
+				GeneralMethods.displayColoredParticle("0099FF", l);
 				if (l.distance(playerLoc) < 1) {
 					toRemove.add(locations.indexOf(l));
 					absorbed++;
@@ -339,15 +339,6 @@ public class Drain extends WaterAbility implements AddonAbility {
 			toRemove.clear();
 		}
 	}
-
-	private boolean isSmallPlant(Block block) {
-		Material type = block.getType();
-		if (Arrays.asList(plants).contains(type))
-			return true;
-		return false;
-	}
-
-	Material[] plants = { Material.DOUBLE_PLANT, Material.LONG_GRASS, Material.RED_ROSE, Material.YELLOW_FLOWER, Material.SAPLING };
 
 	@Override
 	public long getCooldown() {

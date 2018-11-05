@@ -7,11 +7,13 @@ import java.util.Set;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.projectkorra.projectkorra.ability.CoreAbility;
-import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
-import com.jedk1.jedcore.util.VersionUtil;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -100,13 +102,13 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 
 		if (getLavaSourceBlock(player, sourceRange) != null) {
 			Block block = getLavaSourceBlock(player, sourceRange);
-			new RegenTempBlock(block, Material.STATIONARY_LAVA, (byte) 4, sourceRegen);
+			new RegenTempBlock(block, Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(4)), sourceRegen);
 			return true;
 		} else if (getEarthSourceBlock(sourceRange) != null) {
 			if (lavaOnly)
 				return false;
 			Block block = getEarthSourceBlock(sourceRange);
-			new RegenTempBlock(block, Material.STATIONARY_LAVA, (byte) 4, sourceRegen);
+			new RegenTempBlock(block, Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(4)), sourceRegen);
 			return true;
 		}
 
@@ -138,7 +140,7 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 
 	public static boolean canFlowFrom(Block from) {
 		Material type = from.getType();
-		if (type != Material.STATIONARY_LAVA && type != Material.LAVA && type != Material.AIR) {
+		if (type != Material.LAVA && type != Material.AIR) {
 			return true;
 		}
 
@@ -175,7 +177,7 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 		DamageHandler.damageEntity(entity, damage, this);
 		entity.setFireTicks(20);
 		new FireDamageTimer(entity, player);
-		ParticleEffect.LAVA.display(entity.getLocation(), (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 15);
+		ParticleEffect.LAVA.display(entity.getLocation(), 15, Math.random(), Math.random(), Math.random(), 0.1);
 	}
 	
 	@Override
@@ -428,23 +430,23 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 
 		void render(Location location, boolean largeLava) {
 			if (largeLava)
-				ParticleEffect.LAVA.display(location, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, particles * 2);
+				ParticleEffect.LAVA.display(location, particles * 2, Math.random(), Math.random(), Math.random(), 0.1);
 			else
-				ParticleEffect.LAVA.display(location, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 1);
+				ParticleEffect.LAVA.display(location, 1, Math.random(), Math.random(), Math.random(), 0.1);
 
 			angle += 1;
 			if (angle > 360)
 				angle = 0;
 
 			for (Location l : JCMethods.getCirclePoints(location, 20, 1, angle)) {
-				ParticleEffect.RED_DUST.display((float) 196, (float) 93, (float) 0, 0.005F, 0, l, 257D);
+				ParticleEffect.REDSTONE.display(l, 0, 196, 93, 0, 0.005F, new Particle.DustOptions(Color.fromRGB(196, 93, 0), 1));
 				if (largeLava && damageBlocks)
 					damageBlocks(l);
 			}
 
 			for (Location l : JCMethods.getCirclePoints(location, 10, 0.5, angle)) {
-				ParticleEffect.FLAME.display(l, 0F, 0F, 0F, 0.01F, 1);
-				ParticleEffect.SMOKE.display(l, 0F, 0F, 0F, 0.05F, 1);
+				ParticleEffect.FLAME.display(l, 1, 0, 0, 0, 0.01);
+				ParticleEffect.SMOKE_NORMAL.display(l, 1, 0, 0, 0, 0.05);
 				if (largeLava && damageBlocks)
 					damageBlocks(l);
 			}
@@ -453,19 +455,19 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 		private void damageBlocks(Location l) {
 			if (!GeneralMethods.isRegionProtectedFromBuild(player, "LavaDisc", l)) {
 				if (!TempBlock.isTempBlock(l.getBlock()) && (isEarthbendable(player, l.getBlock()) || isMetal(l.getBlock()) || meltable.contains(l.getBlock().getType().name()))) {
-					if (VersionUtil.isPassiveSand(l.getBlock())) {
-						VersionUtil.revertSand(l.getBlock());
+					if (DensityShift.isPassiveSand(l.getBlock())) {
+						DensityShift.revertSand(l.getBlock());
 					}
 
 					if (lavaTrail) {
-						new RegenTempBlock(l.getBlock(), Material.LAVA, (byte) 4, regenTime);
+						new RegenTempBlock(l.getBlock(), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(4)), regenTime);
 
 						trailBlocks.add(l.getBlock());
 					} else {
-						new RegenTempBlock(l.getBlock(), Material.AIR, (byte) 0, regenTime);
+						new RegenTempBlock(l.getBlock(), Material.AIR, Material.AIR.createBlockData(), regenTime);
 					}
 
-					ParticleEffect.LAVA.display(l, (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.2F, particles * 2);
+					ParticleEffect.LAVA.display(l, particles * 2, Math.random(), Math.random(), Math.random(), 0.2);
 				}
 			}
 		}

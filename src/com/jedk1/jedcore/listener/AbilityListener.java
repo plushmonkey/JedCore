@@ -4,8 +4,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.firebending.FireJet;
+import com.projectkorra.projectkorra.util.MovementHandler;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -75,8 +75,6 @@ import com.projectkorra.projectkorra.ability.FireAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
 import com.projectkorra.projectkorra.airbending.Suffocate;
-import com.projectkorra.projectkorra.chiblocking.Paralyze;
-import com.projectkorra.projectkorra.chiblocking.combo.Immobilize;
 import com.projectkorra.projectkorra.waterbending.blood.Bloodbending;
 
 public class AbilityListener implements Listener {
@@ -101,7 +99,7 @@ public class AbilityListener implements Listener {
 			return;
 		}
 
-		if (Bloodbending.isBloodbent(player) || VersionUtil.isStopped(player)) {
+		if (Bloodbending.isBloodbent(player) || MovementHandler.isStopped(player)) {
 			return;
 		}
 
@@ -148,7 +146,7 @@ public class AbilityListener implements Listener {
 		if (Suffocate.isBreathbent(player)) {
 			event.setCancelled(true);
 			return;
-		} else if (Bloodbending.isBloodbent(player) || VersionUtil.isStopped(player)) {
+		} else if (Bloodbending.isBloodbent(player) || MovementHandler.isStopped(player)) {
 			event.setCancelled(true);
 			return;
 		} else if (bPlayer.isChiBlocked()) {
@@ -319,7 +317,7 @@ public class AbilityListener implements Listener {
 			}
 		}
 
-		if (VersionUtil.isStopped(player) || Bloodbending.isBloodbent(player)) {
+		if (MovementHandler.isStopped(player) || Bloodbending.isBloodbent(player)) {
 			event.setCancelled(true);
 			return;
 		}

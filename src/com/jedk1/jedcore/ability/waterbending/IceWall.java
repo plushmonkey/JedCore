@@ -139,7 +139,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 		for (int i = 0; i <= range; i++) {
 			Block b = player.getEyeLocation().add(direction.clone().multiply((double) i)).getBlock();
 
-			if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.WATER || b.getType() == Material.ICE || b.getType() == Material.PACKED_ICE
+			if (b.getType() == Material.WATER || b.getType() == Material.ICE || b.getType() == Material.PACKED_ICE
 					//|| b.getType() == Material.SNOW
 					|| b.getType() == Material.SNOW_BLOCK)
 				return b;
@@ -149,7 +149,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 	}
 
 	public boolean isBendable(Block b) {
-		if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.WATER || b.getType() == Material.ICE || b.getType() == Material.PACKED_ICE
+		if (b.getType() == Material.WATER || b.getType() == Material.ICE || b.getType() == Material.PACKED_ICE
 				//|| b.getType() == Material.SNOW
 				|| b.getType() == Material.SNOW_BLOCK)
 			return true;
@@ -244,7 +244,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 			lastBlocks.clear();
 
 			for (Block b : theseBlocks) {
-				TempBlock tb = new TempBlock(b, Material.ICE, (byte) 0);
+				TempBlock tb = new TempBlock(b, Material.ICE, Material.ICE.createBlockData());
 				tempBlocks.add(tb);
 
 				playIcebendingSound(b.getLocation());
@@ -284,7 +284,8 @@ public class IceWall extends IceAbility implements AddonAbility {
 		for (TempBlock tb : tempBlocks) {
 			if (tb != null) {
 				tb.revertBlock();
-				ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.PACKED_ICE, (byte) 0), 0, 0, 0, 0, 5, tb.getLocation(), 20);
+
+				ParticleEffect.BLOCK_CRACK.display(tb.getLocation(), 5, 0, 0, 0, 0, Material.PACKED_ICE.createBlockData());
 				tb.getLocation().getWorld().playSound(tb.getLocation(), Sound.BLOCK_GLASS_BREAK, 5f, 5f);
 
 				for (Entity e : GeneralMethods.getEntitiesAroundPoint(tb.getLocation(), 2.5)) {
@@ -452,7 +453,7 @@ public class IceWall extends IceAbility implements AddonAbility {
 								if (!iw.isWallDoneFor) {
 									for (Block block : es.getBlocksIncludingInner()) {
 										if (block != null && block.getType() != Material.AIR) {
-											ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(block.getType(), block.getData()), 0, 0, 0, 0, 5, block.getLocation(), 20);
+											ParticleEffect.BLOCK_CRACK.display(block.getLocation(), 5, 0, 0, 0, 0, block.getBlockData().clone());
 										}
 									}
 									es.remove();

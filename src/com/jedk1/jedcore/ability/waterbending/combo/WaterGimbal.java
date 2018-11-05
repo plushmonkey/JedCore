@@ -22,6 +22,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -75,7 +76,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		if (!bPlayer.canBendIgnoreBinds(this)) {
 			return;
 		}
-		if (isLunarEclipse(player.getWorld())) {
+		if (JCMethods.isLunarEclipse(player.getWorld())) {
 			return;
 		}
 		if (hasAbility(player, WaterGimbal.class)) {
@@ -154,7 +155,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 					source.revertBlock();
 				}
 				if (isTransparent(sourceloc.getBlock())) {
-					source = new TempBlock(sourceloc.getBlock(), Material.STATIONARY_WATER, (byte) 8);
+					source = new TempBlock(sourceloc.getBlock(), Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)));
 				}
 			}
 
@@ -300,7 +301,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 			for (Block block : ring1) {
 				//new TempBlock(block, Material.STATIONARY_WATER, (byte) 8);
 				//revert.put(block, System.currentTimeMillis() + 150L);
-				new RegenTempBlock(block, Material.STATIONARY_WATER, (byte) 8, 150L);
+				new RegenTempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 150L);
 				if (rand.nextInt(10) == 0) {
 					playWaterbendingSound(block.getLocation());
 				}
@@ -315,7 +316,7 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 			for (Block block : ring2) {
 				//new TempBlock(block, Material.STATIONARY_WATER, (byte) 8);
 				//revert.put(block, System.currentTimeMillis() + 150L);
-				new RegenTempBlock(block, Material.STATIONARY_WATER, (byte) 8, 150L);
+				new RegenTempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 150L);
 				if (rand.nextInt(10) == 0) {
 					playWaterbendingSound(block.getLocation());
 				}
