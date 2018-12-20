@@ -133,14 +133,13 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			}
 
 			Material material = getCorrectType(block);
-			BlockData data = block.getBlockData().clone();
 
 			if (DensityShift.isPassiveSand(block)) {
 				DensityShift.revertSand(block);
 			}
 
 			Location loc = block.getLocation().add(0.5, 0, 0.5);
-			new TempFallingBlock(loc, data, new Vector(0, 0.8, 0), this);
+			new TempFallingBlock(loc, material.createBlockData(), new Vector(0, 0.8, 0), this);
 			TempBlock tb = new TempBlock(block, Material.AIR, Material.AIR.createBlockData());
 			tblockTracker.add(tb);
 		}

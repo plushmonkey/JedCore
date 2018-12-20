@@ -3,6 +3,10 @@ package com.jedk1.jedcore;
 import java.util.*;
 
 import com.jedk1.jedcore.util.*;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.ability.WaterAbility;
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
+import com.projectkorra.projectkorra.waterbending.WaterManipulation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -244,6 +248,38 @@ public class JCMethods {
 				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
 			}
 		}
+	}
+
+	// Temporary until it's fixed in PK.
+	public static boolean isAdjacentToThreeOrMoreSources(final Block block, final boolean lava) {
+		if (block == null || (TempBlock.isTempBlock(block) && (!lava && !WaterAbility.isBendableWaterTempBlock(block)))) {
+			return false;
+		}
+		int sources = 0;
+		final BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
+		for (final BlockFace face : faces) {
+			final Block blocki = block.getRelative(face);
+			if (lava) {
+				if (!(blocki.getType() == Material.LAVA && EarthPassive.canPhysicsChange(blocki))) {
+					continue;
+				}
+			} else {
+				if ((ElementalAbility.isWater(blocki) || ElementalAbility.isIce(blocki)) && !WaterManipulation.canPhysicsChange(blocki)) {
+					continue;
+				}
+			}
+
+			//At this point it should either be water or lava
+			if (blocki.getBlockData() instanceof Levelled) {
+				Levelled level = (Levelled) blocki.getBlockData();
+				if (level.getLevel() == 0) {
+					sources++;
+				}
+			} else { //ice
+				sources++;
+			}
+		}
+		return sources >= 2;
 	}
 
 	/**
