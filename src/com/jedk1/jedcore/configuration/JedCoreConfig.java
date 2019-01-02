@@ -291,10 +291,14 @@ public class JedCoreConfig {
 			+ "If you then Left-Click at an object or player, a small piece of earth will come up "
 			+ "from the ground and move towards your target to deal damage and knock them back. "
 			+ "Additionally, hold Sneak to control the flow of the line!");
-		config.addDefault("Abilities.Earth.EarthLine.Cooldown", 3000);
+		config.addDefault("Abilities.Earth.EarthLine.Cooldown", 0);
+		config.addDefault("Abilities.Earth.EarthLine.PrepareCooldown", 3000);
 		config.addDefault("Abilities.Earth.EarthLine.Range", 30);
-		config.addDefault("Abilities.Earth.EarthLine.PrepareRange", 7);
+		config.addDefault("Abilities.Earth.EarthLine.PrepareRange", 3);
+		config.addDefault("Abilities.Earth.EarthLine.PrepareKeepRange", 7);
 		config.addDefault("Abilities.Earth.EarthLine.AffectingRadius", 2);
+		config.addDefault("Abilities.Earth.EarthLine.AllowChangeDirection", true);
+		config.addDefault("Abilities.Earth.EarthLine.MaxDuration", 2500);
 		config.addDefault("Abilities.Earth.EarthLine.Damage", 3.0);
 		config.addDefault("Abilities.Earth.EarthLine.RemovalPolicy.SwappedSlots.Enabled", false);
 		
