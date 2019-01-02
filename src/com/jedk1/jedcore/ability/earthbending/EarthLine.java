@@ -32,17 +32,18 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	private boolean progressing;
 	private boolean hitted;
 	private int goOnAfterHit;
+	private long removalTime = -1;
 
 	private long usecooldown;
 	private long preparecooldown;
+	private long maxduration;
 	private double range;
 	private double preparerange;
 	private double preparekeeprange;
 	private int affectingradius;
 	private double damage;
-	private CompositeRemovalPolicy removalPolicy;
-	
 	private boolean allowChangeDirection;
+	private CompositeRemovalPolicy removalPolicy;
 
 
 	public EarthLine(Player player) {
@@ -77,14 +78,15 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 		this.removalPolicy.load(config);
 
-		usecooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown", 3000);
-		preparecooldown = config.getLong("Abilities.Earth.EarthLine.PrepareCooldown", 0);
+		usecooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown");
+		preparecooldown = config.getLong("Abilities.Earth.EarthLine.PrepareCooldown");
 		range = config.getInt("Abilities.Earth.EarthLine.Range");
-		preparerange = config.getDouble("Abilities.Earth.EarthLine.PrepareRange", 3);
-		preparekeeprange = config.getDouble("Abilities.Earth.EarthLine.PrepareKeepRange", 7);
+		preparerange = config.getDouble("Abilities.Earth.EarthLine.PrepareRange");
+		preparekeeprange = config.getDouble("Abilities.Earth.EarthLine.PrepareKeepRange");
 		affectingradius = config.getInt("Abilities.Earth.EarthLine.AffectingRadius");
 		damage = config.getDouble("Abilities.Earth.EarthLine.Damage");
-		allowChangeDirection = config.getBoolean("Abilities.Earth.EarthLine.AllowChangeDirection", true);
+		allowChangeDirection = config.getBoolean("Abilities.Earth.EarthLine.AllowChangeDirection");
+		maxduration = config.getLong("Abilities.Earth.EarthLine.MaxDuration");
 	}
 
 	public boolean prepare() {
@@ -153,6 +155,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	public void shootline(Location endLocation) {
 		if (usecooldown != 0 && bPlayer.getCooldown(this.getName()) < usecooldown) bPlayer.addCooldown(this, usecooldown);
+		if (maxduration > 0) removalTime = System.currentTimeMillis() + maxduration;
 		this.endLocation = endLocation;
 		progressing = true;
 		breakSourceBlock();
@@ -184,6 +187,11 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		}
 
 		if (removalPolicy.shouldRemove()) {
+			remove();
+			return;
+		}
+		
+		if (removalTime > -1 && System.currentTimeMillis() > removalTime) {
 			remove();
 			return;
 		}
