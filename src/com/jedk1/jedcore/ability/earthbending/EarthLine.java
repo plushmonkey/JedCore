@@ -33,12 +33,16 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	private boolean hitted;
 	private int goOnAfterHit;
 
-	private long cooldown;
+	private long usecooldown;
+	private long preparecooldown;
 	private double range;
 	private double preparerange;
+	private double preparekeeprange;
 	private int affectingradius;
 	private double damage;
 	private CompositeRemovalPolicy removalPolicy;
+	
+	private boolean allowChangeDirection;
 
 
 	public EarthLine(Player player) {
@@ -56,7 +60,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 		setFields();
 		if (prepare()) {
-			bPlayer.addCooldown(this);
+			if (preparecooldown != 0) bPlayer.addCooldown(this, preparecooldown);
 			start();
 		}
 	}
@@ -73,11 +77,14 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 		this.removalPolicy.load(config);
 
-		cooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown");
+		usecooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown", 3000);
+		preparecooldown = config.getLong("Abilities.Earth.EarthLine.PrepareCooldown", 0);
 		range = config.getInt("Abilities.Earth.EarthLine.Range");
-		preparerange = config.getInt("Abilities.Earth.EarthLine.PrepareRange");
+		preparerange = config.getDouble("Abilities.Earth.EarthLine.PrepareRange", 3);
+		preparekeeprange = config.getDouble("Abilities.Earth.EarthLine.PrepareKeepRange", 7);
 		affectingradius = config.getInt("Abilities.Earth.EarthLine.AffectingRadius");
 		damage = config.getDouble("Abilities.Earth.EarthLine.Damage");
+		allowChangeDirection = config.getBoolean("Abilities.Earth.EarthLine.AllowChangeDirection", true);
 	}
 
 	public boolean prepare() {
@@ -87,7 +94,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 				el.remove();
 			}
 		}
-		Block block = BlockSource.getEarthSourceBlock(player, 3, ClickType.SHIFT_DOWN);
+		Block block = BlockSource.getEarthSourceBlock(player, preparerange, ClickType.SHIFT_DOWN);
 		if (block != null) {
 			sourceblock = block;
 			focusBlock();
@@ -115,6 +122,10 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		}
 		location = sourceblock.getLocation();
 	}
+	
+	private void unfocusBlock() {
+		sourceblock.setType(sourcetype);
+	}
 
 	private void breakSourceBlock() {
 		sourceblock.setType(sourcetype);
@@ -141,6 +152,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	}
 
 	public void shootline(Location endLocation) {
+		if (usecooldown != 0 && bPlayer.getCooldown(this.getName()) < usecooldown) bPlayer.addCooldown(this, usecooldown);
 		this.endLocation = endLocation;
 		progressing = true;
 		breakSourceBlock();
@@ -157,32 +169,36 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		}
 		return false;
 	}
+	
+	private boolean sourceOutOfRange() {
+		return sourceblock == null || sourceblock.getLocation().add(0.5, 0.5, 0.5).distanceSquared(player.getLocation()) > preparekeeprange * preparekeeprange || sourceblock.getWorld() != player.getWorld();
+	}
 
 	public void progress() {
-		if (!progressing)
+		if (!progressing) {
+			if (sourceOutOfRange()) {
+				unfocusBlock();
+				remove();
+			}
 			return;
+		}
 
 		if (removalPolicy.shouldRemove()) {
 			remove();
 			return;
 		}
-
-		if (sourceblock == null || GeneralMethods.isRegionProtectedFromBuild(player, "EarthBlast", location)) {
+		
+		if (sourceOutOfRange()) {
 			remove();
 			return;
 		}
 
-		if (player.getWorld() != sourceblock.getWorld()) {
+		if (GeneralMethods.isRegionProtectedFromBuild(player, "EarthBlast", location)) {
 			remove();
 			return;
 		}
 
-		if (sourceblock.getLocation().distance(player.getLocation()) > preparerange) {
-			remove();
-			return;
-		}
-
-		if (player.isSneaking() && bPlayer.getBoundAbilityName().equalsIgnoreCase("EarthLine")) {
+		if (allowChangeDirection && player.isSneaking() && bPlayer.getBoundAbilityName().equalsIgnoreCase("EarthLine")) {
 			endLocation = getTargetLocation(player);
 		}
 
@@ -247,7 +263,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	
 	@Override
 	public long getCooldown() {
-		return cooldown;
+		return usecooldown;
 	}
 
 	@Override
