@@ -39,7 +39,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	private long maxduration;
 	private double range;
 	private double preparerange;
-	private double preparekeeprange;
+	private double sourcekeeprange;
 	private int affectingradius;
 	private double damage;
 	private boolean allowChangeDirection;
@@ -82,7 +82,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		preparecooldown = config.getLong("Abilities.Earth.EarthLine.PrepareCooldown");
 		range = config.getInt("Abilities.Earth.EarthLine.Range");
 		preparerange = config.getDouble("Abilities.Earth.EarthLine.PrepareRange");
-		preparekeeprange = config.getDouble("Abilities.Earth.EarthLine.PrepareKeepRange");
+		sourcekeeprange = config.getDouble("Abilities.Earth.EarthLine.SourceKeepRange");
 		affectingradius = config.getInt("Abilities.Earth.EarthLine.AffectingRadius");
 		damage = config.getDouble("Abilities.Earth.EarthLine.Damage");
 		allowChangeDirection = config.getBoolean("Abilities.Earth.EarthLine.AllowChangeDirection");
@@ -174,7 +174,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	}
 	
 	private boolean sourceOutOfRange() {
-		return sourceblock == null || sourceblock.getLocation().add(0.5, 0.5, 0.5).distanceSquared(player.getLocation()) > preparekeeprange * preparekeeprange || sourceblock.getWorld() != player.getWorld();
+		return sourceblock == null || sourceblock.getLocation().add(0.5, 0.5, 0.5).distanceSquared(player.getLocation()) > sourcekeeprange * sourcekeeprange || sourceblock.getWorld() != player.getWorld();
 	}
 
 	public void progress() {
