@@ -49,6 +49,9 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		setFields();
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), 40).getLocation())){
+			return;
+		}
 		bPlayer.addCooldown("ESEarth", getCooldown());
 		currES.setEarthUses(currES.getEarthUses() - 1);
 		Location location = player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(1));
@@ -72,6 +75,10 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		if (tfb.getFallingBlock().isDead()) {
+			remove();
+			return;
+		}
+		if(GeneralMethods.isRegionProtectedFromBuild(this, tfb.getLocation())){
 			remove();
 			return;
 		}

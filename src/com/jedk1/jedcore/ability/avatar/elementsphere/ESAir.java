@@ -39,6 +39,9 @@ public class ESAir extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		setFields();
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), (int)range).getLocation())){
+			return;
+		}
 		bPlayer.addCooldown("ESAir", getCooldown());
 		currES.setAirUses(currES.getAirUses() - 1);
 		location = player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(1));
@@ -74,6 +77,10 @@ public class ESAir extends AvatarAbility implements AddonAbility {
 			if (travelled >= range)
 				return;
 			location = location.add(location.getDirection().clone().multiply(1));
+			if(GeneralMethods.isRegionProtectedFromBuild(this, location)){
+				travelled = range;
+				return;
+			}
 			if (GeneralMethods.isSolid(location.getBlock()) || isWater(location.getBlock())) {
 				travelled = range;
 				return;

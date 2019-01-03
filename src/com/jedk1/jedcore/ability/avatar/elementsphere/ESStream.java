@@ -66,6 +66,10 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				|| currES.getWaterUses() < requiredUses) {
 			return;
 		}
+
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), (int)range).getLocation())){
+			return;
+		}
 		
 		if (cancelAbility) {
 			currES.remove();
@@ -203,10 +207,10 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 						}
 						break;
 					case 2:
-						GeneralMethods.displayColoredParticle(pl, "06C1FF");
+						GeneralMethods.displayColoredParticle("06C1FF", pl);
 						break;
 					case 3:
-						GeneralMethods.displayColoredParticle(pl, "754719");
+						GeneralMethods.displayColoredParticle("754719", pl);
 						break;
 				}
 			}
