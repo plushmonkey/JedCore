@@ -32,7 +32,7 @@ public class Discharge extends LightningAbility implements AddonAbility {
 	private Random rand = new Random();
 
 	private double damage;
-	private long cooldown;
+	private long cooldown, avatarcooldown;
 	private long duration;
 	private boolean slotSwapping;
 	private double entityCollisionRadius;
@@ -48,10 +48,8 @@ public class Discharge extends LightningAbility implements AddonAbility {
 		
 		direction = player.getEyeLocation().getDirection().normalize();
 		
-		if (bPlayer.isAvatarState()) {
-			this.cooldown = 0;
-		} else if (JCMethods.isSozinsComet(player.getWorld())) {
-			this.cooldown = 0;
+		if (bPlayer.isAvatarState() || JCMethods.isSozinsComet(player.getWorld())) {
+			this.cooldown = avatarcooldown;
 		}
 
 		bPlayer.addCooldown(this);
@@ -63,6 +61,7 @@ public class Discharge extends LightningAbility implements AddonAbility {
 
 		damage = config.getDouble("Abilities.Fire.Discharge.Damage");
 		cooldown = config.getLong("Abilities.Fire.Discharge.Cooldown");
+		avatarcooldown = config.getLong("Abilities.Fire.Discharge.AvatarCooldown");
 		duration = config.getLong("Abilities.Fire.Discharge.Duration");
 		slotSwapping = config.getBoolean("Abilities.Fire.Discharge.SlotSwapping");
 		entityCollisionRadius = config.getDouble("Abilities.Fire.Discharge.EntityCollisionRadius");

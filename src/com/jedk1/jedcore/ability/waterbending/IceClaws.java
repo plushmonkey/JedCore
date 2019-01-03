@@ -125,8 +125,8 @@ public class IceClaws extends IceAbility implements AddonAbility {
 
 	private void displayClaws(){
 		Location location = getRightHandPos().toVector().add(player.getEyeLocation().getDirection().clone().multiply(.75D)).toLocation(player.getWorld());
-		GeneralMethods.displayColoredParticle(location, "66FFFF");
-		GeneralMethods.displayColoredParticle(location, "CCFFFF");
+		GeneralMethods.displayColoredParticle("66FFFF", location);
+		GeneralMethods.displayColoredParticle("CCFFFF", location);
 	}
 
 	private void displayChargeUp() {

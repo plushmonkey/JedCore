@@ -206,6 +206,9 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 				Block block = loc.clone().add(0, -3.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset - 0.5)).toLocation(player.getWorld()).getBlock();
 				Location temp = loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld());
 
+				if (GeneralMethods.isRegionProtectedFromBuild(this, block.getLocation())) {
+					continue;
+				}
 				// Don't render blocks above the player because it looks bad.
 				// TODO: Change this check to see if it's a reachable position instead.
 				if (block.getLocation().getY() > this.player.getLocation().getY()) {

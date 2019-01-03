@@ -143,7 +143,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				
 				//Draws the particle lines.
 				for (Location location : JCMethods.getLinePoints(player.getLocation().add(0, 1, 0), a.getLocation(), ((int) player.getLocation().add(0,1,0).distance(a.getLocation()) * 2))) {
-					GeneralMethods.displayColoredParticle(location, "#CCCCCC");
+					GeneralMethods.displayColoredParticle("#CCCCCC", location);
 				}
 
 				if (hooks.get(a)) {

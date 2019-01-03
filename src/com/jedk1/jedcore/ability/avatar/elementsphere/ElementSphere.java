@@ -256,10 +256,10 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 			rotateAroundAxisY(v1, -((location.getYaw() * Math.PI / 180) - 1.575));
 
 			if (waterUses != 0)
-				GeneralMethods.displayColoredParticle(location.clone().add(v), "06C1FF");
+				GeneralMethods.displayColoredParticle("06C1FF", location.clone().add(v));
 
 			if (earthUses != 0)
-				GeneralMethods.displayColoredParticle(location.clone().add(v1), "754719");
+				GeneralMethods.displayColoredParticle("754719", location.clone().add(v1));
 		}
 
 		if (point == 360)
