@@ -90,7 +90,7 @@ public class ESAir extends AvatarAbility implements AddonAbility {
 			AirAbility.playAirbendingSound(location);
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
-				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
+				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand) && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation())) {
 					DamageHandler.damageEntity(entity, damage, this);
 					entity.setVelocity(location.getDirection().multiply(knockback));
 					travelled = range;

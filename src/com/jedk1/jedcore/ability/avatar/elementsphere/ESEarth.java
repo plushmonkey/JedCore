@@ -86,7 +86,7 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 		EarthAbility.playEarthbendingSound(tfb.getLocation());
 
 		for (Entity entity : GeneralMethods.getEntitiesAroundPoint(tfb.getLocation(), 2.5)) {
-			if (entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity.getEntityId() != player.getEntityId()) {
+			if (entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity.getEntityId() != player.getEntityId() && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation())) {
 				//explodeEarth(fb);
 				DamageHandler.damageEntity(entity, damage, this);
 			}

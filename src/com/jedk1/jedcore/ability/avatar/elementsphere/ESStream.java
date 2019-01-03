@@ -150,6 +150,9 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				if (e instanceof Player && ((Player) e) == player) {
 					continue;
 				}
+				if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation())){
+					continue;
+				}
 				e.setVelocity(dir.normalize().multiply(knockback));
 				if (e instanceof LivingEntity) {
 					DamageHandler.damageEntity(e, damage, this);

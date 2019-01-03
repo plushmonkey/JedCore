@@ -96,7 +96,7 @@ public class ESWater extends AvatarAbility implements AddonAbility {
 			new RegenTempBlock(location.getBlock(), Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 100L);
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
-				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
+				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand) && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation())) {
 					DamageHandler.damageEntity(entity, damage, this);
 					travelled = range;
 				}

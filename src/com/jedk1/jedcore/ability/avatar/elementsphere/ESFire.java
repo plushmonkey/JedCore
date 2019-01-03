@@ -106,7 +106,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 			placeFire();
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
-				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
+				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand) && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation())) {
 					DamageHandler.damageEntity(entity, damage, this);
 					entity.setFireTicks((int) Math.round(burnTime / 50));
 					travelled = range;
