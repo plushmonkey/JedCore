@@ -6,6 +6,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
 import com.projectkorra.projectkorra.ability.FireAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.firebending.BlazeArc;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
@@ -106,7 +107,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 			placeFire();
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
-				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand) && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation())) {
+				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand) && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))) {
 					DamageHandler.damageEntity(entity, damage, this);
 					entity.setFireTicks((int) Math.round(burnTime / 50));
 					travelled = range;

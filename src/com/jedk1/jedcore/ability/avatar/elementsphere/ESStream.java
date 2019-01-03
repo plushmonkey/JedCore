@@ -8,6 +8,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -150,7 +151,7 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				if (e instanceof Player && ((Player) e) == player) {
 					continue;
 				}
-				if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation())){
+				if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(((Player) e).getName()))){
 					continue;
 				}
 				e.setVelocity(dir.normalize().multiply(knockback));
