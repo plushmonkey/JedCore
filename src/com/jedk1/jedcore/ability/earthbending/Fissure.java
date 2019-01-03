@@ -107,7 +107,7 @@ public class Fissure extends LavaAbility implements AddonAbility {
 			while (bi.hasNext()) {
 				Block b = bi.next();
 
-				if (b != null && b.getY() > 1 && b.getY() < 255) {
+				if (b != null && b.getY() > 1 && b.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, b.getLocation())) {
 					while (!isEarthbendable(player, b)) {
 						b = b.getRelative(BlockFace.DOWN);
 						if (b == null || b.getY() < 1 || b.getY() > 255) {
@@ -180,7 +180,7 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	}
 
 	private void expand(Block block) {
-		if (block != null && block.getY() > 1 && block.getY() < 255) {
+		if (block != null && block.getY() > 1 && block.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, block.getLocation())) {
 			while (!isEarthbendable(player, block)) {
 				block = block.getRelative(BlockFace.DOWN);
 				if (block == null || block.getY() < 1 || block.getY() > 255) {

@@ -6,6 +6,7 @@ import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LavaAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -134,6 +135,10 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 				blasts.remove(l);
 				continue;
 			}
+			if(GeneralMethods.isRegionProtectedFromBuild(this, l)){
+				blasts.remove(l);
+				continue;
+			}
 			head = head.add(head.getDirection().multiply(1));
 			new RegenTempBlock(l.getBlock(), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 200);
 			ParticleEffect.LAVA.display(head, 1, Math.random(), Math.random(), Math.random(), 0);
@@ -141,7 +146,7 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 			boolean hit = false;
 
 			for(Entity entity : GeneralMethods.getEntitiesAroundPoint(l, 2.0D)){
-				if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()){
+				if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
 					DamageHandler.damageEntity(entity, damage, this);
 					blasts.remove(l);
 
