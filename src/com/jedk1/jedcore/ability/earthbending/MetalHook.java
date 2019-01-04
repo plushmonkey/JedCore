@@ -5,6 +5,7 @@ import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
 
 import org.bukkit.Location;
@@ -134,7 +135,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				Vector vec = a.getVelocity();
 				Location loc2 = new Location(loc.getWorld(), loc.getX()+vec.getX(), loc.getY()+vec.getY(), loc.getZ()+vec.getZ());
 
-				if (loc2.getBlock().getType() != Material.AIR) {
+				if (!ElementalAbility.isAir(loc2.getBlock().getType())) {
 					hooks.replace(a, hooks.get(a), true);
 					hasHook = true;
 				} else {

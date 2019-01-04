@@ -8,6 +8,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
@@ -203,15 +204,15 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 			new TempFallingBlock(locationYUP, cloneType.createBlockData(), push, this);
 
 			location.add(looking.normalize());
-			if (location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
+			if (!ElementalAbility.isAir(location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType()) && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
 				location.add(0.0D, 1.0D, 0.0D);
-				if (!isEarthbendable(player, location.getBlock()) || location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
+				if (!isEarthbendable(player, location.getBlock()) || !ElementalAbility.isAir(location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType()) && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
 					remove();
 					return;
 				}
-			} else if ((location.clone().getBlock().getType() == Material.AIR || isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) && location.clone().add(0.0D, -1D, 0.0D).getBlock().getType() != Material.AIR) {
+			} else if ((ElementalAbility.isAir(location.clone().getBlock().getType()) || isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) && !ElementalAbility.isAir(location.clone().add(0.0D, -1D, 0.0D).getBlock().getType())) {
 				location.add(0.0D, -1D, 0.0D);
-				if (!isEarthbendable(player, location.clone().getBlock()) || location.clone().add(0.0D, -1D, 0.0D).getBlock().getType() == Material.AIR) {
+				if (!isEarthbendable(player, location.clone().getBlock()) || ElementalAbility.isAir(location.clone().add(0.0D, -1D, 0.0D).getBlock().getType())) {
 					remove();
 					return;
 				}

@@ -405,7 +405,7 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 	private abstract class AbstractExplosionMethod implements ExplosionMethod {
 		protected List<Material> blocks = Arrays.asList(
-				Material.AIR, Material.BEDROCK, Material.CHEST, Material.TRAPPED_CHEST, Material.OBSIDIAN,
+				Material.AIR, Material.VOID_AIR, Material.CAVE_AIR, Material.BEDROCK, Material.CHEST, Material.TRAPPED_CHEST, Material.OBSIDIAN,
 				Material.NETHER_PORTAL, Material.END_PORTAL, Material.END_PORTAL_FRAME, Material.FIRE,
 				Material.WALL_SIGN, Material.SIGN, Material.WATER, Material.LAVA, Material.DROPPER, Material.FURNACE,
 				Material.DISPENSER, Material.HOPPER, Material.BEACON, Material.BARRIER, Material.SPAWNER

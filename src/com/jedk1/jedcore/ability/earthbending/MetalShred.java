@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
@@ -80,7 +81,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 
 		source = b;
 
-		if (source.getRelative(BlockFace.UP).getType() == Material.AIR)
+		if (ElementalAbility.isAir(source.getRelative(BlockFace.UP).getType()))
 			horizontal = true;
 
 		return true;
@@ -95,7 +96,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		Block deepera = away.getRelative(BlockFace.DOWN);
 
 		for (TempBlock tb : tblocks) {
-			if (tb.getBlock().getType() != Material.AIR)
+			if (!ElementalAbility.isAir(tb.getBlock().getType()))
 				tb.setType(Material.AIR);
 		}
 
@@ -139,7 +140,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		Block underside = under.getRelative(GeneralMethods.getCardinalDirection(d).getOppositeFace());
 
 		for (TempBlock tb : tblocks) {
-			if (tb.getBlock().getType() != Material.AIR)
+			if (!ElementalAbility.isAir(tb.getBlock().getType()))
 				tb.setType(Material.AIR);
 		}
 
@@ -283,7 +284,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		}
 
 		if (!isMetal(b)) {
-			if (b.getType() != Material.AIR) {
+			if (!ElementalAbility.isAir(b.getType())) {
 				remove();
 				return;
 

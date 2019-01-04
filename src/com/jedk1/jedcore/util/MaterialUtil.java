@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MaterialUtil {
     private static final List<Material> TRANSPARENT_MATERIALS = Arrays.asList(
-            Material.AIR, Material.OAK_SAPLING, Material.SPRUCE_SAPLING, Material.BIRCH_SAPLING,
+            Material.AIR, Material.VOID_AIR, Material.CAVE_AIR, Material.OAK_SAPLING, Material.SPRUCE_SAPLING, Material.BIRCH_SAPLING,
             Material.JUNGLE_SAPLING, Material.ACACIA_SAPLING, Material.DARK_OAK_SAPLING, Material.WATER,
             Material.LAVA, Material.COBWEB, Material.TALL_GRASS, Material.GRASS, Material.FERN, Material.DEAD_BUSH,
             Material.DANDELION, Material.DANDELION_YELLOW, Material.POPPY, Material.BLUE_ORCHID, Material.ALLIUM,
