@@ -9,6 +9,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
@@ -168,7 +169,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 			return;
 		}
 
-		if (sourceblock == null || GeneralMethods.isRegionProtectedFromBuild(player, "EarthBlast", location)) {
+		if (sourceblock == null || GeneralMethods.isRegionProtectedFromBuild(this, location)) {
 			remove();
 			return;
 		}
@@ -226,8 +227,9 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 				}
 			} else {
 				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, affectingradius)) {
-					if (GeneralMethods.isRegionProtectedFromBuild(player, "EarthLine", location))
+					if (GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) || ((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
 						return;
+					}
 					if ((entity instanceof LivingEntity) && entity.getEntityId() != player.getEntityId()) {
 						entity.setVelocity(push.normalize().multiply(2));
 						DamageHandler.damageEntity(entity, damage, this);
