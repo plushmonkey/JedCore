@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.collision;
 
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,7 +72,7 @@ public class CollisionDetector {
         for (int x = -1; x <= 1; ++x) {
             for (int z = -1; z <= 1; ++z) {
                 Block checkBlock = location.clone().add(x, -epsilon, z).getBlock();
-                if (checkBlock.getType() == Material.AIR) continue;
+                if (ElementalAbility.isAir(checkBlock.getType())) continue;
 
                 AABB checkBounds = new AABB(checkBlock).at(checkBlock.getLocation());
 

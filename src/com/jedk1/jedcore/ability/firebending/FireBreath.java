@@ -210,7 +210,7 @@ public class FireBreath extends FireAbility implements AddonAbility {
 	}
 
 	private void displayParticle(Location location, int amount, int r, int g, int b) {
-		ParticleEffect.REDSTONE.display(location, amount, r, g, b, 0.005, new Particle.DustOptions(Color.fromRGB(r, g, b), 1));
+		ParticleEffect.REDSTONE.display(location, amount, 0, 0, 0, 0.005, new Particle.DustOptions(Color.fromRGB(r, g, b), 1));
 	}
 
 	private boolean isInRange(int x, int min, int max) {

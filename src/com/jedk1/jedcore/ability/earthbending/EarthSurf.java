@@ -8,6 +8,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.TempBlock;
 
@@ -175,7 +176,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		while (true) {
 			if (l.getBlock() == null) break;
 			if (l.getBlockY() <= 1) break;
-			if (l.getBlock().getType() == Material.AIR && ridingBlocks.contains(l.getBlock())) break;
+			if (ElementalAbility.isAir(l.getBlock().getType()) && ridingBlocks.contains(l.getBlock())) break;
 			if (GeneralMethods.isSolid(l.getBlock())) break;
 
 			l.add(0, -0.1, 0);
@@ -198,7 +199,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 				loc.add(getSideDirection(i));
 
 			Location bL = loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld());
-			while (loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld()).getBlock().getType() != Material.AIR) {
+			while (!ElementalAbility.isAir(loc.clone().add(0, -2.9, 0).toVector().add(location.clone().getDirection().multiply(distOffset)).toLocation(player.getWorld()).getBlock().getType())) {
 				loc.add(0, 0.1, 0);
 			}
 
@@ -219,7 +220,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 					DensityShift.revertSand(block);
 				}
 
-				if (!GeneralMethods.isSolid(block.getLocation().add(0, 1, 0).getBlock()) && block.getLocation().add(0, 1, 0).getBlock().getType() != null && block.getLocation().add(0, 1, 0).getBlock().getType() != Material.AIR) {
+				if (!GeneralMethods.isSolid(block.getLocation().add(0, 1, 0).getBlock()) && block.getLocation().add(0, 1, 0).getBlock().getType() != null && !ElementalAbility.isAir(block.getLocation().add(0, 1, 0).getBlock().getType())) {
 					if (DensityShift.isPassiveSand(block.getRelative(BlockFace.UP))) {
 						DensityShift.revertSand(block.getRelative(BlockFace.UP));
 					}

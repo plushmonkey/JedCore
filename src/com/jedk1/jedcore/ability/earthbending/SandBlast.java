@@ -5,6 +5,7 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.SandAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
@@ -85,7 +86,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		source = BlockSource.getEarthSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN);
 
 		if (source != null) {
-			if (isSand(source) && source.getRelative(BlockFace.UP).getType().equals(Material.AIR)) {
+			if (isSand(source) && ElementalAbility.isAir(source.getRelative(BlockFace.UP).getType())) {
 				this.sourceData = source.getBlockData().clone();
 				if (DensityShift.isPassiveSand(source)) {
 					DensityShift.revertSand(source);

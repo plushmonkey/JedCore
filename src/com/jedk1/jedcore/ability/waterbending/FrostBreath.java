@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,7 +35,10 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 	private Material[] invalidBlocks = {
 			Material.ICE,
 			Material.LAVA,
-			Material.AIR };
+			Material.AIR,
+			Material.VOID_AIR,
+			Material.CAVE_AIR
+	};
 	private Biome[] invalidBiomes = {
 			Biome.DESERT,
 			Biome.DESERT_HILLS,
@@ -156,7 +160,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()) {
 
 					for (Location l2 : createCage(entity.getLocation())) {
-						if (!GeneralMethods.isRegionProtectedFromBuild(player, "FrostBreath", l2) && (!l2.getBlock().getType().isSolid() || l2.getBlock().getType().equals(Material.AIR))) {
+						if (!GeneralMethods.isRegionProtectedFromBuild(player, "FrostBreath", l2) && (!l2.getBlock().getType().isSolid() || ElementalAbility.isAir(l2.getBlock().getType()))) {
 							Block block = l2.getBlock();
 
 							RegenTempBlock.revert(block);

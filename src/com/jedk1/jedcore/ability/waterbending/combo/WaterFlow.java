@@ -9,6 +9,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.*;
 import com.projectkorra.projectkorra.ability.util.ComboManager.AbilityInformation;
 import com.projectkorra.projectkorra.airbending.AirSpout;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.earthbending.Catapult;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
@@ -276,6 +277,9 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 				} else if (getPlayers(WaterSpout.class).contains(entity)) {
 					continue;
 				} else if (getPlayers(Catapult.class).contains(entity)) {
+					continue;
+				}
+				if(GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) || ((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
 					continue;
 				}
 				Location temp = directions.get(block);

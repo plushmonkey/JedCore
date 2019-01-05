@@ -149,8 +149,9 @@ public class AirBreath extends AirAbility implements AddonAbility {
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(loc, damageregion)) {
 				if (entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
-					if (entity instanceof Player && Commands.invincible.contains(((Player) entity).getName()))
+					if (GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) || ((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
 						continue;
+					}
 					if (entity instanceof LivingEntity) {
 						if (damageEnabled) {
 							if (entity instanceof Player)

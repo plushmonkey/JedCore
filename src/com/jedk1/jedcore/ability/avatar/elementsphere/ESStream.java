@@ -8,6 +8,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -64,6 +65,10 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				|| currES.getEarthUses() < requiredUses 
 				|| currES.getFireUses() < requiredUses 
 				|| currES.getWaterUses() < requiredUses) {
+			return;
+		}
+
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), (int)range).getLocation())){
 			return;
 		}
 		
@@ -146,6 +151,9 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				if (e instanceof Player && ((Player) e) == player) {
 					continue;
 				}
+				if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(((Player) e).getName()))){
+					continue;
+				}
 				e.setVelocity(dir.normalize().multiply(knockback));
 				if (e instanceof LivingEntity) {
 					DamageHandler.damageEntity(e, damage, this);
@@ -203,10 +211,10 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 						}
 						break;
 					case 2:
-						GeneralMethods.displayColoredParticle(pl, "06C1FF");
+						GeneralMethods.displayColoredParticle("06C1FF", pl);
 						break;
 					case 3:
-						GeneralMethods.displayColoredParticle(pl, "754719");
+						GeneralMethods.displayColoredParticle("754719", pl);
 						break;
 				}
 			}

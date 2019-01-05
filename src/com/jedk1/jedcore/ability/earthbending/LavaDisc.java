@@ -7,6 +7,7 @@ import java.util.Set;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -140,7 +141,7 @@ public class LavaDisc extends LavaAbility implements AddonAbility {
 
 	public static boolean canFlowFrom(Block from) {
 		Material type = from.getType();
-		if (type != Material.LAVA && type != Material.AIR) {
+		if (type != Material.LAVA && !ElementalAbility.isAir(type)) {
 			return true;
 		}
 

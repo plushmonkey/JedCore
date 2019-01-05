@@ -6,6 +6,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
 import com.projectkorra.projectkorra.ability.FireAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.firebending.BlazeArc;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
@@ -46,6 +47,9 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		setFields();
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), (int)range).getLocation())){
+			return;
+		}
 		bPlayer.addCooldown("ESFire", getCooldown());
 		currES.setFireUses(currES.getFireUses() - 1);
 		location = player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(1));
@@ -87,6 +91,10 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 				direction = GeneralMethods.getDirection(player.getLocation(), GeneralMethods.getTargetedLocation(player, range, Material.WATER)).normalize();
 
 			location = location.add(direction.clone().multiply(1));
+			if(GeneralMethods.isRegionProtectedFromBuild(this, location)){
+				travelled = range;
+				return;
+			}
 			if (GeneralMethods.isSolid(location.getBlock()) || isWater(location.getBlock())) {
 				travelled = range;
 				return;
@@ -99,7 +107,7 @@ public class ESFire extends AvatarAbility implements AddonAbility {
 			placeFire();
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2.5)) {
-				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
+				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand) && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))) {
 					DamageHandler.damageEntity(entity, damage, this);
 					entity.setFireTicks((int) Math.round(burnTime / 50));
 					travelled = range;

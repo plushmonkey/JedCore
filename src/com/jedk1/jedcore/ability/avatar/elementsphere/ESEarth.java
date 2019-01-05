@@ -8,6 +8,8 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -49,6 +51,9 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		setFields();
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), 40).getLocation())){
+			return;
+		}
 		bPlayer.addCooldown("ESEarth", getCooldown());
 		currES.setEarthUses(currES.getEarthUses() - 1);
 		Location location = player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(1));
@@ -75,11 +80,15 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			remove();
 			return;
 		}
+		if(GeneralMethods.isRegionProtectedFromBuild(this, tfb.getLocation())){
+			remove();
+			return;
+		}
 
 		EarthAbility.playEarthbendingSound(tfb.getLocation());
 
 		for (Entity entity : GeneralMethods.getEntitiesAroundPoint(tfb.getLocation(), 2.5)) {
-			if (entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity.getEntityId() != player.getEntityId()) {
+			if (entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity.getEntityId() != player.getEntityId() && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))) {
 				//explodeEarth(fb);
 				DamageHandler.damageEntity(entity, damage, this);
 			}
@@ -105,7 +114,7 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 				new RegenTempBlock(l.getBlock(), Material.AIR, Material.AIR.createBlockData(), (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000), false);
 			}
 
-			if (GeneralMethods.isSolid(l.getBlock().getRelative(BlockFace.DOWN)) && !isUnbreakable(l.getBlock()) && l.getBlock().getType().equals(Material.AIR) && rand.nextInt(20) == 0 && EarthAbility.isEarthbendable(player, l.getBlock().getRelative(BlockFace.DOWN))) {
+			if (GeneralMethods.isSolid(l.getBlock().getRelative(BlockFace.DOWN)) && !isUnbreakable(l.getBlock()) && ElementalAbility.isAir(l.getBlock().getType()) && rand.nextInt(20) == 0 && EarthAbility.isEarthbendable(player, l.getBlock().getRelative(BlockFace.DOWN))) {
 				Material type = l.getBlock().getRelative(BlockFace.DOWN).getType();
 				new RegenTempBlock(l.getBlock(), type, type.createBlockData(), (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
 			}

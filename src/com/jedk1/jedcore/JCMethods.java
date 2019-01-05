@@ -212,7 +212,7 @@ public class JCMethods {
 				double z = size * Math.sin(angle + startAngle);
 				Location loc = location.clone();
 				loc.add(x, hightIncr, z);
-				if(!noClip && loc.getBlock().getType().equals(Material.AIR))
+				if(!noClip && ElementalAbility.isAir(loc.getBlock().getType()))
 					locations.add(loc);
 				else if(noClip)
 					locations.add(loc);
