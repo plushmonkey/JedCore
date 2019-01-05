@@ -303,7 +303,14 @@ public class AABB implements Collider {
                 getBoundingBox = Entity.getDeclaredMethod("getBoundingBox");
             } else {
                 getVoxelShape = Block.getDeclaredMethod("a", IBlockData, IBlockAccess, BlockPosition);
-                getBlockBoundingBox = VoxelShape.getDeclaredMethod("a");
+
+                try {
+                    getBlockBoundingBox = VoxelShape.getDeclaredMethod("getBoundingBox");
+                } catch (NoSuchMethodException e) {
+                    // Try to get the old method from before the 1.13.2 Spigot patch.
+                    getBlockBoundingBox = VoxelShape.getDeclaredMethod("a");
+                }
+
                 getBoundingBox = Entity.getDeclaredMethod("getBoundingBox");
 
                 try {
