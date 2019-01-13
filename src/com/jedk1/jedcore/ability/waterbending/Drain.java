@@ -10,6 +10,7 @@ import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import com.projectkorra.projectkorra.util.TempBlock;
+import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -208,28 +209,33 @@ public class Drain extends WaterAbility implements AddonAbility {
 	}
 
 	private void fill() {
-		for (ItemStack items : player.getInventory()) {
-			if (items != null && Arrays.asList(fillables).contains(items.getType())) {
-				ItemStack filled = getFilled(items);
-				HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(filled);
-				for (int id : cantfit.keySet()) {
-					player.getWorld().dropItem(player.getEyeLocation(), cantfit.get(id));
+		for (int x = 0; x < absorbed; x++) {
+			for (Material fillable : fillables) {
+				int slot = player.getInventory().first(fillable);
+				if (slot == -1){
+					continue;
 				}
-				if (items.getAmount() > 1) {
-					items.setAmount(items.getAmount() - 1);
+				if (player.getInventory().getItem(slot).getAmount() > 1) {
+					player.getInventory().getItem(slot).setAmount(player.getInventory().getItem(slot).getAmount() - 1);
+
+					ItemStack filled = getFilled(fillable);
+					HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(filled);
+					for (int id : cantfit.keySet()) {
+						player.getWorld().dropItem(player.getEyeLocation(), cantfit.get(id));
+					}
 				} else {
-					player.getInventory().removeItem(items);
+					player.getInventory().setItem(slot, getFilled(fillable));
 				}
-				return;
+				break;
 			}
 		}
 	}
 
-	private ItemStack getFilled(ItemStack is) {
+	private ItemStack getFilled(Material type) {
 		ItemStack filled = null;
-		if (is.getType() == Material.GLASS_BOTTLE) {
-			filled = new ItemStack(Material.POTION, 1);
-		} else if (is.getType() == Material.BUCKET) {
+		if (type == Material.GLASS_BOTTLE) {
+			filled = WaterReturn.waterBottleItem();
+		} else if (type == Material.BUCKET) {
 			filled = new ItemStack(Material.WATER_BUCKET, 1);
 		}
 
