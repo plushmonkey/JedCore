@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
+import com.projectkorra.projectkorra.ability.EarthAbility;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -116,7 +117,7 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 			while (bi.hasNext()) {
 				Block b = bi.next();
 
-				if (b != null && b.getY() > 1 && b.getY() < 255) {
+				if (b != null && b.getY() > 1 && b.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, b.getLocation()) && !EarthAbility.getMovedEarth().containsKey(b)) {
 					if (isWater(b)) break;
 					while (!isEarthbendable(player, b)) {
 						b = b.getRelative(BlockFace.DOWN);
@@ -188,7 +189,7 @@ public class LavaFlux extends LavaAbility implements AddonAbility {
 	}
 
 	private void expand(Block block) {
-		if (block != null && block.getY() > 1 && block.getY() < 255) {
+		if (block != null && block.getY() > 1 && block.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, block.getLocation()) && !EarthAbility.getMovedEarth().containsKey(block)) {
 			if (isWater(block)) return;
 			while (!isEarthbendable(block)) {
 				block = block.getRelative(BlockFace.DOWN);
