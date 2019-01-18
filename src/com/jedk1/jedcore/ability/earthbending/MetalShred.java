@@ -6,6 +6,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -17,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -76,13 +78,14 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 	public boolean selectSource() {
 		Block b = BlockSource.getEarthSourceBlock(player, selectRange, ClickType.SHIFT_DOWN);
 
-		if (b == null || !isMetal(b))
+		if (!isMetal(b))
 			return false;
 
 		source = b;
 
-		if (ElementalAbility.isAir(source.getRelative(BlockFace.UP).getType()))
+		if (ElementalAbility.isAir(source.getRelative(BlockFace.UP).getType()) && !isMetal(source.getRelative(BlockFace.DOWN))) {
 			horizontal = true;
+		}
 
 		return true;
 	}
@@ -260,6 +263,12 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 				peelCoil(b);
 
 				for (Entity e : GeneralMethods.getEntitiesAroundPoint(b.getLocation(), 2)) {
+					if(!(e instanceof LivingEntity) || e.getEntityId() == player.getEntityId()){
+						continue;
+					}
+					if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(((Player) e).getName()))){
+						continue;
+					}
 					DamageHandler.damageEntity(e, damage, this);
 					e.setVelocity(e.getVelocity().add(player.getLocation().getDirection().add(new Vector(0, 0.1, 0))));
 				}

@@ -11,6 +11,7 @@ import com.projectkorra.projectkorra.chiblocking.Smokescreen;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
 
+import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -59,14 +60,14 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 					Location playerLoc = entity.getLocation();
 					playerLoc.add(0, 1, 0);
 					ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
-					ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
+					ParticleEffect.WAKE.display(playerLoc, 25, 0, 0, 0, 0.05F);
 					giveHPToEntity((LivingEntity) entity);
 				}
 			}else{
 				Location playerLoc = player.getLocation();
 				playerLoc.add(0, 1, 0);
 				ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
-				ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
+				ParticleEffect.WAKE.display(playerLoc, 25, 0, 0, 0, 0.05F);
 				giveHP(player);
 			}
 		}else if(hasWaterSupply(player) && player.isSneaking()){
@@ -78,7 +79,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 						Location playerLoc = entity.getLocation();
 						playerLoc.add(0, 1, 0);
 						ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
-						ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
+						ParticleEffect.WAKE.display(playerLoc, 25, 0, 0, 0, 0.05F);
 						giveHPToEntity((LivingEntity) entity);
 						entity.setFireTicks(0);
 						Random rand = new Random();
@@ -90,7 +91,7 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 				Location playerLoc = player.getLocation();
 				playerLoc.add(0, 1, 0);
 				ParticleEffect.MOB_SPELL_AMBIENT.display(playerLoc, 3, Math.random(), Math.random(), Math.random(), 0.0);
-				ParticleEffect.WAKE.display(playerLoc, 0, 0, 0, 0.05F, 25);
+				ParticleEffect.WAKE.display(playerLoc, 25, 0, 0, 0, 0.05F);
 				giveHP(player);
 				player.setFireTicks(0);
 				Random rand = new Random();
@@ -139,18 +140,18 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 
 	private static boolean hasWaterSupply(Player player){
 		ItemStack heldItem = player.getInventory().getItemInMainHand();
-		if(heldItem.getType() == Material.POTION)
-			return true;
-		else if(heldItem.getType() == Material.WATER_BUCKET)
-			return true;
-		return false;
+		return(heldItem == WaterReturn.waterBottleItem() || heldItem.getType() == Material.WATER_BUCKET);
+
 	}
 
 	private static void drainWaterSupply(Player player){
 		ItemStack heldItem = player.getInventory().getItemInMainHand();
-		if(heldItem.getType() == Material.POTION)
+		if(heldItem == WaterReturn.waterBottleItem()) {
 			player.getInventory().setItemInMainHand(new ItemStack(Material.GLASS_BOTTLE, 1));
-		else if(heldItem.getType() == Material.BUCKET);
+		}
+		else if(heldItem.getType() == Material.WATER_BUCKET){
+			player.getInventory().setItemInMainHand(new ItemStack(Material.BUCKET, 1));
+		}
 	}
 
 	@SuppressWarnings("deprecation")
