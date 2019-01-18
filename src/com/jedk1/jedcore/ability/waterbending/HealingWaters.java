@@ -26,6 +26,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class HealingWaters extends HealingAbility implements AddonAbility {
@@ -140,17 +141,23 @@ public class HealingWaters extends HealingAbility implements AddonAbility {
 
 	private static boolean hasWaterSupply(Player player){
 		ItemStack heldItem = player.getInventory().getItemInMainHand();
-		return(heldItem == WaterReturn.waterBottleItem() || heldItem.getType() == Material.WATER_BUCKET);
+		return(heldItem.isSimilar(WaterReturn.waterBottleItem()) || heldItem.getType() == Material.WATER_BUCKET);
 
 	}
 
 	private static void drainWaterSupply(Player player){
 		ItemStack heldItem = player.getInventory().getItemInMainHand();
-		if(heldItem == WaterReturn.waterBottleItem()) {
-			player.getInventory().setItemInMainHand(new ItemStack(Material.GLASS_BOTTLE, 1));
-		}
-		else if(heldItem.getType() == Material.WATER_BUCKET){
-			player.getInventory().setItemInMainHand(new ItemStack(Material.BUCKET, 1));
+		ItemStack emptyBottle = new ItemStack(Material.GLASS_BOTTLE, 1);
+		if(heldItem.isSimilar(WaterReturn.waterBottleItem())) {
+			if (heldItem.getAmount() > 1) {
+				heldItem.setAmount(heldItem.getAmount() - 1);
+				HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(emptyBottle);
+				for (int id : cantfit.keySet()) {
+					player.getWorld().dropItem(player.getEyeLocation(), cantfit.get(id));
+				}
+			} else {
+				player.getInventory().setItemInMainHand(emptyBottle);
+			}
 		}
 	}
 
