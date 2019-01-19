@@ -76,6 +76,7 @@ import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
 import com.projectkorra.projectkorra.airbending.Suffocate;
 import com.projectkorra.projectkorra.waterbending.blood.Bloodbending;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class AbilityListener implements Listener {
 
@@ -88,8 +89,14 @@ public class AbilityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	// Abilities that should bypass punch cancels should be handled here.
-	public void onPlayerSwingBypassCancel(PlayerAnimationEvent event) {
+	public void onPlayerSwingBypassCancel(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_AIR) {
+			return;
+		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return;
@@ -133,11 +140,18 @@ public class AbilityListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerSwing(PlayerAnimationEvent event) {
-		if (event.isCancelled()) return;
-
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerSwing(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_AIR) {
+			return;
+		}
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.isCancelled()){
+			return;
+		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return;
