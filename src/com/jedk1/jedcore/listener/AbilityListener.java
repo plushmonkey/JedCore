@@ -167,7 +167,6 @@ public class AbilityListener implements Listener {
 			event.setCancelled(true);
 			return;
 		} else if (GeneralMethods.isInteractable(player.getTargetBlock((Set<Material>)null, 5))) {
-			event.setCancelled(true);
 			return;
 		}
 		
