@@ -121,7 +121,7 @@ public class JCListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
 			if (event.getCause() == DamageCause.ENTITY_ATTACK) {
@@ -152,15 +152,20 @@ public class JCListener implements Listener {
 
 			if (event.getEntity() instanceof LivingEntity) {
 				if (arrow.hasMetadata("daggerthrow") && arrow.getShooter() instanceof Player) {
-					DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
+					if (event.getEntity().getEntityId() != ((Player) arrow.getShooter()).getEntityId()) {
+						DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
+					}
 					event.setDamage(0);
 					event.setCancelled(true);
+					arrow.remove();
+					arrow.removeMetadata("daggerthrow", JedCore.plugin);
 				}
 
 				if (arrow.hasMetadata("metalhook")) {
 					arrow.remove();
 					event.setDamage(0);
 					event.setCancelled(true);
+					arrow.removeMetadata("metalhook", JedCore.plugin);
 				}
 			}
 		}
