@@ -124,34 +124,45 @@ public class JCListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
-			if (FirePunch.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
-				event.setCancelled(true);
-				return;
+			if (event.getCause() == DamageCause.ENTITY_ATTACK) {
+				double distSq = event.getDamager().getLocation().distanceSquared(event.getEntity().getLocation());
+
+				// Only activate these in melee range
+				if (distSq <= 5 * 5) {
+					if (FirePunch.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
+						event.setCancelled(true);
+						return;
+					}
+
+					if (Backstab.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
+						event.setDamage(Backstab.getDamage(event.getDamager().getWorld()));
+						return;
+					}
+				}
 			}
-			if (Backstab.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
-				event.setDamage(Backstab.getDamage(event.getDamager().getWorld()));
-				return;
-			}
+
 			if (IceClaws.freezeEntity((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
 				event.setCancelled(true);
 				return;
 			}
 		}
+
 		if (event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow) event.getDamager();
+
 			if (event.getEntity() instanceof LivingEntity) {
 				if (arrow.hasMetadata("daggerthrow") && arrow.getShooter() instanceof Player) {
 					DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
 					event.setDamage(0);
 					event.setCancelled(true);
 				}
+
 				if (arrow.hasMetadata("metalhook")) {
 					arrow.remove();
 					event.setDamage(0);
 					event.setCancelled(true);
 				}
 			}
-			return;
 		}
 	}
 
