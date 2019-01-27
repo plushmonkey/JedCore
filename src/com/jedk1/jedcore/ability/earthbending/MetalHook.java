@@ -65,7 +65,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		canFly = player.getAllowFlight();
 		hasFly = player.isFlying();
 		wasSprinting = player.isSprinting();
-
+		flightHandler.createInstance(player, this.getName());
 		player.setAllowFlight(true);
 
 		start();
@@ -183,7 +183,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		if (player.isOnline()) {
 			bPlayer.addCooldown(this);
 		}
-
+		flightHandler.removeInstance(player, this.getName());
 		super.remove();
 	}
 

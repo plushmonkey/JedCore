@@ -5,8 +5,10 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.LavaAbility;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
+import com.projectkorra.projectkorra.util.Information;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
 
@@ -108,6 +110,13 @@ public class Fissure extends LavaAbility implements AddonAbility {
 				Block b = bi.next();
 
 				if (b != null && b.getY() > 1 && b.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, b.getLocation())) {
+					if (EarthAbility.getMovedEarth().containsKey(b)){
+						Information info = EarthAbility.getMovedEarth().get(b);
+						if(!info.getBlock().equals(b)) {
+							continue;
+						}
+					}
+
 					while (!isEarthbendable(player, b)) {
 						b = b.getRelative(BlockFace.DOWN);
 						if (b == null || b.getY() < 1 || b.getY() > 255) {
@@ -181,6 +190,13 @@ public class Fissure extends LavaAbility implements AddonAbility {
 
 	private void expand(Block block) {
 		if (block != null && block.getY() > 1 && block.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, block.getLocation())) {
+			if (EarthAbility.getMovedEarth().containsKey(block)){
+				Information info = EarthAbility.getMovedEarth().get(block);
+				if(!info.getBlock().equals(block)) {
+					return;
+				}
+			}
+
 			while (!isEarthbendable(player, block)) {
 				block = block.getRelative(BlockFace.DOWN);
 				if (block == null || block.getY() < 1 || block.getY() > 255) {

@@ -10,12 +10,15 @@ import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import com.projectkorra.projectkorra.util.TempBlock;
+import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -208,35 +211,39 @@ public class Drain extends WaterAbility implements AddonAbility {
 	}
 
 	private void fill() {
-		for (ItemStack items : player.getInventory()) {
-			if (items != null && Arrays.asList(fillables).contains(items.getType())) {
-				ItemStack filled = getFilled(items);
-				HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(filled);
-				for (int id : cantfit.keySet()) {
-					player.getWorld().dropItem(player.getEyeLocation(), cantfit.get(id));
+		for (int x = 0; x < absorbed; x++) {
+			for (Material fillable : fillables) {
+				int slot = player.getInventory().first(fillable);
+				if (slot == -1){
+					continue;
 				}
-				if (items.getAmount() > 1) {
-					items.setAmount(items.getAmount() - 1);
+				if (player.getInventory().getItem(slot).getAmount() > 1) {
+					player.getInventory().getItem(slot).setAmount(player.getInventory().getItem(slot).getAmount() - 1);
+
+					ItemStack filled = getFilled(fillable);
+					HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(filled);
+					for (int id : cantfit.keySet()) {
+						player.getWorld().dropItem(player.getEyeLocation(), cantfit.get(id));
+					}
 				} else {
-					player.getInventory().removeItem(items);
+					player.getInventory().setItem(slot, getFilled(fillable));
 				}
-				return;
+				break;
 			}
 		}
 	}
 
-	private ItemStack getFilled(ItemStack is) {
+	private ItemStack getFilled(Material type) {
 		ItemStack filled = null;
-		if (is.getType() == Material.GLASS_BOTTLE) {
-			filled = new ItemStack(Material.POTION, 1);
-		} else if (is.getType() == Material.BUCKET) {
+		if (type == Material.GLASS_BOTTLE) {
+			filled = WaterReturn.waterBottleItem();
+		} else if (type == Material.BUCKET) {
 			filled = new ItemStack(Material.WATER_BUCKET, 1);
 		}
 
 		return filled;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void checkForValidSource() {
 		List<Location> locs = GeneralMethods.getCircle(player.getLocation(), radius, radius, false, true, 0);
 		for (int i = 0; i < locs.size(); i++) {
@@ -253,9 +260,12 @@ public class Drain extends WaterAbility implements AddonAbility {
 							}
 						}
 					}
-					if (usePlants && JCMethods.isSmallPlant(block) && !isObstructed(block.getLocation(), player.getLocation().add(0, 1, 0))) {
+					if (usePlants && JCMethods.isSmallPlant(block) && !isObstructed(block.getLocation(), player.getEyeLocation())) {
 						drainPlant(block);
-					} else if (isWater(block) && (block.getData() == (byte) 0x0)) {
+					} else if(usePlants && (block.getType() == Material.SPRUCE_LEAVES || block.getType() == Material.OAK_LEAVES || block.getType() == Material.JUNGLE_LEAVES || block.getType() == Material.DARK_OAK_LEAVES || block.getType() == Material.BIRCH_LEAVES || block.getType() == Material.ACACIA_LEAVES) && !isObstructed(block.getLocation(), player.getEyeLocation())) {
+						locations.add(block.getLocation().clone().add(.5, .5, .5));
+						new RegenTempBlock(block, Material.AIR, Material.AIR.createBlockData(), regenDelay);
+					} else if (isWater(block)) {
 						if (drainTemps || !TempBlock.isTempBlock(block)) {
 							drainWater(block);
 						}
@@ -276,7 +286,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 
 		double max = location1.distance(location2);
 
-		for (double i = 0; i <= max; i++) {
+		for (double i = 1; i <= max; i++) {
 			loc = location1.clone().add(direction.clone().multiply(i));
 			//Material type = loc.getBlock().getType();
 			//if (type != Material.AIR && !Arrays.asList(plantIds).contains(type.getId()) && !isWater(loc.getBlock()))
@@ -310,7 +320,11 @@ public class Drain extends WaterAbility implements AddonAbility {
 	private void drainWater(Block block) {
 		if (isTransparent(block.getRelative(BlockFace.UP)) && !isWater(block.getRelative(BlockFace.UP))) {
 			locations.add(block.getLocation().clone().add(.5, .5, .5));
-			new RegenTempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(1)), regenDelay);
+			if (block.getBlockData() instanceof Waterlogged) {
+				new RegenTempBlock(block, block.getBlockData().getMaterial(), block.getBlockData().getMaterial().createBlockData(bd -> ((Waterlogged) bd).setWaterlogged(false)), regenDelay);
+			} else {
+				new RegenTempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled) bd).setLevel(1)), regenDelay);
+			}
 		}
 	}
 

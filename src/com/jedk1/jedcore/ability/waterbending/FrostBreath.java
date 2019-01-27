@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -160,12 +161,11 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()) {
 
 					for (Location l2 : createCage(entity.getLocation())) {
-						if (!GeneralMethods.isRegionProtectedFromBuild(player, "FrostBreath", l2) && (!l2.getBlock().getType().isSolid() || ElementalAbility.isAir(l2.getBlock().getType()))) {
+						if (!GeneralMethods.isRegionProtectedFromBuild(this, l2) && (!l2.getBlock().getType().isSolid() || ElementalAbility.isAir(l2.getBlock().getType())) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))) {
 							Block block = l2.getBlock();
 
-							RegenTempBlock.revert(block);
-							new RegenTempBlock(block, Material.ICE, Material.ICE.createBlockData(), freezeDuration);
-							Torrent.getFrozenBlocks().put(TempBlock.get(block), player);
+							TempBlock ice = new TempBlock(block, Material.ICE);
+							ice.setRevertTime(freezeDuration);
 						}
 					}
 
@@ -202,7 +202,6 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 				Block block = l.getBlock();
 				if (isWater(l.getBlock())) {
 					TempBlock temp = new TempBlock(block, Material.ICE, Material.ICE.createBlockData());
-					Torrent.getFrozenBlocks().put(temp, player);
 				} else if (isTransparent(l.getBlock()) && l.clone().add(0, -1, 0).getBlock().getType().isSolid() && !Arrays.asList(invalidBlocks).contains(l.clone().add(0, -1, 0).getBlock().getType())) {
 					boolean createTemp = !bendSnow;
 

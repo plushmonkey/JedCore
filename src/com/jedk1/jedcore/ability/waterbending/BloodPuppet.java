@@ -7,18 +7,7 @@ import com.projectkorra.projectkorra.ability.ElementalAbility;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Blaze;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Witch;
+import org.bukkit.entity.*;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
@@ -120,6 +109,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 			case WITCH:
 				return true;
 			case ENDERMITE:
+				return true;
+			case DROWNED:
 				return true;
 			case PLAYER:
 				return true;
