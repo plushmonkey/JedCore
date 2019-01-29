@@ -20,10 +20,7 @@ import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
 import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
-import com.projectkorra.projectkorra.event.AbilityStartEvent;
-import com.projectkorra.projectkorra.event.BendingReloadEvent;
-import com.projectkorra.projectkorra.event.HorizontalVelocityChangeEvent;
-import com.projectkorra.projectkorra.event.PlayerCooldownChangeEvent;
+import com.projectkorra.projectkorra.event.*;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -61,7 +58,13 @@ public class JCListener implements Listener {
 			return;
 		}
 		BendingBoard bb = BendingBoard.get(event.getPlayer());
-		if (bb != null) bb.update();
+		if (bb != null) {
+			new BukkitRunnable() {
+				public void run() {
+					bb.update();
+				}
+			}.runTaskLater(JedCore.plugin, 50);
+		}
 		if (UpdateChecker.hasUpdate() && JedCore.plugin.getConfig().getBoolean("Settings.Updater.Notify")) {
 			if (event.getPlayer().hasPermission("jedcore.admin.notify")) {
 				event.getPlayer().sendMessage(ChatColor.DARK_RED + "JedCore: " + ChatColor.RED + "There is an update available for JedCore!");
@@ -255,14 +258,31 @@ public class JCListener implements Listener {
 		if (BendingBoard.shouldIgnoreAbility(event.getAbility())) {
 			return;
 		}
-
-		BendingBoard.update(event.getPlayer());
+		new BukkitRunnable() {
+			public void run() {
+				BendingBoard.update(event.getPlayer());
+			}
+		}.runTaskLater(JedCore.plugin, 1);
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onWorldChange(PlayerChangedWorldEvent event){
 		if (event.getPlayer() == null) return;
-		BendingBoard.update(event.getPlayer());
+		new BukkitRunnable() {
+			public void run() {
+				BendingBoard.update(event.getPlayer());
+			}
+		}.runTaskLater(JedCore.plugin, 1);
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onElementChange(PlayerChangeElementEvent event){
+		if (event.getTarget() == null) return;
+		new BukkitRunnable() {
+			public void run() {
+				BendingBoard.update(event.getTarget());
+			}
+		}.runTaskLater(JedCore.plugin, 1);
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
