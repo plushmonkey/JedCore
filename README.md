@@ -3,6 +3,20 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.8.0
+- Update to ProjectKorra 1.8.8 and Spigot 1.13.2.
+  - Support dropped for older versions of both ProjectKorra and Spigot due to large api changes.
+- Fix a bunch of protection issues, such as WorldGuard item dropping. (PhanaticD)
+- Fix Discharge and LightningBurst being spammable in AvatarState. (PhanaticD)
+- Fix DaggerThrow so it cannot damage the user. (PhanaticD)
+- Make bending board more responsive. (PhanaticD)
+- Fix FirePunch so it's only activated from melee damage.
+- Improve EarthLine. (0ct0ber)
+  - Add more config options for dealing with select/prepare ranges.
+  - Add config option for allowing direction change.
+  - Add config option for max duration.
+- Make slot swapping configurable for EarthLine and LavaDisc.
+  
 ### 2.7.0
 - Update to ProjectKorra 1.8.7. It should continue to work with previous versions as well.
 - Improve MetalArmor and MetalFragments.
