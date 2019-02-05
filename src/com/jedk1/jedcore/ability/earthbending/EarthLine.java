@@ -34,12 +34,17 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	private boolean progressing;
 	private boolean hitted;
 	private int goOnAfterHit;
+	private long removalTime = -1;
 
-	private long cooldown;
+	private long usecooldown;
+	private long preparecooldown;
+	private long maxduration;
 	private double range;
 	private double preparerange;
+	private double sourcekeeprange;
 	private int affectingradius;
 	private double damage;
+	private boolean allowChangeDirection;
 	private CompositeRemovalPolicy removalPolicy;
 
 
@@ -58,7 +63,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 		setFields();
 		if (prepare()) {
-			bPlayer.addCooldown(this);
+			if (preparecooldown != 0) bPlayer.addCooldown(this, preparecooldown);
 			start();
 		}
 	}
@@ -75,11 +80,15 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 		this.removalPolicy.load(config);
 
-		cooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown");
+		usecooldown = config.getLong("Abilities.Earth.EarthLine.Cooldown");
+		preparecooldown = config.getLong("Abilities.Earth.EarthLine.PrepareCooldown");
 		range = config.getInt("Abilities.Earth.EarthLine.Range");
-		preparerange = config.getInt("Abilities.Earth.EarthLine.PrepareRange");
+		preparerange = config.getDouble("Abilities.Earth.EarthLine.PrepareRange");
+		sourcekeeprange = config.getDouble("Abilities.Earth.EarthLine.SourceKeepRange");
 		affectingradius = config.getInt("Abilities.Earth.EarthLine.AffectingRadius");
 		damage = config.getDouble("Abilities.Earth.EarthLine.Damage");
+		allowChangeDirection = config.getBoolean("Abilities.Earth.EarthLine.AllowChangeDirection");
+		maxduration = config.getLong("Abilities.Earth.EarthLine.MaxDuration");
 	}
 
 	public boolean prepare() {
@@ -89,7 +98,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 				el.remove();
 			}
 		}
-		Block block = BlockSource.getEarthSourceBlock(player, 3, ClickType.SHIFT_DOWN);
+		Block block = BlockSource.getEarthSourceBlock(player, preparerange, ClickType.SHIFT_DOWN);
 		if (block != null) {
 			sourceblock = block;
 			focusBlock();
@@ -117,6 +126,10 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		}
 		location = sourceblock.getLocation();
 	}
+	
+	private void unfocusBlock() {
+		sourceblock.setType(sourcetype);
+	}
 
 	private void breakSourceBlock() {
 		sourceblock.setType(sourcetype);
@@ -143,6 +156,8 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	}
 
 	public void shootline(Location endLocation) {
+		if (usecooldown != 0 && bPlayer.getCooldown(this.getName()) < usecooldown) bPlayer.addCooldown(this, usecooldown);
+		if (maxduration > 0) removalTime = System.currentTimeMillis() + maxduration;
 		this.endLocation = endLocation;
 		progressing = true;
 		breakSourceBlock();
@@ -159,10 +174,19 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		}
 		return false;
 	}
+	
+	private boolean sourceOutOfRange() {
+		return sourceblock == null || sourceblock.getLocation().add(0.5, 0.5, 0.5).distanceSquared(player.getLocation()) > sourcekeeprange * sourcekeeprange || sourceblock.getWorld() != player.getWorld();
+	}
 
 	public void progress() {
-		if (!progressing)
+		if (!progressing) {
+			if (sourceOutOfRange()) {
+				unfocusBlock();
+				remove();
+			}
 			return;
+		}
 
 		if (removalPolicy.shouldRemove()) {
 			remove();
@@ -174,17 +198,22 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 			return;
 		}
 
-		if (player.getWorld() != sourceblock.getWorld()) {
+		if (removalTime > -1 && System.currentTimeMillis() > removalTime) {
+			remove();
+			return;
+		}
+		
+		if (sourceOutOfRange()) {
 			remove();
 			return;
 		}
 
-		if (sourceblock.getLocation().distance(player.getLocation()) > preparerange) {
+		if (GeneralMethods.isRegionProtectedFromBuild(player, "EarthBlast", location)) {
 			remove();
 			return;
 		}
 
-		if (player.isSneaking() && bPlayer.getBoundAbilityName().equalsIgnoreCase("EarthLine")) {
+		if (allowChangeDirection && player.isSneaking() && bPlayer.getBoundAbilityName().equalsIgnoreCase("EarthLine")) {
 			endLocation = getTargetLocation(player);
 		}
 
@@ -250,7 +279,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 	
 	@Override
 	public long getCooldown() {
-		return cooldown;
+		return usecooldown;
 	}
 
 	@Override
