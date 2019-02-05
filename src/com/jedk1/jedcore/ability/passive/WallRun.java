@@ -8,7 +8,6 @@ import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
 import com.projectkorra.projectkorra.ability.ChiAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -138,8 +137,8 @@ public class WallRun extends ChiAbility implements AddonAbility {
 		}
 
 		if (particles) {
-			ParticleEffect.CRIT.display(player.getLocation(), (float) Math.random(), (float) Math.random(), (float) Math.random(), 0F, 4);
-			ParticleEffect.BLOCK_CRACK.display(new BlockData(Material.STONE, (byte) 0), (float) Math.random(), (float) Math.random(), (float) Math.random(), 0.1F, 3, player.getLocation(), 32);
+			ParticleEffect.CRIT.display(player.getLocation(), 4, Math.random(), Math.random(), Math.random(), 0);
+			ParticleEffect.BLOCK_CRACK.display(player.getLocation(), 3, Math.random(), Math.random(), Math.random(), 0.1, Material.STONE.createBlockData());
 			AirAbility.playAirbendingParticles(player.getLocation(), 5);
 		}
 

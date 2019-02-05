@@ -3,10 +3,12 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.LavaAbility;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
+import com.projectkorra.projectkorra.util.Information;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
 
@@ -107,7 +109,14 @@ public class Fissure extends LavaAbility implements AddonAbility {
 			while (bi.hasNext()) {
 				Block b = bi.next();
 
-				if (b != null && b.getY() > 1 && b.getY() < 255) {
+				if (b != null && b.getY() > 1 && b.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, b.getLocation())) {
+					if (EarthAbility.getMovedEarth().containsKey(b)){
+						Information info = EarthAbility.getMovedEarth().get(b);
+						if(!info.getBlock().equals(b)) {
+							continue;
+						}
+					}
+
 					while (!isEarthbendable(player, b)) {
 						b = b.getRelative(BlockFace.DOWN);
 						if (b == null || b.getY() < 1 || b.getY() > 255) {
@@ -143,7 +152,7 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	private void slapCenter() {
 		for (Location location : centerSlap) {
 			if (centerSlap.indexOf(location) <= slap) {
-				addTempBlock(location.getBlock(), Material.STATIONARY_LAVA);
+				addTempBlock(location.getBlock(), Material.LAVA);
 			}
 		}
 		if (slap >= centerSlap.size()) {
@@ -180,7 +189,14 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	}
 
 	private void expand(Block block) {
-		if (block != null && block.getY() > 1 && block.getY() < 255) {
+		if (block != null && block.getY() > 1 && block.getY() < 255 && !GeneralMethods.isRegionProtectedFromBuild(this, block.getLocation())) {
+			if (EarthAbility.getMovedEarth().containsKey(block)){
+				Information info = EarthAbility.getMovedEarth().get(block);
+				if(!info.getBlock().equals(block)) {
+					return;
+				}
+			}
+
 			while (!isEarthbendable(player, block)) {
 				block = block.getRelative(BlockFace.DOWN);
 				if (block == null || block.getY() < 1 || block.getY() > 255) {
@@ -202,7 +218,7 @@ public class Fissure extends LavaAbility implements AddonAbility {
 			}
 
 			if (isEarthbendable(player, block)) {
-				addTempBlock(block, Material.STATIONARY_LAVA);
+				addTempBlock(block, Material.LAVA);
 			} else {
 				return;
 			}
@@ -212,10 +228,10 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	private void addTempBlock(Block block, Material material) {
 		ParticleEffect.LAVA.display(block.getLocation(), 0, 0, 0, 0, 1);
 		playEarthbendingSound(block.getLocation());
-		if (VersionUtil.isPassiveSand(block)) {
-			VersionUtil.revertSand(block);
+		if (DensityShift.isPassiveSand(block)) {
+            DensityShift.revertSand(block);
 		}
-		new TempBlock(block, material, (byte) 0);
+		new TempBlock(block, material, material.createBlockData());
 		blocks.add(block);
 	}
 
@@ -245,14 +261,14 @@ public class Fissure extends LavaAbility implements AddonAbility {
 	
 	private void forceRevert() {
 		for (Block block : blocks) {
-			new RegenTempBlock(block, Material.STONE, (byte) 0, 500 + (long) rand.nextInt((int) 1000));
+			new RegenTempBlock(block, Material.STONE, Material.STONE.createBlockData(), 500 + (long) rand.nextInt((int) 1000));
 		}
 		coolLava();
 	}
 	
 	private void coolLava() {
 		for (Block block : blocks) {
-			new RegenTempBlock(block, Material.STONE, (byte) 0, 500 + (long) rand.nextInt((int) 1000));
+			new RegenTempBlock(block, Material.STONE, Material.STONE.createBlockData(), 500 + (long) rand.nextInt((int) 1000));
 		}
 		blocks.clear();
 	}

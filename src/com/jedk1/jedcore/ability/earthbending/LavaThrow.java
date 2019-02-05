@@ -3,10 +3,10 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LavaAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -116,13 +117,13 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 		if (source != null) {
 			shots++;
 			Vector direction = GeneralMethods.getDirection(player.getLocation(),
-					VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA)).normalize();
+					GeneralMethods.getTargetedLocation(player, range, Material.WATER, Material.LAVA)).normalize();
 			Location origin = source.getLocation().clone().add(0, 2, 0);
 			Location head = origin.clone();
 			head.setDirection(direction);
 			blasts.put(head, origin);
-			new RegenTempBlock(source.getRelative(BlockFace.UP), Material.STATIONARY_LAVA, (byte) 0, 200);
-			new RegenTempBlock(source, Material.AIR, (byte) 0, sourceRegen, false);
+			new RegenTempBlock(source.getRelative(BlockFace.UP), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 200);
+			new RegenTempBlock(source, Material.AIR, Material.AIR.createBlockData(), sourceRegen, false);
 		}
 	}
 
@@ -134,14 +135,18 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 				blasts.remove(l);
 				continue;
 			}
+			if(GeneralMethods.isRegionProtectedFromBuild(this, l)){
+				blasts.remove(l);
+				continue;
+			}
 			head = head.add(head.getDirection().multiply(1));
-			new RegenTempBlock(l.getBlock(), Material.STATIONARY_LAVA, (byte) 0, 200);
-			ParticleEffect.LAVA.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0f, 1, head, 257D);
+			new RegenTempBlock(l.getBlock(), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 200);
+			ParticleEffect.LAVA.display(head, 1, Math.random(), Math.random(), Math.random(), 0);
 
 			boolean hit = false;
 
 			for(Entity entity : GeneralMethods.getEntitiesAroundPoint(l, 2.0D)){
-				if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId()){
+				if(entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
 					DamageHandler.damageEntity(entity, damage, this);
 					blasts.remove(l);
 

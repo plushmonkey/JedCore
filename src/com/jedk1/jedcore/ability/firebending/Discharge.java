@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.firebending;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.collision.Sphere;
@@ -7,14 +8,12 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.LightningAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -35,7 +34,7 @@ public class Discharge extends LightningAbility implements AddonAbility {
 	private Random rand = new Random();
 
 	private double damage;
-	private long cooldown;
+	private long cooldown, avatarcooldown;
 	private long duration;
 	private boolean slotSwapping;
 	private double entityCollisionRadius;
@@ -51,10 +50,8 @@ public class Discharge extends LightningAbility implements AddonAbility {
 		
 		direction = player.getEyeLocation().getDirection().normalize();
 		
-		if (bPlayer.isAvatarState()) {
-			this.cooldown = 0;
-		} else if (isSozinsComet(player.getWorld())) {
-			this.cooldown = 0;
+		if (bPlayer.isAvatarState() || JCMethods.isSozinsComet(player.getWorld())) {
+			this.cooldown = avatarcooldown;
 		}
 
 		bPlayer.addCooldown(this);
@@ -66,6 +63,7 @@ public class Discharge extends LightningAbility implements AddonAbility {
 
 		damage = config.getDouble("Abilities.Fire.Discharge.Damage");
 		cooldown = config.getLong("Abilities.Fire.Discharge.Cooldown");
+		avatarcooldown = config.getLong("Abilities.Fire.Discharge.AvatarCooldown");
 		duration = config.getLong("Abilities.Fire.Discharge.Duration");
 		slotSwapping = config.getBoolean("Abilities.Fire.Discharge.SlotSwapping");
 		entityCollisionRadius = config.getDouble("Abilities.Fire.Discharge.EntityCollisionRadius");
@@ -146,6 +144,9 @@ public class Discharge extends LightningAbility implements AddonAbility {
 					Vector vec = l.toVector();
 
 					hit = CollisionDetector.checkEntityCollisions(player, new Sphere(l.toVector(), entityCollisionRadius), (entity) -> {
+						if (GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) || ((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
+							return true;
+						}
 						Vector knockbackVector = entity.getLocation().toVector().subtract(vec).normalize().multiply(0.8);
 						entity.setVelocity(knockbackVector);
 

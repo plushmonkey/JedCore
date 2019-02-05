@@ -9,7 +9,6 @@ import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -102,10 +101,10 @@ public class SpiritBeam extends AvatarAbility implements AddonAbility {
 				return;
 			}
 
-			ParticleEffect.WITCH_MAGIC.display(location, 0f, 0f, 0f, 0f, 1);
-			ParticleEffect.WITCH_MAGIC.display(location, (float) Math.random() / 3, (float) Math.random() / 3, (float) Math.random() / 3, 0f, 1);
-			ParticleEffect.BLOCK_CRACK.display(new BlockData(Material.PORTAL, (byte) 0), (float) Math.random() / 3, (float) Math.random() / 3, (float) Math.random() / 3, 0.1F, 1, location, 100.00D);
-			ParticleEffect.BLOCK_CRACK.display(new BlockData(Material.PORTAL, (byte) 0), direction, 0.1F, location, 100.00D);
+			ParticleEffect.SPELL_WITCH.display(location, 1, 0f, 0f, 0f, 0f);
+			ParticleEffect.SPELL_WITCH.display(location, 1, (float) Math.random() / 3, (float) Math.random() / 3, (float) Math.random() / 3, 0f);
+			ParticleEffect.BLOCK_CRACK.display(location, 1,(float) Math.random() / 3, (float) Math.random() / 3, (float) Math.random() / 3, 0.1F, Material.NETHER_PORTAL.createBlockData());
+			ParticleEffect.BLOCK_CRACK.display(location, 1, direction.getX(), direction.getY(), direction.getZ(), 0.1F, Material.NETHER_PORTAL.createBlockData());
 
 			for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, 2)) {
 				if (entity instanceof LivingEntity && entity.getEntityId() != player.getEntityId() && !(entity instanceof ArmorStand)) {
@@ -120,7 +119,7 @@ public class SpiritBeam extends AvatarAbility implements AddonAbility {
 					//new TempExplosion(player, location.getBlock(), "SpiritBeam", radius, regen, damage, false);
 					for (Location loc : GeneralMethods.getCircle(location, (int) radius, 0, false, true, 0)) {
 						if (JCMethods.isUnbreakable(loc.getBlock())) continue;
-						new RegenTempBlock(loc.getBlock(), Material.AIR, (byte) 0, regen, false);
+						new RegenTempBlock(loc.getBlock(), Material.AIR, Material.AIR.createBlockData(), regen, false);
 					}
 				}
 				return;

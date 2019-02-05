@@ -116,7 +116,7 @@ public class AirPunch extends AirAbility implements AddonAbility {
 					break;
 				}
 
-				getAirbendingParticles().display((float) Math.random() / 5, (float) Math.random() / 5, (float) Math.random() / 5, 0f, 2, loc, 257D);
+				getAirbendingParticles().display(loc, 2, Math.random() / 5, Math.random() / 5, Math.random() / 5, 0.0);
 				playAirbendingSound(loc);
 
 				cancel = CollisionDetector.checkEntityCollisions(player, new Sphere(loc.toVector(), entityCollisionRadius), (entity) -> {

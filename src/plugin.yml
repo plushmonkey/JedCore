@@ -3,7 +3,7 @@ main: com.jedk1.jedcore.JedCore
 version: ${project.version}
 authors: ['jedk1']
 depend: ['ProjectKorra']
-
+api-version: 1.13
 permissions:
   #OP permissions
   jedcore.admin:

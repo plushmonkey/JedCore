@@ -1,5 +1,6 @@
 package com.jedk1.jedcore.ability.firebending;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.GeneralMethods;
@@ -23,8 +24,8 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 	private static ConcurrentHashMap<Integer, Bolt> bolts = new ConcurrentHashMap<Integer, Bolt>();
 
 	Random rand = new Random();
-	private long cooldown;
-	private long chargeup;
+	private long cooldown, avatarcooldown;
+	private long chargeup, avatarchargeup;
 	private double damage;
 	private double radius;
 
@@ -40,9 +41,9 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 		}
 		
 		setFields();
-		if (bPlayer.isAvatarState() || isSozinsComet(player.getWorld())) {
-			chargeup = 0;
-			cooldown = 0;
+		if (bPlayer.isAvatarState() || JCMethods.isSozinsComet(player.getWorld())) {
+			chargeup = avatarchargeup;
+			cooldown = avatarcooldown;
 			
 		}
 		time = System.currentTimeMillis();
@@ -54,6 +55,8 @@ public class LightningBurst extends LightningAbility implements AddonAbility {
 
 		cooldown = config.getLong("Abilities.Fire.LightningBurst.Cooldown");
 		chargeup = config.getLong("Abilities.Fire.LightningBurst.ChargeUp");
+		avatarcooldown = config.getLong("Abilities.Fire.LightningBurst.AvatarCooldown");
+		avatarchargeup = config.getLong("Abilities.Fire.LightningBurst.AvatarChargeUp");
 		damage = config.getDouble("Abilities.Fire.LightningBurst.Damage");
 		radius = config.getDouble("Abilities.Fire.LightningBurst.Radius");
 	}

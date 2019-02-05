@@ -49,8 +49,8 @@ public class FirePunch extends FireAbility implements AddonAbility {
 		Location offset = GeneralMethods.getRightSide(player.getLocation(), .55).add(0, 1.2, 0);
 		Vector dir = player.getEyeLocation().getDirection();
 		Location righthand = offset.toVector().add(dir.clone().multiply(.8D)).toLocation(player.getWorld());
-		ParticleEffect.FLAME.display(0f, 0f, 0f, 0f, 3, righthand, 257D);
-		ParticleEffect.SMOKE.display(0f, 0f, 0f, 0f, 3, righthand, 257D);
+		ParticleEffect.FLAME.display(righthand, 3, 0, 0, 0, 0);
+		ParticleEffect.SMOKE_NORMAL.display(righthand, 3, 0, 0, 0, 0);
 	}
 
 	public static boolean punch(Player player, LivingEntity target) {

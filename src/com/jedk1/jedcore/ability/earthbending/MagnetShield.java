@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 public class MagnetShield extends MetalAbility implements AddonAbility {
 
-	private final static Material[] METAL = { Material.IRON_INGOT, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.IRON_BLOCK, Material.IRON_AXE, Material.IRON_PICKAXE, Material.IRON_SWORD, Material.IRON_HOE, Material.IRON_SPADE, Material.IRON_DOOR };
+	private final static Material[] METAL = { Material.IRON_INGOT, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.IRON_BLOCK, Material.IRON_AXE, Material.IRON_PICKAXE, Material.IRON_SWORD, Material.IRON_HOE, Material.IRON_SHOVEL, Material.IRON_DOOR };
 
 	public MagnetShield(Player player) {
 		super(player);

@@ -3,22 +3,11 @@ package com.jedk1.jedcore.ability.waterbending;
 import java.util.*;
 
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Blaze;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Witch;
+import org.bukkit.entity.*;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
@@ -121,6 +110,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 				return true;
 			case ENDERMITE:
 				return true;
+			case DROWNED:
+				return true;
 			case PLAYER:
 				return true;
 			default:
@@ -137,7 +128,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 			if (bloodpuppetThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
-				location = VersionUtil.getTargetedLocationTransparent(player, i);
+				location = GeneralMethods.getTargetedLocation(player, i, ElementalAbility.getTransparentMaterials());
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
 			if (entities.contains(player)) {
@@ -330,8 +321,8 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 							Player p = (Player) puppet;
 
 							switch (p.getItemInHand().getType()) {
-								case WOOD_SWORD:
-								case GOLD_SWORD:
+								case WOODEN_SWORD:
+								case GOLDEN_SWORD:
 									damage = 5;
 									break;
 								case STONE_SWORD:
@@ -384,7 +375,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 
 		Location newlocation = puppet.getLocation();
 
-		Location location = VersionUtil.getTargetedLocation(player, distance + 1);
+		Location location = GeneralMethods.getTargetedLocation(player, distance + 1);
 		double distance = location.distance(newlocation);
 		double dx, dy, dz;
 		dx = location.getX() - newlocation.getX();

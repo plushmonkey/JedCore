@@ -73,7 +73,7 @@ public class Meditate extends AirAbility implements AddonAbility {
 			return;
 		}
 		if (System.currentTimeMillis() > time + warmup) {
-			ParticleEffect.INSTANT_SPELL.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.0F, particleDensity, player.getLocation(), 256D);
+			ParticleEffect.SPELL_INSTANT.display(player.getLocation(), particleDensity, Math.random(), Math.random(), Math.random(), 0.0);
 			if (!player.isSneaking()) {
 				bPlayer.addCooldown(this);
 				givePlayerBuffs();
@@ -82,7 +82,7 @@ public class Meditate extends AirAbility implements AddonAbility {
 			}
 			return;
 		} else if (player.isSneaking()) {
-			ParticleEffect.MOB_SPELL_AMBIENT.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.0F, particleDensity, player.getLocation(), 256D);
+			ParticleEffect.SPELL_MOB_AMBIENT.display(player.getLocation(), particleDensity, Math.random(), Math.random(), Math.random(), 0.0);
 		} else {
 			remove();
 			return;

@@ -3,9 +3,9 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
 
 import org.bukkit.Location;
@@ -65,7 +65,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		canFly = player.getAllowFlight();
 		hasFly = player.isFlying();
 		wasSprinting = player.isSprinting();
-
+		flightHandler.createInstance(player, this.getName());
 		player.setAllowFlight(true);
 
 		start();
@@ -135,7 +135,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				Vector vec = a.getVelocity();
 				Location loc2 = new Location(loc.getWorld(), loc.getX()+vec.getX(), loc.getY()+vec.getY(), loc.getZ()+vec.getZ());
 
-				if (loc2.getBlock().getType() != Material.AIR) {
+				if (!ElementalAbility.isAir(loc2.getBlock().getType())) {
 					hooks.replace(a, hooks.get(a), true);
 					hasHook = true;
 				} else {
@@ -144,7 +144,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				
 				//Draws the particle lines.
 				for (Location location : JCMethods.getLinePoints(player.getLocation().add(0, 1, 0), a.getLocation(), ((int) player.getLocation().add(0,1,0).distance(a.getLocation()) * 2))) {
-					GeneralMethods.displayColoredParticle(location, "#CCCCCC");
+					GeneralMethods.displayColoredParticle("#CCCCCC", location);
 				}
 
 				if (hooks.get(a)) {
@@ -183,14 +183,14 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		if (player.isOnline()) {
 			bPlayer.addCooldown(this);
 		}
-
+		flightHandler.removeInstance(player, this.getName());
 		super.remove();
 	}
 
 	public void launchHook() {
 		if (!hasRequiredInv()) return;
 
-		Vector dir = GeneralMethods.getDirection(player.getEyeLocation(), VersionUtil.getTargetedLocation(player, range));
+		Vector dir = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, range));
 
 		if (!hookIds.isEmpty() && hookIds.size() > (maxhooks - 1)) {
 			for (Arrow a : hooks.keySet()) {

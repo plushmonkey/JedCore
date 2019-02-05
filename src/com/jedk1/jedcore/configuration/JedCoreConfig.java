@@ -362,7 +362,11 @@ public class JedCoreConfig {
 				+ "Sneak will shoot the disc off in the direction "
 				+ "you are looking! If you tap or hold Sneak again, "
 				+ "the disc will attempt to return to you!");
-		String[] meltable = {Material.COBBLESTONE.name(), Material.LOG.name(), Material.LOG_2.name()};
+		String[] meltable = {
+				Material.COBBLESTONE.name(), Material.OAK_LOG.name(), Material.SPRUCE_LOG.name(),
+				Material.JUNGLE_LOG.name(), Material.DARK_OAK_LOG.name(), Material.BIRCH_LOG.name(),
+				Material.ACACIA_LOG.name()
+		};
 		config.addDefault("Abilities.Earth.LavaDisc.Cooldown", 7000);
 		config.addDefault("Abilities.Earth.LavaDisc.Duration", 1000);
 		config.addDefault("Abilities.Earth.LavaDisc.Damage", 4.0);
@@ -534,6 +538,7 @@ public class JedCoreConfig {
 				+ "of your fingertips zapping what ever it hits!");
 		config.addDefault("Abilities.Fire.Discharge.Damage", 3.0);
 		config.addDefault("Abilities.Fire.Discharge.Cooldown", 5000);
+		config.addDefault("Abilities.Fire.Discharge.AvatarCooldown", 500);
 		config.addDefault("Abilities.Fire.Discharge.Duration", 1000);
 		config.addDefault("Abilities.Fire.Discharge.SlotSwapping", false);
 		config.addDefault("Abilities.Fire.Discharge.EntityCollisionRadius", 1.0);
@@ -636,6 +641,8 @@ public class JedCoreConfig {
 				+ "you will unleash an electrical sphere, shocking anyone who gets too close");
 		config.addDefault("Abilities.Fire.LightningBurst.Cooldown", 25000);
 		config.addDefault("Abilities.Fire.LightningBurst.ChargeUp", 4000);
+		config.addDefault("Abilities.Fire.LightningBurst.AvatarCooldown", 1000);
+		config.addDefault("Abilities.Fire.LightningBurst.AvatarChargeUp", 1000);
 		config.addDefault("Abilities.Fire.LightningBurst.Radius", 12);
 		config.addDefault("Abilities.Fire.LightningBurst.Damage", 9.0);
 		

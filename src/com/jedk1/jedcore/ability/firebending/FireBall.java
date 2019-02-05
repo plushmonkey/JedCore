@@ -101,10 +101,10 @@ public class FireBall extends FireAbility implements AddonAbility {
 				return;
 			}
 
-			ParticleEffect.LARGE_SMOKE.display(new Vector(0, 0, 0), 0f, location, 257D);
-			ParticleEffect.LARGE_SMOKE.display(new Vector(0, 0, 0), 0f, location, 257D);
+			ParticleEffect.SMOKE_LARGE.display(location, 1, 0, 0, 0, 0);
+			ParticleEffect.SMOKE_LARGE.display(location, 1, 0, 0, 0, 0);
 			for (int j = 0; j < 5; j++) {
-				ParticleEffect.FLAME.display(new Vector(0, 0, 0), 0f, location, 257D);
+				ParticleEffect.FLAME.display(location, 1, 0, 0, 0, 0);
 			}
 
 			boolean hitTarget = CollisionDetector.checkEntityCollisions(player, new Sphere(location.toVector(), collisionRadius), this::doDamage);

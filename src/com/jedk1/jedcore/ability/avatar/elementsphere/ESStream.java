@@ -8,6 +8,7 @@ import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -64,6 +65,10 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				|| currES.getEarthUses() < requiredUses 
 				|| currES.getFireUses() < requiredUses 
 				|| currES.getWaterUses() < requiredUses) {
+			return;
+		}
+
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), (int)range).getLocation())){
 			return;
 		}
 		
@@ -140,10 +145,13 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				if (JCMethods.isUnbreakable(loc.getBlock())) continue;
 				if (GeneralMethods.isRegionProtectedFromBuild(this, loc)) continue;
 				blocks.add(loc.getBlock().getState());
-				new RegenTempBlock(loc.getBlock(), Material.AIR, (byte) 0, regen, false);
+				new RegenTempBlock(loc.getBlock(), Material.AIR, Material.AIR.createBlockData(), regen, false);
 			}
 			for (Entity e : GeneralMethods.getEntitiesAroundPoint(stream, radius)) {
 				if (e instanceof Player && ((Player) e) == player) {
+					continue;
+				}
+				if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(((Player) e).getName()))){
 					continue;
 				}
 				e.setVelocity(dir.normalize().multiply(knockback));
@@ -151,13 +159,16 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 					DamageHandler.damageEntity(e, damage, this);
 				}
 			}
-			ParticleEffect.FLAME.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, stream, 257D);
-			ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, stream, 257D);
-			ParticleEffect.FIREWORKS_SPARK.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, stream, 257D);
-			ParticleEffect.LARGE_SMOKE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 20, stream, 257D);
-			ParticleEffect.EXPLOSION_HUGE.display((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f, 5, stream, 257D);
-			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_BLAST : Sound.ENTITY_FIREWORK_BLAST_FAR, 1f, 1f);
-			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_TWINKLE : Sound.ENTITY_FIREWORK_TWINKLE_FAR, 1f, 1f);
+
+			ParticleEffect.FLAME.display(stream, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.LARGE_SMOKE.display(stream, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.FIREWORKS_SPARK.display(stream, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.LARGE_SMOKE.display(stream, 20, Math.random(), Math.random(), Math.random(), 0.5);
+			ParticleEffect.EXPLOSION_HUGE.display(stream, 5, Math.random(), Math.random(), Math.random(), 0.5);
+
+			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_ROCKET_BLAST : Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR, 1f, 1f);
+			stream.getWorld().playSound(stream, (rand.nextBoolean()) ? Sound.ENTITY_FIREWORK_ROCKET_TWINKLE : Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, 1f, 1f);
+
 			for (BlockState block : blocks) {
 				double x = rand.nextDouble() / 3;
 				double z = rand.nextDouble() / 3;
@@ -165,7 +176,7 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				x = (rand.nextBoolean()) ? -x : x;
 				z = (rand.nextBoolean()) ? -z : z;
 
-				new TempFallingBlock(block.getLocation().add(0, 1, 0), block.getType(), block.getData().getData(), dir.clone().add(new Vector(x, 0, z)).normalize().multiply(-1), this);
+				new TempFallingBlock(block.getLocation().add(0, 1, 0), block.getBlockData(), dir.clone().add(new Vector(x, 0, z)).normalize().multiply(-1), this);
 			}
 			remove();
 			return;
@@ -190,20 +201,20 @@ public class ESStream extends AvatarAbility implements AddonAbility {
 				Location pl = l.clone().add(ov.clone());
 				switch (i) {
 					case 0:
-						ParticleEffect.FLAME.display(pl, 0.05F, 0.05F, 0.05F, 0.005F, 1);
+						ParticleEffect.FLAME.display(pl, 1, 0.05F, 0.05F, 0.05F, 0.005F);
 						break;
 					case 1:
 						if (rand.nextInt(30) == 0) {
-							ParticleEffect.MOB_SPELL.display((float) 255, (float) 255, (float) 255, 0.003F, 0, pl, 257D);
+							ParticleEffect.MOB_SPELL.display(pl, 0, 255, 255, 255, 0.003);
 						} else {
-							ParticleEffect.MOB_SPELL_AMBIENT.display(pl, 0.05F, 0.05F, 0.05F, 0.005F, 1);
+							ParticleEffect.MOB_SPELL_AMBIENT.display(pl, 1, 0.05, 0.05, 0.05, 0.005);
 						}
 						break;
 					case 2:
-						GeneralMethods.displayColoredParticle(pl, "06C1FF");
+						GeneralMethods.displayColoredParticle("06C1FF", pl);
 						break;
 					case 3:
-						GeneralMethods.displayColoredParticle(pl, "754719");
+						GeneralMethods.displayColoredParticle("754719", pl);
 						break;
 				}
 			}

@@ -1,10 +1,12 @@
 package com.jedk1.jedcore.util;
 
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.TempBlock;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public class RegenTempBlock {
 	 * @param data Data to be changed.
 	 * @param delay Delay until block regens.
 	 */
-	public RegenTempBlock(Block block, Material material, byte data, long delay) {
+	public RegenTempBlock(Block block, Material material, BlockData data, long delay) {
 		this(block, material, data, delay, true);
 	}
 
@@ -37,34 +39,32 @@ public class RegenTempBlock {
 	 * @param temp Use TempBlock or BlockState.
 	 */
 	@SuppressWarnings("deprecation")
-	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp) {
+	public RegenTempBlock(Block block, Material material, BlockData data, long delay, boolean temp) {
 		this(block, material, data, delay, temp, null);
 	}
 
-	public RegenTempBlock(Block block, Material material, byte data, long delay, boolean temp, RegenCallback callback) {
-		if (VersionUtil.isPassiveSand(block)) {
-			VersionUtil.revertSand(block);
+	public RegenTempBlock(Block block, Material material, BlockData data, long delay, boolean temp, RegenCallback callback) {
+		if (DensityShift.isPassiveSand(block)) {
+			DensityShift.revertSand(block);
 		}
 		if (block.getState() instanceof InventoryHolder) {
 			return;
 		}
 		if (blocks.containsKey(block)) {
 			blocks.replace(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));
-			block.setType(material);
-			block.setData(data);
+			block.setBlockData(data.clone());
 		} else {
 			blocks.put(block, new RegenBlockData(System.currentTimeMillis() + delay, callback));
 			if (TempBlock.isTempBlock(block)) {
 				TempBlock.get(block).revertBlock();
 			}
 			if (temp) {
-				TempBlock tb = new TempBlock(block, material, data);
+				TempBlock tb = new TempBlock(block, material, data.clone());
 				temps.put(block, tb);
 			} else {
 				states.put(block, block.getState());
 				if (material != null) {
-					block.setType(material);
-					block.setData(data);
+					block.setBlockData(data.clone());
 				}
 			}
 		}

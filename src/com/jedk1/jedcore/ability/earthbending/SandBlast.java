@@ -3,11 +3,12 @@ package com.jedk1.jedcore.ability.earthbending;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.SandAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -17,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -42,8 +44,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	private static double damage;
 
 	private Block source;
-	private Material sourceType;
-	private byte sourceData;
+	private BlockData sourceData;
 	private int blasts;
 	private boolean blasting;
 	private Vector direction;
@@ -85,13 +86,12 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		source = BlockSource.getEarthSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN);
 
 		if (source != null) {
-			if (isSand(source) && source.getRelative(BlockFace.UP).getType().equals(Material.AIR)) {
-				this.sourceType = source.getType();
-				this.sourceData = source.getData();
-				if (VersionUtil.isPassiveSand(source)) {
-					VersionUtil.revertSand(source);
+			if (isSand(source) && ElementalAbility.isAir(source.getRelative(BlockFace.UP).getType())) {
+				this.sourceData = source.getBlockData().clone();
+				if (DensityShift.isPassiveSand(source)) {
+					DensityShift.revertSand(source);
 				}
-				tempblock = new TempBlock(source, Material.SANDSTONE, (byte) 0);
+				tempblock = new TempBlock(source, Material.SANDSTONE, Material.SANDSTONE.createBlockData());
 				return true;
 			}
 		}
@@ -147,7 +147,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 	private void blastSand() {
 		if (!blasting) {
 			blasting = true;
-			direction = GeneralMethods.getDirection(source.getLocation().clone().add(0, 1, 0), VersionUtil.getTargetedLocation(player, range)).multiply(0.07);
+			direction = GeneralMethods.getDirection(source.getLocation().clone().add(0, 1, 0), GeneralMethods.getTargetedLocation(player, range)).multiply(0.07);
 			this.bPlayer.addCooldown(this);
 		}
 		tempblock.revertBlock();
@@ -155,7 +155,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		//FallingBlock fblock = source.getWorld().spawnFallingBlock(source.getLocation().clone().add(0, 1, 0), source.getType(), source.getData());
 
 		if (rand.nextInt(2) == 0) {
-			VersionUtil.playSandbendingSound(source.getLocation().add(0, 1, 0));
+			DensityShift.playSandbendingSound(source.getLocation().add(0, 1, 0));
 		}
 
 		double x = rand.nextDouble() / 10;
@@ -168,7 +168,7 @@ public class SandBlast extends SandAbility implements AddonAbility {
 		//fblock.setDropItem(false);
 		//fblocks.put(fblock, player);
 
-		fallingBlocks.add(new TempFallingBlock(source.getLocation().add(0, 1, 0), sourceType, sourceData, direction.clone().add(new Vector(x, 0.2, z)), this));
+		fallingBlocks.add(new TempFallingBlock(source.getLocation().add(0, 1, 0), sourceData, direction.clone().add(new Vector(x, 0.2, z)), this));
 
 	}
 

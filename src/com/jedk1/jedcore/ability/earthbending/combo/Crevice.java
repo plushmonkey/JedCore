@@ -147,7 +147,7 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 		Location tempLoc = location.clone();
 		location = location.add(direction.multiply(1));
 		playEarthbendingSound(tempLoc);
-		location.getWorld().playSound(location, Sound.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, (float) 0.5, (float) 0.5);
+		location.getWorld().playSound(location, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, (float) 0.5, (float) 0.5);
 		if (skip) {
 			return;
 		}
@@ -206,7 +206,7 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 			}
 
 
-			blocks.add(new TempBlock(tempLoc.getBlock(), Material.AIR, (byte)0));
+			blocks.add(new TempBlock(tempLoc.getBlock(), Material.AIR, Material.AIR.createBlockData()));
 			tempLoc.subtract(0, 1, 0);
 		}
 
@@ -223,7 +223,7 @@ public class Crevice extends EarthAbility implements AddonAbility, ComboAbility 
 				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(tb.getLocation(), 1)) {
 					entity.setVelocity(new Vector(0, 0.7, 0));
 				}
-				new RegenTempBlock(tb.getBlock(), Material.AIR, (byte) 0, i * 50);
+				new RegenTempBlock(tb.getBlock(), Material.AIR, Material.AIR.createBlockData(), i * 50);
 			}
 		}
 		columns.clear();

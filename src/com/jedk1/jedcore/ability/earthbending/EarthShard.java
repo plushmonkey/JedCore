@@ -8,14 +8,13 @@ import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.collision.CollisionUtil;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.BlockUtil;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.ability.util.Collision;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,7 +27,6 @@ import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.util.ParticleEffect.BlockData;
 import com.projectkorra.projectkorra.util.TempBlock;
 
 public class EarthShard extends EarthAbility implements AddonAbility {
@@ -129,20 +127,19 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			if (isMetal(block)) {
 				playMetalbendingSound(block.getLocation());
 			} else {
-				ParticleEffect.BLOCK_CRACK.display(new BlockData(block.getType(), block.getData()), 0, 0, 0, 0, 20, block.getLocation().add(0, 1, 0), 20);
+				ParticleEffect.BLOCK_CRACK.display(block.getLocation().add(0, 1, 0), 20, 0.0, 0.0, 0.0, 0.0, block.getBlockData());
 				playEarthbendingSound(block.getLocation());
 			}
 
 			Material material = getCorrectType(block);
-			byte data = block.getData();
 
-			if (VersionUtil.isPassiveSand(block)) {
-				VersionUtil.revertSand(block);
+			if (DensityShift.isPassiveSand(block)) {
+				DensityShift.revertSand(block);
 			}
 
 			Location loc = block.getLocation().add(0.5, 0, 0.5);
-			new TempFallingBlock(loc, material, data, new Vector(0, 0.8, 0), this);
-			TempBlock tb = new TempBlock(block, Material.AIR, (byte) 0);
+			new TempFallingBlock(loc, material.createBlockData(), new Vector(0, 0.8, 0), this);
+			TempBlock tb = new TempBlock(block, Material.AIR, Material.AIR.createBlockData());
 			tblockTracker.add(tb);
 		}
 	}
@@ -200,7 +197,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 				CollisionDetector.checkEntityCollisions(player, collider, (e) -> {
 					DamageHandler.damageEntity(e, isMetal(fb.getMaterial()) ? metalDmg : normalDmg, this);
 					((LivingEntity) e).setNoDamageTicks(0);
-					ParticleEffect.BLOCK_CRACK.display(new BlockData(fb.getMaterial(), fb.getBlockData()), 0, 0, 0, 0, 20, fb.getLocation(), 20);
+					ParticleEffect.BLOCK_CRACK.display(fb.getLocation(), 20, 0, 0, 0, 0, fb.getBlockData());
 					tfb.remove();
 					return false;
 				});
@@ -233,7 +230,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			return;
 		}
 
-		Location targetLocation = VersionUtil.getTargetedLocation(player, abilityRange);
+		Location targetLocation = GeneralMethods.getTargetedLocation(player, abilityRange);
 
 		if (GeneralMethods.getTargetedEntity(player, abilityRange, new ArrayList<>()) != null) {
 			targetLocation = GeneralMethods.getTargetedEntity(player, abilityRange, new ArrayList<>()).getLocation();
@@ -253,7 +250,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 		}
 
 		for (TempBlock tb : readyBlocksTracker) {
-			fallingBlocks.add(new TempFallingBlock(tb.getLocation(), tb.getBlock().getType(), tb.getBlock().getData(), vel, this));
+			fallingBlocks.add(new TempFallingBlock(tb.getLocation(), tb.getBlock().getBlockData(), vel, this));
 			tb.revertBlock();
 		}
 

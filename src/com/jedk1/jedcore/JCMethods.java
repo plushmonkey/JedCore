@@ -3,6 +3,10 @@ package com.jedk1.jedcore;
 import java.util.*;
 
 import com.jedk1.jedcore.util.*;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.ability.WaterAbility;
+import com.projectkorra.projectkorra.earthbending.passive.EarthPassive;
+import com.projectkorra.projectkorra.waterbending.WaterManipulation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -11,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +30,11 @@ import com.projectkorra.projectkorra.ability.util.ComboManager;
 import com.projectkorra.projectkorra.util.TempBlock;
 
 public class JCMethods {
-
+	private static final Material[] SMALL_PLANTS = {
+			Material.GRASS, Material.FERN, Material.POPPY, Material.DANDELION, Material.OAK_SAPLING,
+			Material.SPRUCE_SAPLING, Material.BIRCH_SAPLING, Material.JUNGLE_SAPLING, Material.ACACIA_SAPLING,
+			Material.DARK_OAK_SAPLING
+	};
 	private static List<String> worlds = new ArrayList<String>();
 	private static List<String> combos = new ArrayList<String>();
 
@@ -203,7 +212,7 @@ public class JCMethods {
 				double z = size * Math.sin(angle + startAngle);
 				Location loc = location.clone();
 				loc.add(x, hightIncr, z);
-				if(!noClip && loc.getBlock().getType().equals(Material.AIR))
+				if(!noClip && ElementalAbility.isAir(loc.getBlock().getType()))
 					locations.add(loc);
 				else if(noClip)
 					locations.add(loc);
@@ -220,14 +229,14 @@ public class JCMethods {
 		for (Block block : GeneralMethods.getBlocksAroundPoint(player.getTargetBlock((HashSet<Material>) null, (int) range).getLocation(), 2)) {
 
 			Material mat = block.getType();
-			if(mat != Material.FIRE && mat != Material.STATIONARY_LAVA && mat != Material.LAVA)
+			if(mat != Material.FIRE && mat != Material.LAVA)
 				continue;
 			if (GeneralMethods.isRegionProtectedFromBuild(player, ability, block.getLocation()))
 				continue;
 			if (block.getType() == Material.FIRE && fire) {
 				block.setType(Material.AIR);
 				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
-			} else if (block.getType() == Material.STATIONARY_LAVA && lava) {
+			} else if (lava && block.getType() == Material.LAVA && isLiquidSource(block)) {
 				block.setType(Material.OBSIDIAN);
 				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
 			} else if (block.getType() == Material.LAVA && lava) {
@@ -239,6 +248,38 @@ public class JCMethods {
 				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
 			}
 		}
+	}
+
+	// Temporary until it's fixed in PK.
+	public static boolean isAdjacentToThreeOrMoreSources(final Block block, final boolean lava) {
+		if (block == null || (TempBlock.isTempBlock(block) && (!lava && !WaterAbility.isBendableWaterTempBlock(block)))) {
+			return false;
+		}
+		int sources = 0;
+		final BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
+		for (final BlockFace face : faces) {
+			final Block blocki = block.getRelative(face);
+			if (lava) {
+				if (!(blocki.getType() == Material.LAVA && EarthPassive.canPhysicsChange(blocki))) {
+					continue;
+				}
+			} else {
+				if ((ElementalAbility.isWater(blocki) || ElementalAbility.isIce(blocki)) && !WaterManipulation.canPhysicsChange(blocki)) {
+					continue;
+				}
+			}
+
+			//At this point it should either be water or lava
+			if (blocki.getBlockData() instanceof Levelled) {
+				Levelled level = (Levelled) blocki.getBlockData();
+				if (level.getLevel() == 0) {
+					sources++;
+				}
+			} else { //ice
+				sources++;
+			}
+		}
+		return sources >= 2;
 	}
 
 	/**
@@ -265,8 +306,8 @@ public class JCMethods {
 	}
 
 	static Material[] unbreakables = { Material.BEDROCK, Material.BARRIER,
-		Material.PORTAL, Material.ENDER_PORTAL,
-		Material.ENDER_PORTAL_FRAME, Material.OBSIDIAN};
+		Material.NETHER_PORTAL, Material.END_PORTAL,
+		Material.END_PORTAL_FRAME, Material.OBSIDIAN};
 
 	public static boolean isUnbreakable(Block block) {
 		if (block.getState() instanceof InventoryHolder) {
@@ -275,6 +316,43 @@ public class JCMethods {
 		if (Arrays.asList(unbreakables).contains(block.getType()))
 			return true;
 		return false;
+	}
+
+	public static boolean isLiquidSource(Block block) {
+		if (!block.isLiquid()) {
+			return false;
+		}
+
+		if (!(block.getBlockData() instanceof Levelled)) {
+			return false;
+		}
+
+		Levelled levelData = (Levelled) block.getBlockData();
+
+		return levelData.getLevel() == 0;
+	}
+
+	// TODO: Should this be reimplemented or has the rpg plugin been abandoned?
+	public static boolean isSozinsComet(World world) {
+		return false;
+	}
+
+	// TODO: Should this be reimplemented or has the rpg plugin been abandoned?
+	public static boolean isLunarEclipse(World world) {
+		return false;
+	}
+
+	public static boolean isDoublePlant(Material material) {
+		return material == Material.SUNFLOWER || material == Material.LILAC || material == Material.TALL_GRASS ||
+				material == Material.LARGE_FERN || material == Material.ROSE_BUSH || material == Material.PEONY;
+	}
+
+	public static boolean isSmallPlant(Block block) {
+		return isSmallPlant(block.getType());
+	}
+
+	public static boolean isSmallPlant(Material material) {
+		return Arrays.asList(SMALL_PLANTS).contains(material);
 	}
 
 	public static void reload() {

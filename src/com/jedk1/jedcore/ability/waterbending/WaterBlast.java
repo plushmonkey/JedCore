@@ -5,7 +5,6 @@ import com.jedk1.jedcore.collision.AABB;
 import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.util.CollisionInitializer;
 import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.Ability;
 import com.projectkorra.projectkorra.ability.AddonAbility;
@@ -15,6 +14,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -86,7 +86,7 @@ public class WaterBlast extends WaterAbility implements AddonAbility {
 			}
 
 			if (!player.isDead()) {
-				Location target = VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER);
+				Location target = GeneralMethods.getTargetedLocation(player, range, Material.WATER);
 				if (location.distanceSquared(target) <= 1) {
 					// Make sure the WaterBlast moves in to the solid block.
 					target = target.add(player.getLocation().getDirection());
@@ -110,7 +110,7 @@ public class WaterBlast extends WaterAbility implements AddonAbility {
 
 			playWaterbendingSound(location);
 
-			new RegenTempBlock(location.getBlock(), Material.STATIONARY_WATER, (byte) 8, 250);
+			new RegenTempBlock(location.getBlock(), Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 250);
 
 			// Only damage entities that are more than 3 blocks away.
 			if (travelled >= 3) {

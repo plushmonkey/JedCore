@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.ability.FlightAbility;
+import com.projectkorra.projectkorra.airbending.flight.FlightMultiAbility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -174,107 +176,101 @@ public class BendingBoard {
 	public void update(final int slot) {
 		if (!enabled) return;
 
-		new BukkitRunnable() {
-			public void run() {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-				if (bPlayer == null) return;
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null) return;
 
-				// Check if the player removed their bending board. It's possible for the board to update after hidden.
-				if (boards.get(player) == null) {
-					player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-					return;
-				}
+		// Check if the player removed their bending board. It's possible for the board to update after hidden.
+		if (boards.get(player) == null) {
+			player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+			return;
+		}
 
-				HashMap<Integer, String> abilities = bPlayer.getAbilities();
+		HashMap<Integer, String> abilities = bPlayer.getAbilities();
 
-				int currentSlot = slot;
-				if (currentSlot < 0) {
-					currentSlot = player.getInventory().getHeldItemSlot();
-				}
+		int currentSlot = slot;
+		if (currentSlot < 0) {
+			currentSlot = player.getInventory().getHeldItemSlot();
+		}
 
-				List<String> formatted = new ArrayList<>();
+		List<String> formatted = new ArrayList<>();
 
-				for (int slotIndex = 1; slotIndex < 10; slotIndex++) {
-					CoreAbility currentAbility = CoreAbility.getAbility(abilities.get(slotIndex));
-					String currentAbilityName = abilities.get(slotIndex);
-					StringBuilder sb = new StringBuilder();
+		for (int slotIndex = 1; slotIndex < 10; slotIndex++) {
+			CoreAbility currentAbility = CoreAbility.getAbility(abilities.get(slotIndex));
+			String currentAbilityName = abilities.get(slotIndex);
+			StringBuilder sb = new StringBuilder();
 
-					if (currentSlot == (slotIndex - 1)) {
-						sb.append(">");
-					}
-
-					if (abilities.containsKey(slotIndex) && currentAbility != null) {
-						for (String str : formatted) {
-							String stripped = ChatColor.stripColor(str).replace(">", "");
-
-							if (stripped.equalsIgnoreCase(currentAbilityName)) {
-								// Add a unique chat color to the beginning, so the ability doesn't override other slots in the map.
-								sb.append(ChatColor.values()[slotIndex]);
-								break;
-							}
-						}
-
-						sb.append(currentAbility.getElement().getColor());
-
-						if (bPlayer.isOnCooldown(currentAbilityName)) {
-							sb.append(ChatColor.STRIKETHROUGH);
-						}
-
-						sb.append(currentAbilityName);
-					} else {
-						if (abilities.containsKey(slotIndex) && MultiAbilityManager.hasMultiAbilityBound(player)) {
-							sb.append(abilities.get(slotIndex));
-						} else {
-							sb.append(empty.replace("%", String.valueOf(slotIndex)));
-						}
-					}
-
-					formatted.add(sb.toString());
-				}
-				boolean combo = false;
-				for (String ability : bPlayer.getCooldowns().keySet()) {
-					if (JCMethods.getCombos().contains(ability)) {
-						if (!combo) {
-							formatted.add(BendingBoard.combo);
-						}
-
-						combo = true;
-						formatted.add("" + CoreAbility.getAbility(ability).getElement().getColor() + ChatColor.STRIKETHROUGH + ability);
-					}
-				}
-
-				if (!otherAbilities.isEmpty()) {
-					boolean other = false;
-					for (String ability : bPlayer.getCooldowns().keySet()) {
-						if (!otherAbilities.containsKey(ability)) continue;
-						ChatColor color = otherAbilities.get(ability);
-
-						if (!other) {
-							formatted.add(OTHER);
-							other = true;
-						}
-
-						if (color == null)
-							color = getColor(ability);
-
-						formatted.add("" + color + ChatColor.STRIKETHROUGH + ability);
-					}
-				}
-
-				if (scoreboard.get(-10, "") != null) {
-					for (int i = -9; i > -22; i--) {
-						scoreboard.remove(i, "");
-					}
-				}
-
-				for (String s : formatted) {
-					scoreboard.add(s, -(formatted.indexOf(s) + 1));
-				}
-
-				scoreboard.update();
-				scoreboard.send(player);
+			if (currentSlot == (slotIndex - 1)) {
+				sb.append(">");
 			}
-		}.runTaskLater(JedCore.plugin, 5);
+
+			if (abilities.containsKey(slotIndex) && currentAbility != null) {
+				for (String str : formatted) {
+					String stripped = ChatColor.stripColor(str).replace(">", "");
+
+					if (stripped.equalsIgnoreCase(currentAbilityName)) {
+						// Add a unique chat color to the beginning, so the ability doesn't override other slots in the map.
+						sb.append(ChatColor.values()[slotIndex]);
+						break;
+					}
+				}
+
+				sb.append(currentAbility.getElement().getColor());
+
+				if (bPlayer.isOnCooldown(currentAbilityName)) {
+					sb.append(ChatColor.STRIKETHROUGH);
+				}
+
+				sb.append(currentAbilityName);
+			} else {
+				if (abilities.containsKey(slotIndex) && MultiAbilityManager.hasMultiAbilityBound(player)) {
+					sb.append(abilities.get(slotIndex));
+				} else {
+					sb.append(empty.replace("%", String.valueOf(slotIndex)));
+				}
+			}
+			formatted.add(sb.toString());
+		}
+		boolean combo = false;
+		for (String ability : bPlayer.getCooldowns().keySet()) {
+			if (JCMethods.getCombos().contains(ability)) {
+				if (!combo) {
+					formatted.add(BendingBoard.combo);
+				}
+
+				combo = true;
+				formatted.add("" + CoreAbility.getAbility(ability).getElement().getColor() + ChatColor.STRIKETHROUGH + ability);
+			}
+		}
+
+		if (!otherAbilities.isEmpty()) {
+			boolean other = false;
+			for (String ability : bPlayer.getCooldowns().keySet()) {
+				if (!otherAbilities.containsKey(ability)) continue;
+				ChatColor color = otherAbilities.get(ability);
+
+				if (!other) {
+					formatted.add(OTHER);
+					other = true;
+				}
+
+				if (color == null)
+					color = getColor(ability);
+				formatted.add("" + color + ChatColor.STRIKETHROUGH + ability);
+			}
+		}
+
+		if (scoreboard.get(-10, "") != null) {
+			for (int i = -9; i > -22; i--) {
+				scoreboard.remove(i, "");
+			}
+		}
+
+		for (String s : formatted) {
+			scoreboard.add(s, -(formatted.indexOf(s) + 1));
+		}
+
+		scoreboard.update();
+		scoreboard.send(player);
 	}
 
 	private ChatColor getColor(String abilityName) {

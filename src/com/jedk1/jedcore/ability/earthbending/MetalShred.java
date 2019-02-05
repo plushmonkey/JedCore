@@ -2,10 +2,11 @@ package com.jedk1.jedcore.ability.earthbending;
 
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.MetalAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -17,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -76,13 +78,14 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 	public boolean selectSource() {
 		Block b = BlockSource.getEarthSourceBlock(player, selectRange, ClickType.SHIFT_DOWN);
 
-		if (b == null || !isMetal(b))
+		if (!isMetal(b))
 			return false;
 
 		source = b;
 
-		if (source.getRelative(BlockFace.UP).getType() == Material.AIR)
+		if (ElementalAbility.isAir(source.getRelative(BlockFace.UP).getType()) && !isMetal(source.getRelative(BlockFace.DOWN))) {
 			horizontal = true;
+		}
 
 		return true;
 	}
@@ -96,37 +99,37 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		Block deepera = away.getRelative(BlockFace.DOWN);
 
 		for (TempBlock tb : tblocks) {
-			if (tb.getBlock().getType() != Material.AIR)
+			if (!ElementalAbility.isAir(tb.getBlock().getType()))
 				tb.setType(Material.AIR);
 		}
 
 		if (!up.getType().isSolid()) {
-			TempBlock tbu = new TempBlock(up, b.getType(), b.getData());
+			TempBlock tbu = new TempBlock(up, b.getType(), b.getBlockData());
 			tblocks.add(tbu);
 		}
 
 		if (!awayup.getType().isSolid()) {
-			TempBlock tbau = new TempBlock(awayup, away.getType(), away.getData());
+			TempBlock tbau = new TempBlock(awayup, away.getType(), away.getBlockData());
 			tblocks.add(tbau);
 		}
 
 		if (isMetal(b)) {
-			TempBlock tbd = new TempBlock(b, Material.AIR, (byte) 0);
+			TempBlock tbd = new TempBlock(b, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tbd);
 		}
 
 		if (isMetal(away)) {
-			TempBlock tba = new TempBlock(away, Material.AIR, (byte) 0);
+			TempBlock tba = new TempBlock(away, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tba);
 		}
 
 		if (isMetal(deeperb)) {
-			TempBlock tbdb = new TempBlock(deeperb, Material.AIR, (byte) 0);
+			TempBlock tbdb = new TempBlock(deeperb, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tbdb);
 		}
 
 		if (isMetal(deepera)) {
-			TempBlock tbda = new TempBlock(deepera, Material.AIR, (byte) 0);
+			TempBlock tbda = new TempBlock(deepera, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tbda);
 		}
 
@@ -140,27 +143,27 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		Block underside = under.getRelative(GeneralMethods.getCardinalDirection(d).getOppositeFace());
 
 		for (TempBlock tb : tblocks) {
-			if (tb.getBlock().getType() != Material.AIR)
+			if (!ElementalAbility.isAir(tb.getBlock().getType()))
 				tb.setType(Material.AIR);
 		}
 
 		if (!side.getType().isSolid()) {
-			TempBlock tbs = new TempBlock(side, b.getType(), b.getData());
+			TempBlock tbs = new TempBlock(side, b.getType(), b.getBlockData());
 			tblocks.add(tbs);
 		}
 
 		if (!underside.getType().isSolid()) {
-			TempBlock tbus = new TempBlock(underside, under.getType(), under.getData());
+			TempBlock tbus = new TempBlock(underside, under.getType(), under.getBlockData());
 			tblocks.add(tbus);
 		}
 
 		if (isMetal(b)) {
-			TempBlock tb1 = new TempBlock(b, Material.AIR, (byte) 0);
+			TempBlock tb1 = new TempBlock(b, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tb1);
 		}
 
 		if (isMetal(under)) {
-			TempBlock tb2 = new TempBlock(under, Material.AIR, (byte) 0);
+			TempBlock tb2 = new TempBlock(under, Material.AIR, Material.AIR.createBlockData());
 			tblocks.add(tb2);
 		}
 
@@ -174,7 +177,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 			return;
 
 		if (!b.getType().isSolid()) {
-			TempBlock tbb = new TempBlock(b, Material.IRON_BLOCK, (byte) 0);
+			TempBlock tbb = new TempBlock(b, Material.IRON_BLOCK, Material.IRON_BLOCK.createBlockData());
 			tblocks.add(tbb);
 		}
 
@@ -182,7 +185,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 			stopCoil = true;
 
 		if (!under.getType().isSolid()) {
-			TempBlock tbu = new TempBlock(under, Material.IRON_BLOCK, (byte) 0);
+			TempBlock tbu = new TempBlock(under, Material.IRON_BLOCK, Material.IRON_BLOCK.createBlockData());
 			tblocks.add(tbu);
 		}
 
@@ -255,11 +258,17 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 			lastExtendTime = System.currentTimeMillis();
 			if (length > 0) {
 
-				Block b = lastBlock.getRelative(GeneralMethods.getCardinalDirection(GeneralMethods.getDirection(lastBlock.getLocation(), VersionUtil.getTargetedLocation(player, fullLength))));
+				Block b = lastBlock.getRelative(GeneralMethods.getCardinalDirection(GeneralMethods.getDirection(lastBlock.getLocation(), GeneralMethods.getTargetedLocation(player, fullLength))));
 
 				peelCoil(b);
 
 				for (Entity e : GeneralMethods.getEntitiesAroundPoint(b.getLocation(), 2)) {
+					if(!(e instanceof LivingEntity) || e.getEntityId() == player.getEntityId()){
+						continue;
+					}
+					if(GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(((Player) e).getName()))){
+						continue;
+					}
 					DamageHandler.damageEntity(e, damage, this);
 					e.setVelocity(e.getVelocity().add(player.getLocation().getDirection().add(new Vector(0, 0.1, 0))));
 				}
@@ -284,7 +293,7 @@ public class MetalShred extends MetalAbility implements AddonAbility {
 		}
 
 		if (!isMetal(b)) {
-			if (b.getType() != Material.AIR) {
+			if (!ElementalAbility.isAir(b.getType())) {
 				remove();
 				return;
 

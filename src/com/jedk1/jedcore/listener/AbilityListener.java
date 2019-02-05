@@ -4,8 +4,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.firebending.FireJet;
+import com.projectkorra.projectkorra.util.MovementHandler;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -75,9 +75,8 @@ import com.projectkorra.projectkorra.ability.FireAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.ability.util.MultiAbilityManager;
 import com.projectkorra.projectkorra.airbending.Suffocate;
-import com.projectkorra.projectkorra.chiblocking.Paralyze;
-import com.projectkorra.projectkorra.chiblocking.combo.Immobilize;
 import com.projectkorra.projectkorra.waterbending.blood.Bloodbending;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class AbilityListener implements Listener {
 
@@ -90,8 +89,14 @@ public class AbilityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	// Abilities that should bypass punch cancels should be handled here.
-	public void onPlayerSwingBypassCancel(PlayerAnimationEvent event) {
+	public void onPlayerSwingBypassCancel(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_AIR) {
+			return;
+		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return;
@@ -101,7 +106,7 @@ public class AbilityListener implements Listener {
 			return;
 		}
 
-		if (Bloodbending.isBloodbent(player) || VersionUtil.isStopped(player)) {
+		if (Bloodbending.isBloodbent(player) || MovementHandler.isStopped(player)) {
 			return;
 		}
 
@@ -135,11 +140,18 @@ public class AbilityListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerSwing(PlayerAnimationEvent event) {
-		if (event.isCancelled()) return;
-
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerSwing(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_AIR) {
+			return;
+		}
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.isCancelled()){
+			return;
+		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return;
@@ -148,14 +160,13 @@ public class AbilityListener implements Listener {
 		if (Suffocate.isBreathbent(player)) {
 			event.setCancelled(true);
 			return;
-		} else if (Bloodbending.isBloodbent(player) || VersionUtil.isStopped(player)) {
+		} else if (Bloodbending.isBloodbent(player) || MovementHandler.isStopped(player)) {
 			event.setCancelled(true);
 			return;
 		} else if (bPlayer.isChiBlocked()) {
 			event.setCancelled(true);
 			return;
 		} else if (GeneralMethods.isInteractable(player.getTargetBlock((Set<Material>)null, 5))) {
-			event.setCancelled(true);
 			return;
 		}
 		
@@ -319,7 +330,7 @@ public class AbilityListener implements Listener {
 			}
 		}
 
-		if (VersionUtil.isStopped(player) || Bloodbending.isBloodbent(player)) {
+		if (MovementHandler.isStopped(player) || Bloodbending.isBloodbent(player)) {
 			event.setCancelled(true);
 			return;
 		}

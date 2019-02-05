@@ -8,6 +8,8 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AvatarAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -49,10 +51,13 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			return;
 		}
 		setFields();
+		if(GeneralMethods.isRegionProtectedFromBuild(this, player.getTargetBlock(getTransparentMaterialSet(), 40).getLocation())){
+			return;
+		}
 		bPlayer.addCooldown("ESEarth", getCooldown());
 		currES.setEarthUses(currES.getEarthUses() - 1);
 		Location location = player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(1));
-		tfb = new TempFallingBlock(location, Material.DIRT, (byte) 0, location.getDirection().multiply(3), this);
+		tfb = new TempFallingBlock(location, Material.DIRT.createBlockData(), location.getDirection().multiply(3), this);
 		start();
 	}
 
@@ -75,11 +80,15 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			remove();
 			return;
 		}
+		if(GeneralMethods.isRegionProtectedFromBuild(this, tfb.getLocation())){
+			remove();
+			return;
+		}
 
 		EarthAbility.playEarthbendingSound(tfb.getLocation());
 
 		for (Entity entity : GeneralMethods.getEntitiesAroundPoint(tfb.getLocation(), 2.5)) {
-			if (entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity.getEntityId() != player.getEntityId()) {
+			if (entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity.getEntityId() != player.getEntityId() && !GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) && !((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))) {
 				//explodeEarth(fb);
 				DamageHandler.damageEntity(entity, damage, this);
 			}
@@ -102,18 +111,20 @@ public class ESEarth extends AvatarAbility implements AddonAbility {
 			if (!isUnbreakable(l.getBlock()) && !GeneralMethods.isRegionProtectedFromBuild(player, "ElementSphere", l) && EarthAbility.isEarthbendable(player, l.getBlock())) {
 				ParticleEffect.SMOKE_LARGE.display(l, 0, 0, 0, 0.1F, 2);
 				//new RegenTempBlock(l.getBlock(), Material.AIR, (byte) 0, (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
-				new RegenTempBlock(l.getBlock(), Material.AIR, (byte) 0, (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000), false);
+				new RegenTempBlock(l.getBlock(), Material.AIR, Material.AIR.createBlockData(), (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000), false);
 			}
 
-			if (GeneralMethods.isSolid(l.getBlock().getRelative(BlockFace.DOWN)) && !isUnbreakable(l.getBlock()) && l.getBlock().getType().equals(Material.AIR) && rand.nextInt(20) == 0 && EarthAbility.isEarthbendable(player, l.getBlock().getRelative(BlockFace.DOWN))) {
-				new RegenTempBlock(l.getBlock(), l.getBlock().getRelative(BlockFace.DOWN).getType(), (byte) 0, (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
+			if (GeneralMethods.isSolid(l.getBlock().getRelative(BlockFace.DOWN)) && !isUnbreakable(l.getBlock()) && ElementalAbility.isAir(l.getBlock().getType()) && rand.nextInt(20) == 0 && EarthAbility.isEarthbendable(player, l.getBlock().getRelative(BlockFace.DOWN))) {
+				Material type = l.getBlock().getRelative(BlockFace.DOWN).getType();
+				new RegenTempBlock(l.getBlock(), type, type.createBlockData(), (long) rand.nextInt((int) es.revertDelay - (int) (es.revertDelay - 1000)) + (es.revertDelay - 1000));
 			}
 		}
 
 		tempfallingblock.remove();
 	}
 
-	static Material[] unbreakables = { Material.BEDROCK, Material.BARRIER, Material.PORTAL, Material.ENDER_PORTAL, Material.ENDER_PORTAL_FRAME, Material.ENDER_CHEST, Material.CHEST, Material.TRAPPED_CHEST };
+	static Material[] unbreakables = { Material.BEDROCK, Material.BARRIER, Material.NETHER_PORTAL, Material.END_PORTAL,
+			Material.END_PORTAL_FRAME, Material.ENDER_CHEST, Material.CHEST, Material.TRAPPED_CHEST };
 
 	public static boolean isUnbreakable(Block block) {
 		if (Arrays.asList(unbreakables).contains(block.getType()))

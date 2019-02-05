@@ -1,17 +1,15 @@
 package com.jedk1.jedcore.ability.waterbending.combo;
 
+import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.JedCore;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.MaterialUtil;
 import com.jedk1.jedcore.util.RegenTempBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
-import com.projectkorra.projectkorra.ability.AddonAbility;
-import com.projectkorra.projectkorra.ability.AirAbility;
-import com.projectkorra.projectkorra.ability.ComboAbility;
-import com.projectkorra.projectkorra.ability.WaterAbility;
+import com.projectkorra.projectkorra.ability.*;
 import com.projectkorra.projectkorra.ability.util.ComboManager.AbilityInformation;
 import com.projectkorra.projectkorra.airbending.AirSpout;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.earthbending.Catapult;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
@@ -24,6 +22,7 @@ import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -80,14 +79,13 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		if (!bPlayer.canBendIgnoreBinds(this)) {
 			return;
 		}
-		if (isLunarEclipse(player.getWorld())) {
+		if (JCMethods.isLunarEclipse(player.getWorld())) {
 			return;
 		}
 		if (hasAbility(player, WaterFlow.class)) {
 			((WaterFlow) getAbility(player, WaterFlow.class)).remove();
 			return;
 		}
-
 		setFields();
 
 		usingBottle = false;
@@ -165,12 +163,12 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		for (Location l : GeneralMethods.getCircle(block.getLocation(), searchrange, 2, false, false, -1)) {
 			Block blocki = l.getBlock();
 			if (isWater(block)) {
-				if ((blocki.getType() == Material.WATER || blocki.getType() == Material.STATIONARY_WATER) && blocki.getData() == 0x0 && WaterManipulation.canPhysicsChange(blocki)) {
+				if (blocki.getType() == Material.WATER && JCMethods.isLiquidSource(blocki) && WaterManipulation.canPhysicsChange(blocki)) {
 					sources.add(blocki);
 				}
 			}
 			if (isLava(block)) {
-				if ((blocki.getType() == Material.LAVA || blocki.getType() == Material.STATIONARY_LAVA) && blocki.getData() == 0x0 && WaterManipulation.canPhysicsChange(blocki)) {
+				if (blocki.getType() == Material.LAVA && JCMethods.isLiquidSource(blocki) && WaterManipulation.canPhysicsChange(blocki)) {
 					sources.add(blocki);
 				}
 			}
@@ -181,7 +179,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	private boolean prepare() {
 		sourceblock = BlockSource.getWaterSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN, true, bPlayer.canIcebend(), canUsePlants);
 		if (sourceblock != null) {
-			boolean isGoodSource = GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock));
+			boolean isGoodSource = JCMethods.isAdjacentToThreeOrMoreSources(sourceblock, false) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock));
 
 			// canUsePlants needs to be checked here due to a bug with PK dynamic source caching.
 			// getWaterSourceBlock can return a plant even if canUsePlants is passed as false.
@@ -281,6 +279,9 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 				} else if (getPlayers(Catapult.class).contains(entity)) {
 					continue;
 				}
+				if(GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) || ((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
+					continue;
+				}
 				Location temp = directions.get(block);
 				Vector dir = GeneralMethods.getDirection(entity.getLocation(), directions.get(block).add(temp.getDirection().multiply(1.5)));
 				entity.setVelocity(dir.clone().normalize().multiply(1));
@@ -295,7 +296,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 				}
 			} else {
 				if (!isWater(block)) {
-					new TempBlock(block, Material.STATIONARY_WATER, (byte) 8);
+					new TempBlock(block, Material.WATER, Material.WATER.createBlockData(bd -> ((Levelled)bd).setLevel(0)));
 				}
 			}
 			pos++;
@@ -321,7 +322,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 		if (!MaterialUtil.isTransparent(head.getBlock()) || GeneralMethods.isRegionProtectedFromBuild(player, "Torrent", head)) {
 			range -= 2;
 		}
-		direction = GeneralMethods.getDirection(head, VersionUtil.getTargetedLocation(player, range, Material.WATER, Material.STATIONARY_WATER)).normalize();
+		direction = GeneralMethods.getDirection(head, GeneralMethods.getTargetedLocation(player, range, Material.WATER)).normalize();
 		head = head.add(direction.clone().multiply(1));
 		head.setDirection(direction);
 		playWaterbendingSound(head);
@@ -361,7 +362,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 				if (rand.nextInt(5) == 0) {
 					playIcebendingSound(block.getLocation());
 				}
-				new RegenTempBlock(block, Material.ICE, (byte) 0, randInt((int) meltdelay - 250, (int) meltdelay + 250));
+				new RegenTempBlock(block, Material.ICE, Material.ICE.createBlockData(), randInt((int) meltdelay - 250, (int) meltdelay + 250));
 			}
 		}
 	}

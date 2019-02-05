@@ -20,10 +20,7 @@ import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
 import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
-import com.projectkorra.projectkorra.event.AbilityStartEvent;
-import com.projectkorra.projectkorra.event.BendingReloadEvent;
-import com.projectkorra.projectkorra.event.HorizontalVelocityChangeEvent;
-import com.projectkorra.projectkorra.event.PlayerCooldownChangeEvent;
+import com.projectkorra.projectkorra.event.*;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -61,7 +58,13 @@ public class JCListener implements Listener {
 			return;
 		}
 		BendingBoard bb = BendingBoard.get(event.getPlayer());
-		if (bb != null) bb.update();
+		if (bb != null) {
+			new BukkitRunnable() {
+				public void run() {
+					bb.update();
+				}
+			}.runTaskLater(JedCore.plugin, 50);
+		}
 		if (UpdateChecker.hasUpdate() && JedCore.plugin.getConfig().getBoolean("Settings.Updater.Notify")) {
 			if (event.getPlayer().hasPermission("jedcore.admin.notify")) {
 				event.getPlayer().sendMessage(ChatColor.DARK_RED + "JedCore: " + ChatColor.RED + "There is an update available for JedCore!");
@@ -121,37 +124,53 @@ public class JCListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
-			if (FirePunch.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
-				event.setCancelled(true);
-				return;
+			if (event.getCause() == DamageCause.ENTITY_ATTACK) {
+				double distSq = event.getDamager().getLocation().distanceSquared(event.getEntity().getLocation());
+
+				// Only activate these in melee range
+				if (distSq <= 5 * 5) {
+					if (FirePunch.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
+						event.setCancelled(true);
+						return;
+					}
+
+					if (Backstab.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
+						event.setDamage(Backstab.getDamage(event.getDamager().getWorld()));
+						return;
+					}
+				}
 			}
-			if (Backstab.punch((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
-				event.setDamage(Backstab.getDamage(event.getDamager().getWorld()));
-				return;
-			}
+
 			if (IceClaws.freezeEntity((Player) event.getDamager(), (LivingEntity) event.getEntity())) {
 				event.setCancelled(true);
 				return;
 			}
 		}
+
 		if (event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow) event.getDamager();
+
 			if (event.getEntity() instanceof LivingEntity) {
 				if (arrow.hasMetadata("daggerthrow") && arrow.getShooter() instanceof Player) {
-					DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
+					if (event.getEntity().getEntityId() != ((Player) arrow.getShooter()).getEntityId()) {
+						DaggerThrow.damageEntityFromArrow((Player) arrow.getShooter(), (LivingEntity) event.getEntity(), arrow);
+					}
 					event.setDamage(0);
 					event.setCancelled(true);
+					arrow.remove();
+					arrow.removeMetadata("daggerthrow", JedCore.plugin);
 				}
+
 				if (arrow.hasMetadata("metalhook")) {
 					arrow.remove();
 					event.setDamage(0);
 					event.setCancelled(true);
+					arrow.removeMetadata("metalhook", JedCore.plugin);
 				}
 			}
-			return;
 		}
 	}
 
@@ -239,14 +258,31 @@ public class JCListener implements Listener {
 		if (BendingBoard.shouldIgnoreAbility(event.getAbility())) {
 			return;
 		}
-
-		BendingBoard.update(event.getPlayer());
+		new BukkitRunnable() {
+			public void run() {
+				BendingBoard.update(event.getPlayer());
+			}
+		}.runTaskLater(JedCore.plugin, 1);
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onWorldChange(PlayerChangedWorldEvent event){
 		if (event.getPlayer() == null) return;
-		BendingBoard.update(event.getPlayer());
+		new BukkitRunnable() {
+			public void run() {
+				BendingBoard.update(event.getPlayer());
+			}
+		}.runTaskLater(JedCore.plugin, 1);
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onElementChange(PlayerChangeElementEvent event){
+		if (event.getTarget() == null) return;
+		new BukkitRunnable() {
+			public void run() {
+				BendingBoard.update(event.getTarget());
+			}
+		}.runTaskLater(JedCore.plugin, 1);
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)

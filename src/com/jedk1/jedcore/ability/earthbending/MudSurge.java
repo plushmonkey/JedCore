@@ -5,14 +5,15 @@ import com.jedk1.jedcore.collision.CollisionUtil;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.TempBlock;
 
@@ -25,7 +26,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -48,7 +48,14 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	public static int surgeInterval = 300;
 	public static int mudPoolRadius = 2;
 	public static long mudCreationInterval = 100;
-	public static Material[] mudTypes = new Material[] { Material.SAND, Material.CLAY, Material.STAINED_CLAY, Material.GRASS, Material.DIRT, Material.MYCEL, Material.SOUL_SAND, Material.RED_SANDSTONE, Material.SANDSTONE };
+	public static Material[] mudTypes = new Material[] {
+			Material.SAND, Material.CLAY, Material.TERRACOTTA, Material.BLACK_TERRACOTTA, Material.BLUE_TERRACOTTA,
+			Material.BROWN_TERRACOTTA, Material.CYAN_TERRACOTTA, Material.GRAY_TERRACOTTA, Material.GREEN_TERRACOTTA,
+			Material.LIGHT_BLUE_TERRACOTTA, Material.LIGHT_GRAY_TERRACOTTA, Material.LIME_TERRACOTTA,
+			Material.MAGENTA_TERRACOTTA, Material.ORANGE_TERRACOTTA, Material.PINK_TERRACOTTA,
+			Material.PURPLE_TERRACOTTA, Material.RED_TERRACOTTA, Material.WHITE_TERRACOTTA, Material.YELLOW_TERRACOTTA,
+			Material.GRASS_BLOCK, Material.DIRT, Material.MYCELIUM,
+			Material.SOUL_SAND, Material.RED_SANDSTONE, Material.SANDSTONE };
 
 	private CompositeRemovalPolicy removalPolicy;
 
@@ -156,7 +163,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 					List<Block> nearby = GeneralMethods.getBlocksAroundPoint(block.getLocation(), waterSearchRadius);
 
 					for (Block b : nearby) {
-						if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.WATER) {
+						if (b.getType() == Material.WATER) {
 							water = true;
 							break;
 						}
@@ -165,7 +172,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 
 				if (water) {
 					this.source = block;
-					this.sourceTB = new TempBlock(this.source, Material.STAINED_CLAY, (byte) 12);
+					this.sourceTB = new TempBlock(this.source, Material.BROWN_TERRACOTTA, Material.BROWN_TERRACOTTA.createBlockData());
 					return true;
 				}
 			}
@@ -189,7 +196,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	}
 
 	public static boolean isSurgeBlock(Block block) {
-		if (block.getType() != Material.STAINED_CLAY || block.getData() != 12) {
+		if (block.getType() != Material.BROWN_TERRACOTTA) {
 			return false;
 		}
 
@@ -228,7 +235,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	}
 
 	private Block getMudSourceBlock(int range) {
-		Block testBlock = VersionUtil.getTargetedLocationTransparent(player, range).getBlock();
+		Block testBlock = GeneralMethods.getTargetedLocation(player, range, ElementalAbility.getTransparentMaterials()).getBlock();
 		if (isMud(testBlock))
 			return testBlock;
 
@@ -257,7 +264,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 	}
 
 	private void createMud(Block block) {
-		mudBlocks.add(new TempBlock(block, Material.STAINED_CLAY, (byte) 12));
+		mudBlocks.add(new TempBlock(block, Material.BROWN_TERRACOTTA, Material.BROWN_TERRACOTTA.createBlockData()));
 	}
 
 	private void loadMudPool() {
@@ -275,7 +282,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 						List<Block> nearby = GeneralMethods.getBlocksAroundPoint(l, waterSearchRadius);
 
 						for (Block block : nearby) {
-							if (block.getType() == Material.STATIONARY_WATER || block.getType() == Material.WATER) {
+							if (block.getType() == Material.WATER) {
 								water = true;
 								break;
 							}
@@ -322,7 +329,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 			return;
 
 		for (TempBlock tb : mudBlocks) {
-			Vector direction = GeneralMethods.getDirection(tb.getLocation().add(0, 1, 0), VersionUtil.getTargetedLocation(player, 30)).multiply(0.07);
+			Vector direction = GeneralMethods.getDirection(tb.getLocation().add(0, 1, 0), GeneralMethods.getTargetedLocation(player, 30)).multiply(0.07);
 
 			double x = rand.nextDouble() / 5;
 			double z = rand.nextDouble() / 5;
@@ -330,7 +337,7 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 			x = (rand.nextBoolean()) ? -x : x;
 			z = (rand.nextBoolean()) ? -z : z;
 
-			fallingBlocks.add(new TempFallingBlock(tb.getLocation().add(0, 1, 0), Material.STAINED_CLAY, (byte) 12, direction.clone().add(new Vector(x, 0.2, z)), this));
+			fallingBlocks.add(new TempFallingBlock(tb.getLocation().add(0, 1, 0), Material.BROWN_TERRACOTTA.createBlockData(), direction.clone().add(new Vector(x, 0.2, z)), this));
 			
 			playEarthbendingSound(tb.getLocation());
 		}
@@ -349,6 +356,9 @@ public class MudSurge extends EarthAbility implements AddonAbility {
 			for (Entity e : GeneralMethods.getEntitiesAroundPoint(fb.getLocation(), 1.5)) {
 				if (fb.isDead()) {
 					tfb.remove();
+					continue;
+				}
+				if (GeneralMethods.isRegionProtectedFromBuild(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(((Player) e).getName()))){
 					continue;
 				}
 

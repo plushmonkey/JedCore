@@ -5,10 +5,12 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.policies.removal.*;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.VersionUtil;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
+import com.projectkorra.projectkorra.command.Commands;
+import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.BlockSource;
 import com.projectkorra.projectkorra.util.ClickType;
 import com.projectkorra.projectkorra.util.DamageHandler;
@@ -108,8 +110,8 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	private void focusBlock() {
 		if (sourceblock.getType() == Material.SAND) {
-			if (VersionUtil.isPassiveSand(this.sourceblock)) {
-				VersionUtil.revertSand(this.sourceblock);
+			if (DensityShift.isPassiveSand(this.sourceblock)) {
+				DensityShift.revertSand(this.sourceblock);
 				this.sourcetype = this.sourceblock.getType();
 			} else {
 				sourcetype = Material.SAND;
@@ -131,7 +133,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 	private void breakSourceBlock() {
 		sourceblock.setType(sourcetype);
-		new RegenTempBlock(sourceblock, Material.AIR, (byte) 0, 5000L);
+		new RegenTempBlock(sourceblock, Material.AIR, Material.AIR.createBlockData(), 5000L);
 	}
 
 	@Override
@@ -146,7 +148,7 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Entity target = GeneralMethods.getTargetedEntity(player, range, player.getNearbyEntities(range, range, range));
 		Location location;
 		if (target == null) {
-			location = VersionUtil.getTargetedLocation(player, range);
+			location = GeneralMethods.getTargetedLocation(player, range);
 		} else {
 			location = ((LivingEntity) target).getEyeLocation();
 		}
@@ -190,7 +192,12 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 			remove();
 			return;
 		}
-		
+
+		if (sourceblock == null || GeneralMethods.isRegionProtectedFromBuild(this, location)) {
+			remove();
+			return;
+		}
+
 		if (removalTime > -1 && System.currentTimeMillis() > removalTime) {
 			remove();
 			return;
@@ -222,20 +229,20 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 
 			playEarthbendingSound(location);
 
-			new RegenTempBlock(location.getBlock(), Material.AIR, (byte) 0, 700L);
+			new RegenTempBlock(location.getBlock(), Material.AIR, Material.AIR.createBlockData(), 700L);
 
-			new TempFallingBlock(locationYUP, cloneType, (byte) 0, push, this);
+			new TempFallingBlock(locationYUP, cloneType.createBlockData(), push, this);
 
 			location.add(looking.normalize());
-			if (location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
+			if (!ElementalAbility.isAir(location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType()) && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
 				location.add(0.0D, 1.0D, 0.0D);
-				if (!isEarthbendable(player, location.getBlock()) || location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
+				if (!isEarthbendable(player, location.getBlock()) || !ElementalAbility.isAir(location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType()) && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
 					remove();
 					return;
 				}
-			} else if ((location.clone().getBlock().getType() == Material.AIR || isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) && location.clone().add(0.0D, -1D, 0.0D).getBlock().getType() != Material.AIR) {
+			} else if ((ElementalAbility.isAir(location.clone().getBlock().getType()) || isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) && !ElementalAbility.isAir(location.clone().add(0.0D, -1D, 0.0D).getBlock().getType())) {
 				location.add(0.0D, -1D, 0.0D);
-				if (!isEarthbendable(player, location.clone().getBlock()) || location.clone().add(0.0D, -1D, 0.0D).getBlock().getType() == Material.AIR) {
+				if (!isEarthbendable(player, location.clone().getBlock()) || ElementalAbility.isAir(location.clone().add(0.0D, -1D, 0.0D).getBlock().getType())) {
 					remove();
 					return;
 				}
@@ -249,8 +256,9 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 				}
 			} else {
 				for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, affectingradius)) {
-					if (GeneralMethods.isRegionProtectedFromBuild(player, "EarthLine", location))
+					if (GeneralMethods.isRegionProtectedFromBuild(this, entity.getLocation()) || ((entity instanceof Player) && Commands.invincible.contains(((Player) entity).getName()))){
 						return;
+					}
 					if ((entity instanceof LivingEntity) && entity.getEntityId() != player.getEntityId()) {
 						entity.setVelocity(push.normalize().multiply(2));
 						DamageHandler.damageEntity(entity, damage, this);

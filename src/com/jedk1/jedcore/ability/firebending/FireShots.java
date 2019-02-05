@@ -107,8 +107,8 @@ public class FireShots extends FireAbility implements AddonAbility {
 					return false;
 				}
 				
-				ParticleEffect.SMOKE.display(location, 0.0F, 0.0F, 0.0F, 0.01F, 2);
-				ParticleEffect.FLAME.display(location, 0.0F, 0.0F, 0.0F, 0.02F, 5);
+				ParticleEffect.SMOKE_NORMAL.display(location, 2, 0.0, 0.0, 0.0, 0.01);
+				ParticleEffect.FLAME.display(location, 5, 0.0, 0.0, 0.0, 0.02);
 
 				Sphere collider = new Sphere(location.toVector(), collisionRadius);
 
@@ -179,8 +179,8 @@ public class FireShots extends FireAbility implements AddonAbility {
 	}
 
 	private void displayFireBalls(){
-		ParticleEffect.FLAME.display(getRightHandPos().toVector().add(player.getEyeLocation().getDirection().clone().multiply(.8D)).toLocation(player.getWorld()), 0F, 0F, 0F, 0.01F, 3);
-		ParticleEffect.SMOKE.display(getRightHandPos().toVector().add(player.getEyeLocation().getDirection().clone().multiply(.8D)).toLocation(player.getWorld()), 0F, 0F, 0F, 0.01F, 3);
+		ParticleEffect.FLAME.display(getRightHandPos().toVector().add(player.getEyeLocation().getDirection().clone().multiply(.8D)).toLocation(player.getWorld()), 3, 0, 0, 0, 0.01);
+		ParticleEffect.SMOKE_NORMAL.display(getRightHandPos().toVector().add(player.getEyeLocation().getDirection().clone().multiply(.8D)).toLocation(player.getWorld()), 3, 0, 0, 0, 0.01);
 	}
 	
 	@Override
