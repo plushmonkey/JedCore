@@ -78,6 +78,18 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 		if (!state.update()) {
 			remove();
 		}
+
+		long time = System.currentTimeMillis();
+
+		frozenBlocks.removeIf(frozen -> {
+			if (time >= frozen.endTime) {
+				removeFrozenBlock(frozen.tempBlock);
+				frozen.tempBlock.revertBlock();
+				return true;
+			}
+
+			return false;
+		});
 	}
 
 	@Override
@@ -235,8 +247,7 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 							if (isFreezable(cageLocation, entity)) {
 								Block block = cageLocation.getBlock();
 
-								TempBlock ice = new TempBlock(block, Material.ICE);
-								ice.setRevertTime(config.freezeDuration);
+								updateFrozenBlock(block, Material.ICE, config.freezeDuration);
 							}
 						}
 
@@ -298,6 +309,14 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 			// Store the TempBlock as a FrozenBlock block so it can be reverted later.
 			for (FrozenBlock fb : frozenBlocks) {
 				if (fb.tempBlock.getBlock().equals(block)) {
+					if (fb.tempBlock.getBlockData().getMaterial() != type) {
+						// Completely overwrite this FrozenBlock if the new type doesn't match the old one.
+						removeFrozenBlock(fb.tempBlock);
+						fb.tempBlock.revertBlock();
+						frozenBlocks.remove(fb);
+						break;
+					}
+
 					fb.endTime = System.currentTimeMillis() + duration;
 					return;
 				}
@@ -358,18 +377,6 @@ public class FrostBreath extends IceAbility implements AddonAbility {
 
 		@Override
 		public boolean update() {
-			long time = System.currentTimeMillis();
-
-			frozenBlocks.removeIf(frozen -> {
-				if (time >= frozen.endTime) {
-					removeFrozenBlock(frozen.tempBlock);
-					frozen.tempBlock.revertBlock();
-					return true;
-				}
-
-				return false;
-			});
-
 			return !frozenBlocks.isEmpty();
 		}
 	}
