@@ -715,6 +715,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.FrostBreath.Duration", 3000);
 		config.addDefault("Abilities.Water.FrostBreath.Particles", 3);
 		config.addDefault("Abilities.Water.FrostBreath.FrostDuration", 5000);
+		config.addDefault("Abilities.Water.FrostBreath.FrozenWaterDuration", 10000);
 		config.addDefault("Abilities.Water.FrostBreath.Range", 10);
 		config.addDefault("Abilities.Water.FrostBreath.Snow", true);
 		config.addDefault("Abilities.Water.FrostBreath.SnowDuration", 5000);

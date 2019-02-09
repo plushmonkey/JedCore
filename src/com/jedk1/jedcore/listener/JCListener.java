@@ -22,6 +22,8 @@ import com.projectkorra.projectkorra.ability.IceAbility;
 import com.projectkorra.projectkorra.earthbending.lava.LavaFlow;
 import com.projectkorra.projectkorra.event.*;
 
+import com.projectkorra.projectkorra.util.TempBlock;
+import com.projectkorra.projectkorra.waterbending.plant.PlantRegrowth;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -86,6 +88,13 @@ public class JCListener implements Listener {
 
 				// Reset the cooldown of LavaFlow that was set before the call to start().
 				flow.getBendingPlayer().removeCooldown(flow);
+			}
+		} else if (event.getAbility() instanceof PlantRegrowth) {
+			PlantRegrowth regrowth = (PlantRegrowth)event.getAbility();
+
+			// Stop PlantRegrowth from creating permanent snow when used against FrostBreath snow.
+			if (regrowth.getType() == Material.SNOW && TempBlock.isTempBlock(regrowth.getBlock())) {
+				event.setCancelled(true);
 			}
 		}
 	}
