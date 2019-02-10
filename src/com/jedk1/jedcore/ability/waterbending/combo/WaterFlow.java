@@ -179,7 +179,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 	private boolean prepare() {
 		sourceblock = BlockSource.getWaterSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN, true, bPlayer.canIcebend(), canUsePlants);
 		if (sourceblock != null) {
-			boolean isGoodSource = JCMethods.isAdjacentToThreeOrMoreSources(sourceblock, false) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock));
+			boolean isGoodSource = GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock, false) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock));
 
 			// canUsePlants needs to be checked here due to a bug with PK dynamic source caching.
 			// getWaterSourceBlock can return a plant even if canUsePlants is passed as false.
