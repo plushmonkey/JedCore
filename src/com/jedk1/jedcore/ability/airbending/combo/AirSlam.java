@@ -8,6 +8,7 @@ import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.AirAbility;
 import com.projectkorra.projectkorra.ability.ComboAbility;
 import com.projectkorra.projectkorra.ability.util.ComboManager.AbilityInformation;
+import com.projectkorra.projectkorra.command.Commands;
 import com.projectkorra.projectkorra.object.HorizontalVelocityTracker;
 import com.projectkorra.projectkorra.util.ClickType;
 
@@ -39,7 +40,7 @@ public class AirSlam extends AirAbility implements AddonAbility, ComboAbility {
 		setFields();
 		Entity target = GeneralMethods.getTargetedEntity(player, range, new ArrayList<Entity>());
 		if (target != null && target instanceof LivingEntity) {
-			if (GeneralMethods.isRegionProtectedFromBuild(this, target.getLocation())) {
+			if (GeneralMethods.isRegionProtectedFromBuild(this, target.getLocation()) || ((target instanceof Player) && Commands.invincible.contains(((Player) target).getName()))) {
 				return;
 			}
 			this.target = (LivingEntity) target;

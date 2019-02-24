@@ -27,12 +27,6 @@ public class JedCore extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		if (!isJava8orHigher()) {
-			getLogger().info("JedCore requires Java 8+! Disabling JedCore...");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-		
 		plugin = this;
 		JedCore.log = this.getLogger();
 		new JedCoreConfig(this);
@@ -40,10 +34,6 @@ public class JedCore extends JavaPlugin {
 		logDebug = JedCoreConfig.getConfig((World)null).getBoolean("Properties.LogDebug");
 
 		UpdateChecker.fetch();
-		
-		if (!isSpigot()) {
-			log.info("Bukkit detected, JedCore will not function properly.");
-		}
 		
 		dev = this.getDescription().getAuthors().toString().replace("[", "").replace("]", "");
 		version = this.getDescription().getVersion();
@@ -107,25 +97,6 @@ public class JedCore extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	private boolean isSpigot() {
-		return plugin.getServer().getVersion().toLowerCase().contains("spigot");
-	}
-	
-	private boolean isJava8orHigher() {
-		String[] versionTokens = System.getProperty("java.version").split("\\.|_|-b");
-
-		// This is usually "1", but Java 9 changes versioning to use "9".
-		int main = Integer.valueOf(versionTokens[0]);
-
-		if (main > 1) {
-			return true;
-		}
-
-		int major = Integer.valueOf(versionTokens[1]);
-
-		return major >= 8;
 	}
 	
 	public void onDisable() {
