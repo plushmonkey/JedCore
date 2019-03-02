@@ -92,7 +92,6 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 		raiseEarthBlock(getEarthSourceBlock(range));
 	}
 
-	@SuppressWarnings("deprecation")
 	public void raiseEarthBlock(Block block) {
 		if (block == null) {
 			return;
@@ -143,25 +142,24 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 			tblockTracker.add(tb);
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
-	public Material getCorrectType(Block block) {
-		if (block.getType().equals(Material.SAND)) {
-			if (block.getData() == (byte) 0x1) {
-				return Material.RED_SANDSTONE;
-			}
 
+	public Material getCorrectType(Block block) {
+		if (block.getType() == Material.SAND) {
 			return Material.SANDSTONE;
 		}
-
-		if (block.getType().equals(Material.GRAVEL)) {
+		if (block.getType() == Material.RED_SAND) {
+			return Material.RED_SANDSTONE;
+		}
+		if (block.getType() == Material.GRAVEL) {
 			return Material.COBBLESTONE;
+		}
+		if (block.getType().name().endsWith("CONCRETE_POWDER")) {
+			return Material.getMaterial(block.getType().name().replace("_POWDER", ""));
 		}
 
 		return block.getType();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void progress() {
 		if (player == null || !player.isOnline() || player.isDead()) {
 			remove();
@@ -183,7 +181,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 				FallingBlock fb = tfb.getFallingBlock();
 
 				if (fb.isDead() || fb.getLocation().getBlockY() == origin.getBlockY() + 2) {
-					TempBlock tb = new TempBlock(fb.getLocation().getBlock(), fb.getMaterial(), fb.getBlockData());
+					TempBlock tb = new TempBlock(fb.getLocation().getBlock(), fb.getBlockData().getMaterial(), fb.getBlockData());
 					readyBlocksTracker.add(tb);
 					tfb.remove();
 				}
@@ -195,7 +193,7 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 				AABB collider = BlockUtil.getFallingBlockBoundsFull(fb).scale(entityCollisionRadius * 2.0);
 
 				CollisionDetector.checkEntityCollisions(player, collider, (e) -> {
-					DamageHandler.damageEntity(e, isMetal(fb.getMaterial()) ? metalDmg : normalDmg, this);
+					DamageHandler.damageEntity(e, isMetal(fb.getBlockData().getMaterial()) ? metalDmg : normalDmg, this);
 					((LivingEntity) e).setNoDamageTicks(0);
 					ParticleEffect.BLOCK_CRACK.display(fb.getLocation(), 20, 0, 0, 0, 0, fb.getBlockData());
 					tfb.remove();
