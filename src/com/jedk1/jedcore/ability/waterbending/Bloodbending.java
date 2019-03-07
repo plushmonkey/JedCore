@@ -88,10 +88,12 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 
 	private void launch() {
 		Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, 20, ElementalAbility.getTransparentMaterials())).normalize().multiply(3);
-		victim.setVelocity(direction);
+		if (!victim.isDead()) {
+			victim.setVelocity(direction);
 
-		new HorizontalVelocityTracker(victim, player, 200L, this);
-		new ThrownEntityTracker(this, victim, player, 200L);
+			new HorizontalVelocityTracker(victim, player, 200L, this);
+			new ThrownEntityTracker(this, victim, player, 200L);
+		}
 		remove();
 	}
 

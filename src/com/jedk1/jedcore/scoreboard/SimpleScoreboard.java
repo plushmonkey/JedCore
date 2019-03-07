@@ -1,12 +1,10 @@
 package com.jedk1.jedcore.scoreboard;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -14,7 +12,6 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.lang.reflect.Constructor;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,12 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleScoreboard {
 
-    private static Map<String, OfflinePlayer> cache = new HashMap<>();
+    private static Map<String, String> cache = new HashMap<>();
 
     private Scoreboard scoreboard;
     private String title;
@@ -101,13 +97,13 @@ public class SimpleScoreboard {
         return str;
     }
 
-    private Map.Entry<Team, OfflinePlayer> createTeam(String text, int pos) {
+    private Map.Entry<Team, String> createTeam(String text, int pos) {
         Team team;
         ChatColor color = ChatColor.values()[(pos < 0) ? -pos : pos];
-        OfflinePlayer result;
+        String result;
 
         if (!cache.containsKey(color.toString()))
-            cache.put(color.toString(), getOfflinePlayerSkipLookup(color.toString()));
+            cache.put(color.toString(), color.toString());
 
         result = cache.get(color.toString());
 
@@ -123,15 +119,14 @@ public class SimpleScoreboard {
         return new AbstractMap.SimpleEntry<>(team, result);
     }
 
-    @SuppressWarnings("deprecation")
-	private void applyText(Team team, String text, OfflinePlayer result) {
+	private void applyText(Team team, String text, String result) {
         Iterator<String> iterator = Splitter.fixedLength(16).split(text).iterator();
         String prefix = iterator.next();
 
         team.setPrefix(prefix);
 
-        if(!team.hasPlayer(result))
-            team.addPlayer(result);
+        if(!team.hasEntry(result))
+            team.addEntry(result);
 
         if (text.length() > 16) {
             String prefixColor = ChatColor.getLastColors(prefix);
@@ -155,14 +150,13 @@ public class SimpleScoreboard {
         }
     }
 
-    @SuppressWarnings("deprecation")
 	public void update() {
         if (updated.isEmpty()) {
             return;
         }
 
         if (obj == null) {
-            obj = scoreboard.registerNewObjective((title.length() > 16 ? title.substring(0, 15) : title), "dummy");
+            obj = scoreboard.registerNewObjective((title.length() > 16 ? title.substring(0, 15) : title), "dummy", (title.length() > 16 ? title.substring(0, 15) : title));
             obj.setDisplayName(title);
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
@@ -187,7 +181,7 @@ public class SimpleScoreboard {
 
         for (Map.Entry<String, Integer> text : scores.entrySet()) {
         	Team t = scoreboard.getTeam(ChatColor.values()[(text.getValue() < 0) ? -text.getValue() : text.getValue()].toString());
-            Map.Entry<Team, OfflinePlayer> team;
+            Map.Entry<Team, String> team;
 
             if(!updated.contains(text.getKey())) {
                 continue;
@@ -197,7 +191,7 @@ public class SimpleScoreboard {
             	String color = ChatColor.values()[(text.getValue() < 0) ? -text.getValue() : text.getValue()].toString();
 
                 if (!cache.containsKey(color)) {
-                    cache.put(color, getOfflinePlayerSkipLookup(color));
+                    cache.put(color, color);
                 }
 
                 team = new AbstractMap.SimpleEntry<>(t, cache.get(color));
@@ -239,39 +233,5 @@ public class SimpleScoreboard {
     public void send(Player... players) {
         for (Player p : players)
             p.setScoreboard(scoreboard);
-    }
-
-    private final UUID invalidUserUUID = UUID.nameUUIDFromBytes("InvalidUsername".getBytes(Charsets.UTF_8));
-    private Class<?> gameProfileClass;
-    private Constructor<?> gameProfileConstructor;
-    private Constructor<?> craftOfflinePlayerConstructor;
-
-    @SuppressWarnings("deprecation")
-    private OfflinePlayer getOfflinePlayerSkipLookup(String name) {
-        try {
-            if (gameProfileConstructor == null) {
-                try { // 1.7
-                    gameProfileClass = Class.forName("net.minecraft.util.com.mojang.authlib.GameProfile");
-                } catch (ClassNotFoundException e) { // 1.8
-                    gameProfileClass = Class.forName("com.mojang.authlib.GameProfile");
-                }
-                gameProfileConstructor = gameProfileClass.getDeclaredConstructor(UUID.class, String.class);
-                gameProfileConstructor.setAccessible(true);
-            }
-            if (craftOfflinePlayerConstructor == null) {
-                Class<?> serverClass = Bukkit.getServer().getClass();
-                Class<?> craftOfflinePlayerClass = Class.forName(serverClass.getName()
-                        .replace("CraftServer", "CraftOfflinePlayer"));
-                craftOfflinePlayerConstructor = craftOfflinePlayerClass.getDeclaredConstructor(
-                        serverClass, gameProfileClass
-                );
-                craftOfflinePlayerConstructor.setAccessible(true);
-            }
-            Object gameProfile = gameProfileConstructor.newInstance(invalidUserUUID, name);
-            Object craftOfflinePlayer = craftOfflinePlayerConstructor.newInstance(Bukkit.getServer(), gameProfile);
-            return (OfflinePlayer) craftOfflinePlayer;
-        } catch (Throwable t) { // Fallback if fail
-            return Bukkit.getOfflinePlayer(name);
-        }
     }
 }

@@ -33,8 +33,6 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 
 	public static ConcurrentHashMap<Player, HashMap<Integer, String>> abilities = new ConcurrentHashMap<Player, HashMap<Integer, String>>();
 
-	private boolean couldFly = false, wasFlying = false;
-
 	private World world;
 
 	public int airUses;
@@ -113,12 +111,11 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 		location = player.getLocation().clone().subtract(0, 1, 0);
 
 		if (bPlayer.canBend(this)) {
-			couldFly = player.getAllowFlight();
-			wasFlying = player.isFlying();
 			world = player.getWorld();
 			time = System.currentTimeMillis() + duration;
 			MultiAbilityManager.bindMultiAbility(player, "ElementSphere");
 			bPlayer.addCooldown(this);
+			flightHandler.createInstance(player, this.getName());
 			start();
 			if (ChatColor.stripColor(bPlayer.getBoundAbilityName()) == null) {
 				remove();
@@ -194,13 +191,21 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 	}
 
 	private void allowFlight() {
-		player.setAllowFlight(true);
-		player.setFlying(true);
+		if (!player.getAllowFlight()) {
+			player.setAllowFlight(true);
+		}
+		if (!player.isFlying()) {
+			player.setFlying(true);
+		}
 	}
 
 	private void removeFlight() {
-		player.setAllowFlight(false);
-		player.setFlying(false);
+		if (player.getAllowFlight()) {
+			player.setAllowFlight(false);
+		}
+		if (player.isFlying()) {
+			player.setFlying(false);
+		}
 	}
 
 	private Block getGround() {
@@ -285,13 +290,8 @@ public class ElementSphere extends AvatarAbility implements AddonAbility, MultiA
 	@Override
 	public void remove() {
 		super.remove();
-		removeFlight();
 		MultiAbilityManager.unbindMultiAbility(player);
-
-		if (couldFly) {
-			player.setAllowFlight(couldFly);
-			player.setFlying(wasFlying);
-		}
+		flightHandler.removeInstance(player, this.getName());
 	}
 
 	public void prepareCancel() {
