@@ -48,6 +48,18 @@ public class CollisionInitializer<T extends CoreAbility> {
             boolean enabled = abilityConfig.getBoolean("Enabled");
             if (!enabled) continue;
 
+            if (key.equalsIgnoreCase("-small-")) {
+                JedCore.logDebug("Initializing small collision for " + abilityName + ".");
+                ProjectKorra.getCollisionInitializer().addSmallAbility(ability);
+
+                continue;
+            } else if (key.equalsIgnoreCase("-large-")) {
+                JedCore.logDebug("Initializing large collision for " + abilityName + ".");
+                ProjectKorra.getCollisionInitializer().addLargeAbility(ability);
+
+                continue;
+            }
+
             boolean removeFirst = abilityConfig.getBoolean("RemoveFirst");
             boolean removeSecond = abilityConfig.getBoolean("RemoveSecond");
 
