@@ -7,13 +7,12 @@ import com.jedk1.jedcore.collision.CollisionUtil;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.BlockUtil;
 import com.jedk1.jedcore.util.TempFallingBlock;
+import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
-import com.projectkorra.projectkorra.util.BlockSource;
-import com.projectkorra.projectkorra.util.ClickType;
-import com.projectkorra.projectkorra.util.DamageHandler;
-import com.projectkorra.projectkorra.util.ParticleEffect;
+import com.projectkorra.projectkorra.util.*;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,6 +41,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	private int earthBlocks;
 	private double damage;
 	private double entityCollisionRadius;
+	private Block block;
 
 	public EarthKick(Player player) {
 		super(player);
@@ -51,12 +51,13 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 		}
 
 		setFields();
-
 		location = player.getLocation();
-
-		if ((player.getLocation().getPitch() > 30) && prepare()) {
-			start();
+		if ((player.getLocation().getPitch() > -5) && prepare()) {
+			if(GeneralMethods.isRegionProtectedFromBuild(this, block.getLocation())){
+				return;
+			}
 			launchBlocks();
+			start();
 		}
 	}
 
@@ -73,13 +74,18 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private boolean prepare() {
-		Block block = BlockSource.getEarthSourceBlock(player, 3, ClickType.SHIFT_DOWN);
+		block = player.getTargetBlock(getTransparentMaterialSet(), 2);
+		if (!isEarthbendable(player, block)){
+			return false;
+		}
 
 		if (block != null && !isMetal(block)) {
 			material = block.getType();
 			materialData = block.getBlockData().clone();
+			location.setX(block.getX() + 0.5);
+			location.setY(block.getY());
+			location.setZ(block.getZ() + 0.5);
 
 			return true;
 		}
@@ -108,13 +114,25 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	}
 
 	private void launchBlocks() {
+		if (EarthAbility.getMovedEarth().containsKey(block)){
+			block.setType(Material.AIR);
+		}
+		if (block.getType() != Material.AIR) {
+			TempBlock air = new TempBlock(block, Material.AIR);
+			air.setRevertTime(5000L);
+		}
+
 		location.setPitch(0);
 		Vector direction = location.getDirection();
 		location.add(direction.clone().multiply(1.0));
 
+		if(!ElementalAbility.isAir(location.getBlock().getType())){
+			location.setY(location.getY() + 1.0);
+		}
+
 		ParticleEffect.CRIT.display(location, 10, Math.random(), Math.random(), Math.random(), 0.1);
 
-		int yaw = Math.round(player.getLocation().getYaw());
+		int yaw = Math.round(location.getYaw());
 
 		playEarthbendingSound(location);
 
