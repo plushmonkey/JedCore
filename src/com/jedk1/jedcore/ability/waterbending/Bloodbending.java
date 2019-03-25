@@ -126,7 +126,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 		if (e instanceof ArmorStand) {
 			return false;
 		}
-		if (!undeadMobs	&& com.projectkorra.projectkorra.waterbending.blood.Bloodbending.isUndead(e)) {
+		if (!undeadMobs	&& GeneralMethods.isUndead(e)) {
 			return false;
 		}
 		if ((e instanceof Player) && !canBeBloodbent((Player) e)) {
