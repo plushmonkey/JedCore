@@ -19,10 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -103,21 +100,20 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	private boolean grab() {
 		List<Entity> entities = new ArrayList<Entity>();
 		for (int i = 0; i < distance; i++) {
-			Location location = null;
+			Location location;
 			if (bloodbendingThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
 				location = GeneralMethods.getTargetedLocation(player, i, ElementalAbility.getTransparentMaterials());
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
-			if (entities.contains(player)) {
-				entities.remove(player);
-			}
-			if (entities != null && !entities.isEmpty() && !entities.contains(player)) {
+			entities.remove(player);
+
+			if (!entities.isEmpty() && !entities.contains(player)) {
 				break;
 			}
 		}
-		if (entities == null || entities.isEmpty()) {
+		if (entities.isEmpty()) {
 			return false;
 		}
 		Entity e = entities.get(0);
@@ -125,6 +121,9 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 			return false;
 		}
 		if (!(e instanceof LivingEntity)) {
+			return false;
+		}
+		if (e instanceof ArmorStand) {
 			return false;
 		}
 		if (!undeadMobs	&& com.projectkorra.projectkorra.waterbending.blood.Bloodbending.isUndead(e)) {
@@ -223,7 +222,6 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 			((Creature) victim).setTarget(null);
 		}
 		AirAbility.breakBreathbendingHold(victim);
-		return;
 	}
 
 	@Override
