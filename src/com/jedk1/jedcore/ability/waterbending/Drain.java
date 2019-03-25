@@ -6,6 +6,7 @@ import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
@@ -262,7 +263,7 @@ public class Drain extends WaterAbility implements AddonAbility {
 					}
 					if (usePlants && JCMethods.isSmallPlant(block) && !isObstructed(block.getLocation(), player.getEyeLocation())) {
 						drainPlant(block);
-					} else if(usePlants && (block.getType() == Material.SPRUCE_LEAVES || block.getType() == Material.OAK_LEAVES || block.getType() == Material.JUNGLE_LEAVES || block.getType() == Material.DARK_OAK_LEAVES || block.getType() == Material.BIRCH_LEAVES || block.getType() == Material.ACACIA_LEAVES) && !isObstructed(block.getLocation(), player.getEyeLocation())) {
+					} else if(usePlants && ElementalAbility.isPlant(block) && !isObstructed(block.getLocation(), player.getEyeLocation())) {
 						locations.add(block.getLocation().clone().add(.5, .5, .5));
 						new RegenTempBlock(block, Material.AIR, Material.AIR.createBlockData(), regenDelay);
 					} else if (isWater(block)) {

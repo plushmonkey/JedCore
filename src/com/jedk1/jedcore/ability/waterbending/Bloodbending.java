@@ -15,6 +15,7 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import jdk.jfr.events.ExceptionThrownEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -87,14 +88,16 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	}
 
 	private void launch() {
-		Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, 20, ElementalAbility.getTransparentMaterials())).normalize().multiply(3);
-		if (!victim.isDead()) {
-			victim.setVelocity(direction);
+		if (Arrays.asList(ElementalAbility.getTransparentMaterials()).contains(player.getEyeLocation().getBlock().getType())) {
+			Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, 20, ElementalAbility.getTransparentMaterials())).normalize().multiply(3);
+			if (!victim.isDead()) {
+				victim.setVelocity(direction);
 
-			new HorizontalVelocityTracker(victim, player, 200L, this);
-			new ThrownEntityTracker(this, victim, player, 200L);
+				new HorizontalVelocityTracker(victim, player, 200L, this);
+				new ThrownEntityTracker(this, victim, player, 200L);
+			}
+			remove();
 		}
-		remove();
 	}
 
 	private boolean grab() {

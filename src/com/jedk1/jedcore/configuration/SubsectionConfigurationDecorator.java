@@ -457,6 +457,16 @@ public class SubsectionConfigurationDecorator implements ConfigurationSection {
     }
 
     @Override
+    public <T extends Object> T getObject(String s, Class<T> aClass) {
+        return parent.getObject(s, aClass);
+    }
+
+    @Override
+    public <T extends Object> T getObject(String s, Class<T> aClass, T t) {
+        return parent.getObject(s, aClass, t);
+    }
+
+    @Override
     public Vector getVector(String path) {
         String newPath = getPrefix() + path;
 

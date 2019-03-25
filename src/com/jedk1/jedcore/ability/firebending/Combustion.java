@@ -14,6 +14,7 @@ import com.projectkorra.projectkorra.ability.AirAbility;
 import com.projectkorra.projectkorra.ability.CombustionAbility;
 import com.projectkorra.projectkorra.ability.FireAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
+import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import com.projectkorra.projectkorra.util.TempBlock;
@@ -313,10 +314,10 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 					return;
 				}
 
-				if (AirAbility.isWithinAirShield(location) || FireAbility.isWithinFireShield(location)) {
+				/*if (AirAbility.isWithinAirShield(location) || FireAbility.isWithinFireShield(location)) {
 					state = new CombustState(location);
 					return;
-				}
+				}*/
 
 				location = location.add(direction.clone().multiply(0.2D));
 			}
@@ -328,6 +329,16 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 			ParticleEffect.FIREWORKS_SPARK.display(location, 1, 0.0, 0.0, 0.0F, 0.06);
 
 			location.getWorld().playSound(location, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.0F, 0.01F);
+		}
+	}
+
+	@Override
+	public void handleCollision(final Collision collision) {
+		super.handleCollision(collision);
+		if (collision.isRemovingFirst()) {
+			state = new CombustState(collision.getLocationFirst());
+		} else if (collision.isRemovingSecond()) {
+			state = new CombustState(collision.getLocationSecond());
 		}
 	}
 

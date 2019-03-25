@@ -116,7 +116,6 @@ public class WallRun extends ChiAbility implements AddonAbility {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void progress() {
 		if (player.isDead() || !player.isOnline() || player.isOnGround()) {
@@ -187,7 +186,7 @@ public class WallRun extends ChiAbility implements AddonAbility {
 
 	@Override
 	public String getDescription() {
-	   return null;
+	   return "To use wallrun, sprint towards a wall, jump, then rapidly click to activate.";
 	}
 	
 	@Override
