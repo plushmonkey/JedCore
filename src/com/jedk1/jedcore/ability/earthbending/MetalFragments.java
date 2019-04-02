@@ -25,10 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class MetalFragments extends MetalAbility implements AddonAbility {
 
@@ -89,7 +86,6 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void shootFragment(boolean left) {
 		if (sources.size() <= 0)
 			return;
@@ -141,7 +137,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 			count++;
 			if (count >= maxFragments) {
 				counters.remove(source);
-				source.getWorld().spawnFallingBlock(source.getLocation().add(0.5, 0, 0.5), source.getType(), source.getData());
+				source.getWorld().spawnFallingBlock(source.getLocation().add(0.5, 0, 0.5), source.getBlockData());
 				TempBlock tempBlock = TempBlock.get(source);
 				if (tempBlock != null) {
 					tempBlock.revertBlock();
@@ -194,7 +190,6 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void translateUpward(Block block) {
 		if (block == null)
 			return;
@@ -213,7 +208,6 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void progress() {
 		if (player == null || player.isDead() || !player.isOnline()) {
 			remove();
@@ -227,32 +221,33 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 			return;
 		}
 
-		for (int i = 0; i < tblockTracker.size(); i++) {
-			TempBlock tb = tblockTracker.get(i);
+		Iterator itr = tblockTracker.iterator();
+		while (itr.hasNext()) {
+			TempBlock tb = (TempBlock)itr.next();
 			if (player.getLocation().distance(tb.getLocation()) >= 10) {
-				player.getWorld().spawnFallingBlock(tb.getLocation(), tb.getBlock().getType(), tb.getBlock().getData());
+				player.getWorld().spawnFallingBlock(tb.getLocation().add(0.5,0.0,0.5), tb.getBlockData());
 				tb.revertBlock();
-				tblockTracker.remove(i);
-				sources.clear();
-
-				for (TempBlock b : tblockTracker) {
-					sources.add(b.getBlock());
-				}
+				itr.remove();
 			}
+		}
+		sources.clear();
+		for (TempBlock b : tblockTracker) {
+			sources.add(b.getBlock());
 		}
 
 		for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
 			FallingBlock fb = tfb.getFallingBlock();
 			if (fb.getLocation().getY() >= player.getEyeLocation().getY() + 1) {
-				TempBlock tb = new TempBlock(fb.getLocation().getBlock(), fb.getMaterial(), fb.getBlockData());
+				TempBlock tb = new TempBlock(fb.getLocation().getBlock(), fb.getBlockData());
 				tblockTracker.add(tb);
 				sources.add(tb.getBlock());
 				counters.put(tb.getBlock(), 0);
 				tfb.remove();
 			}
 
-			if (fb.isOnGround())
-				fb.getLocation().getBlock().setType(fb.getMaterial());
+			if (fb.isOnGround()) {
+				fb.getLocation().getBlock().setBlockData(fb.getBlockData());
+			}
 		}
 
 		for (Item f : thrownFragments) {
@@ -262,7 +257,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 			if (f.isDead())
 				continue;
 
-			for (Entity e : GeneralMethods.getEntitiesAroundPoint(f.getLocation(), 3)) {
+			for (Entity e : GeneralMethods.getEntitiesAroundPoint(f.getLocation(), 1)) {
 				if (e instanceof LivingEntity && e.getEntityId() != player.getEntityId()) {
 					DamageHandler.damageEntity(e, damage, this);
 					f.remove();
@@ -283,15 +278,13 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 	*/
 
 	public void removeDeadItems() {
-		for (int i = 0; i < thrownFragments.size(); i++)
-			if (thrownFragments.get(i).isDead())
-				thrownFragments.remove(i);
+		thrownFragments.removeIf(Item::isDead);
 	}
 
-	@SuppressWarnings("deprecation")
+
 	public void dropSources() {
 		for (TempBlock tb : tblockTracker) {
-			tb.getBlock().getWorld().spawnFallingBlock(tb.getLocation(), tb.getBlock().getType(), tb.getBlock().getData());
+			tb.getBlock().getWorld().spawnFallingBlock(tb.getLocation().add(0.5,0.0,0.5), tb.getBlock().getBlockData());
 			tb.revertBlock();
 		}
 
