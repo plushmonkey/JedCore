@@ -139,6 +139,10 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 				blasts.remove(l);
 				continue;
 			}
+			if(GeneralMethods.isSolid(l.getBlock())){
+				blasts.remove(l);
+				continue;
+			}
 			head = head.add(head.getDirection().multiply(1));
 			new RegenTempBlock(l.getBlock(), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 200);
 			ParticleEffect.LAVA.display(head, 1, Math.random(), Math.random(), Math.random(), 0);

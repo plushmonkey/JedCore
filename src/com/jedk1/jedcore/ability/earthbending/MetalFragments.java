@@ -135,6 +135,7 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 		if (counters.containsKey(source)) {
 			int count = counters.get(source);
 			count++;
+
 			if (count >= maxFragments) {
 				counters.remove(source);
 				source.getWorld().spawnFallingBlock(source.getLocation().add(0.5, 0, 0.5), source.getBlockData());
@@ -226,13 +227,10 @@ public class MetalFragments extends MetalAbility implements AddonAbility {
 			TempBlock tb = (TempBlock)itr.next();
 			if (player.getLocation().distance(tb.getLocation()) >= 10) {
 				player.getWorld().spawnFallingBlock(tb.getLocation().add(0.5,0.0,0.5), tb.getBlockData());
+				sources.remove(tb.getBlock());
 				tb.revertBlock();
 				itr.remove();
 			}
-		}
-		sources.clear();
-		for (TempBlock b : tblockTracker) {
-			sources.add(b.getBlock());
 		}
 
 		for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
