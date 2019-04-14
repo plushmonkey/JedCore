@@ -133,14 +133,14 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		}
 		if (!initializing) {
 			getGimbalBlocks(player.getLocation());
-			if (!leftvisible && !leftconsumed) {
+			if (!leftvisible && !leftconsumed && origin1 != null) {
 				if (origin1.getBlockY() <= player.getEyeLocation().getBlockY()) {
 					new WaterBlast(player, origin1, range, damage, speed, entityCollisionRadius, abilityCollisionRadius, this);
 					leftconsumed = true;
 				}
 			}
 
-			if (!rightvisible && !rightconsumed) {
+			if (!rightvisible && !rightconsumed && origin2 != null) {
 				if (origin2.getBlockY() <= player.getEyeLocation().getBlockY()) {
 					new WaterBlast(player, origin2, range, damage, speed, entityCollisionRadius, abilityCollisionRadius, this);
 					rightconsumed = true;

@@ -98,7 +98,7 @@ public class WaterFlow extends WaterAbility implements AddonAbility, ComboAbilit
 			time = System.currentTimeMillis();
 
 			int augment = (int) Math.round(getNightFactor(player.getWorld()));
-			if (isFullMoon(player.getWorld()) && fullmoonEnabled) {
+			if (isFullMoon(player.getWorld()) && fullmoonEnabled && sourceblock != null) {
 				sources = getNearbySources(sourceblock, 3);
 				if (sources != null) {
 					if (sources.size() > 9) {

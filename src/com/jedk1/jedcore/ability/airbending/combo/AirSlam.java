@@ -70,7 +70,7 @@ public class AirSlam extends AirAbility implements AddonAbility, ComboAbility {
 		if (System.currentTimeMillis() > time + 50) {
 			Vector dir = player.getLocation().getDirection();
 			GeneralMethods.setVelocity(target, new Vector(dir.getX(), 0.05, dir.getZ()).multiply(power));
-			new HorizontalVelocityTracker(target, player, 0l, this);
+			new HorizontalVelocityTracker(target, player, 0L, this);
 			new ThrownEntityTracker(this, target, player, 0L);
 			target.setFallDistance(0);
 		}

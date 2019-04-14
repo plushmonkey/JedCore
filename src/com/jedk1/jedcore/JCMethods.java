@@ -30,7 +30,11 @@ public class JCMethods {
 	private static final Material[] SMALL_PLANTS = {
 			Material.GRASS, Material.FERN, Material.POPPY, Material.DANDELION, Material.OAK_SAPLING,
 			Material.SPRUCE_SAPLING, Material.BIRCH_SAPLING, Material.JUNGLE_SAPLING, Material.ACACIA_SAPLING,
-			Material.DARK_OAK_SAPLING
+			Material.DARK_OAK_SAPLING, Material.ALLIUM, Material.ORANGE_TULIP, Material.PINK_TULIP, Material.RED_TULIP,
+			Material.WHITE_TULIP, Material.ROSE_BUSH, Material.BLUE_ORCHID, Material.LILAC, Material.OXEYE_DAISY,
+			Material.AZURE_BLUET, Material.PEONY, Material.SUNFLOWER, Material.LARGE_FERN, Material.RED_MUSHROOM,
+			Material.BROWN_MUSHROOM, Material.PUMPKIN_STEM, Material.MELON_STEM, Material.WHEAT, Material.TALL_GRASS,
+			Material.BEETROOTS, Material.CARROTS, Material.POTATOES
 	};
 	private static List<String> worlds = new ArrayList<String>();
 	private static List<String> combos = new ArrayList<String>();

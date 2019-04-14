@@ -15,13 +15,11 @@ import com.projectkorra.projectkorra.util.DamageHandler;
 
 import jdk.jfr.events.ExceptionThrownEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -87,34 +85,35 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 	}
 
 	private void launch() {
-		Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, 20, ElementalAbility.getTransparentMaterials())).normalize().multiply(3);
-		if (!victim.isDead()) {
-			victim.setVelocity(direction);
+		if (Arrays.asList(ElementalAbility.getTransparentMaterials()).contains(player.getEyeLocation().getBlock().getType())) {
+			Vector direction = GeneralMethods.getDirection(player.getEyeLocation(), GeneralMethods.getTargetedLocation(player, 20, ElementalAbility.getTransparentMaterials())).normalize().multiply(3);
+			if (!victim.isDead()) {
+				victim.setVelocity(direction);
 
-			new HorizontalVelocityTracker(victim, player, 200L, this);
-			new ThrownEntityTracker(this, victim, player, 200L);
+				new HorizontalVelocityTracker(victim, player, 200L, this);
+				new ThrownEntityTracker(this, victim, player, 200L);
+			}
+			remove();
 		}
-		remove();
 	}
 
 	private boolean grab() {
 		List<Entity> entities = new ArrayList<Entity>();
 		for (int i = 0; i < distance; i++) {
-			Location location = null;
+			Location location;
 			if (bloodbendingThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
 			} else {
 				location = GeneralMethods.getTargetedLocation(player, i, ElementalAbility.getTransparentMaterials());
 			}
 			entities = GeneralMethods.getEntitiesAroundPoint(location, 1.7);
-			if (entities.contains(player)) {
-				entities.remove(player);
-			}
-			if (entities != null && !entities.isEmpty() && !entities.contains(player)) {
+			entities.remove(player);
+
+			if (!entities.isEmpty() && !entities.contains(player)) {
 				break;
 			}
 		}
-		if (entities == null || entities.isEmpty()) {
+		if (entities.isEmpty()) {
 			return false;
 		}
 		Entity e = entities.get(0);
@@ -124,7 +123,10 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 		if (!(e instanceof LivingEntity)) {
 			return false;
 		}
-		if (!undeadMobs	&& com.projectkorra.projectkorra.waterbending.blood.Bloodbending.isUndead(e)) {
+		if (e instanceof ArmorStand) {
+			return false;
+		}
+		if (!undeadMobs	&& GeneralMethods.isUndead(e)) {
 			return false;
 		}
 		if ((e instanceof Player) && !canBeBloodbent((Player) e)) {
@@ -220,7 +222,6 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 			((Creature) victim).setTarget(null);
 		}
 		AirAbility.breakBreathbendingHold(victim);
-		return;
 	}
 
 	@Override
