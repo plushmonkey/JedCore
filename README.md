@@ -3,6 +3,27 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.8.1
+- Refactor FrostBreath code.
+  - Use waterbendable TempBlocks for the created snow. This should fix some reversion issues that could cause permanent blocks.
+  - Add a duration to the ice created from water.
+  - Prevent PlantRegrowth from creating permanent snow.
+- Add "-small-" or "-large-" to a collision list for the ability to be added to the collision initializer lists.
+- Add invincible check for AirSlam. (PhanaticD)
+- Remove Java 8 and Spigot checks. (PhanaticD)
+- Probably fix ElementSphere fly glitch. (PhanaticD)
+- Fix EarthShard concrete powder interaction. (PhanaticD)
+- Fix some Bloodbending issues. (PhanaticD)
+  - Attempt a fix for Bloodbending finite error. (PhanaticD)
+  - Fix issue with Bloodbending returning a bad vector when inside a block. (PhanaticD)
+  - Make Bloodbending ignore armor stands. (PhanaticD)
+- Add missing plants to the small plants list. (PhanaticD)
+- Allow Drain to use configured plants. (PhanaticD)
+- Fix memory leak issue with the bending board. (PhanaticD)
+- Improve EarthKick. It now works on RaiseEarth. (PhanaticD)
+- Fix LavaThrow going through walls. (PhanaticD)
+- Fix up MetalFragments. (PhanaticD)
+
 ### 2.8.0
 - Update to ProjectKorra 1.8.8 and Spigot 1.13.2.
   - Support dropped for older versions of both ProjectKorra and Spigot due to large api changes.
