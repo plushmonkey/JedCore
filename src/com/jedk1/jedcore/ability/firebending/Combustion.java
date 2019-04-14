@@ -100,7 +100,12 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 
 	@Override
 	public Location getLocation() {
-		return location;
+		// Only enable the collision while traveling.
+		if (state instanceof TravelState) {
+			return location;
+		}
+
+		return null;
 	}
 
 	@Override
@@ -335,16 +340,15 @@ public class Combustion extends CombustionAbility implements AddonAbility {
 	@Override
 	public void handleCollision(final Collision collision) {
 		super.handleCollision(collision);
+
 		if (collision.isRemovingFirst()) {
 			state = new CombustState(collision.getLocationFirst());
-		} else if (collision.isRemovingSecond()) {
-			state = new CombustState(collision.getLocationSecond());
 		}
 	}
 
 	// This state is used for doing the explosion.
 	// ChargeState can transition to this state if the player takes damage while charging.
-	// TravelState can transition to this state if the projectile collides with terrain or an entity.
+	// TravelState can transition to this state if the projectile collides with terrain, entity, or collidable ability.
 	private class CombustState implements State {
 		private long startTime;
 		private long regenTime;
