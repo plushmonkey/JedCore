@@ -32,8 +32,6 @@ public class JedCore extends JavaPlugin {
 		new JedCoreConfig(this);
 
 		logDebug = JedCoreConfig.getConfig((World)null).getBoolean("Properties.LogDebug");
-
-		UpdateChecker.fetch();
 		
 		dev = this.getDescription().getAuthors().toString().replace("[", "").replace("]", "");
 		version = this.getDescription().getVersion();

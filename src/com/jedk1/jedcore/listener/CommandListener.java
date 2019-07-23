@@ -1,10 +1,10 @@
 package com.jedk1.jedcore.listener;
 
 import com.jedk1.jedcore.JedCore;
+import com.jedk1.jedcore.command.JedCoreCommand;
 import com.jedk1.jedcore.event.PKCommandEvent;
 import com.jedk1.jedcore.event.PKCommandEvent.CommandType;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
-import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.command.PKCommand;
 
 import org.bukkit.Bukkit;
@@ -71,11 +71,7 @@ public class CommandListener implements Listener {
 						return;
 					}
 					if (event.getType().equals(CommandType.VERSION) && event.getSender().hasPermission("bending.command.version")) {
-						event.getSender().sendMessage(ChatColor.GRAY + "Running JedCore Build: " + ChatColor.RED + JedCore.plugin.getDescription().getVersion());
-						event.getSender().sendMessage(ChatColor.GRAY + "Developed by: " + ChatColor.RED + JedCore.plugin.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
-						event.getSender().sendMessage(ChatColor.GRAY + "Modified by: " + ChatColor.RED + "plushmonkey");
-						event.getSender().sendMessage(ChatColor.GRAY + "URL: " + ChatColor.RED + ChatColor.ITALIC + UpdateChecker.downloadURL);
-						return;
+						JedCoreCommand.sendBuildInfo(event.getSender());
 					}
 				}
 			}

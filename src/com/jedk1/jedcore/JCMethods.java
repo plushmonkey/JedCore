@@ -332,7 +332,6 @@ public class JCMethods {
 		CoreAbility.registerPluginAbilities(JedCore.plugin, "com.jedk1.jedcore.ability");
 		registerDisabledWorlds();
 		registerCombos();
-		UpdateChecker.fetch();
 		RegenTempBlock.revertAll();
 		TempFallingBlock.removeAllFallingBlocks();
 		BendingBoard.setFields();
@@ -340,14 +339,6 @@ public class JCMethods {
 		JedCore.plugin.initializeCollisions();
 		FireTick.loadMethod();
 		CooldownEnforcer.onConfigReload();
-
-		if (UpdateChecker.hasUpdate()) {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.hasPermission("jedcore.admin.notify") && JedCore.plugin.getConfig().getBoolean("Settings.Updater.Notify")) {
-					player.sendMessage(ChatColor.DARK_RED + "JedCore: " + ChatColor.RED + "There is an update available for JedCore!");
-				}
-			}
-		}
 
 		BendingBoard.loadOtherCooldowns();
 	}

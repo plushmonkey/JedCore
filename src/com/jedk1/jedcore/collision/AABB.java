@@ -302,7 +302,11 @@ public class AABB implements Collider {
                 getBlockBoundingBox = Block.getDeclaredMethod("a", IBlockData, serverVersion >= 11 ? IBlockAccess : World, BlockPosition);
                 getBoundingBox = Entity.getDeclaredMethod("getBoundingBox");
             } else {
-                getVoxelShape = Block.getDeclaredMethod("a", IBlockData, IBlockAccess, BlockPosition);
+                if (serverVersion == 13) {
+                    getVoxelShape = Block.getDeclaredMethod("f", IBlockData, IBlockAccess, BlockPosition);
+                } else {
+                    getVoxelShape = Block.getDeclaredMethod("h", IBlockData, IBlockAccess, BlockPosition);
+                }
 
                 try {
                     getBlockBoundingBox = VoxelShape.getDeclaredMethod("getBoundingBox");

@@ -15,7 +15,6 @@ import com.jedk1.jedcore.ability.waterbending.IceWall;
 import com.jedk1.jedcore.scoreboard.BendingBoard;
 import com.jedk1.jedcore.util.RegenTempBlock;
 import com.jedk1.jedcore.util.TempFallingBlock;
-import com.jedk1.jedcore.util.UpdateChecker;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
@@ -62,11 +61,6 @@ public class JCListener implements Listener {
 					bb.update();
 				}
 			}.runTaskLater(JedCore.plugin, 50);
-		}
-		if (UpdateChecker.hasUpdate() && JedCore.plugin.getConfig().getBoolean("Settings.Updater.Notify")) {
-			if (event.getPlayer().hasPermission("jedcore.admin.notify")) {
-				event.getPlayer().sendMessage(ChatColor.DARK_RED + "JedCore: " + ChatColor.RED + "There is an update available for JedCore!");
-			}
 		}
 	}
 
