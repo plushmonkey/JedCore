@@ -36,8 +36,12 @@ public class TempFallingBlock {
 	}
 	
 	public static void manage() {
+		long time = System.currentTimeMillis();
+
 		for (TempFallingBlock tfb : instances.values()) {
-			if (tfb.canExpire() && System.currentTimeMillis() > tfb.getCreationTime() + 5000) {
+			if (tfb.canExpire() && time > tfb.getCreationTime() + 5000) {
+				tfb.remove();
+			} else if (time > tfb.getCreationTime() + 120000) { // Add a hard timeout for any abilities that misuse this.
 				tfb.remove();
 			}
 		}
