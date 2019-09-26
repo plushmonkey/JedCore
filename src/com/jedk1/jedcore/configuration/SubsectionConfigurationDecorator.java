@@ -1,6 +1,7 @@
 package com.jedk1.jedcore.configuration;
 
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -596,6 +597,21 @@ public class SubsectionConfigurationDecorator implements ConfigurationSection {
         }
 
         return parent.isColor(path);
+    }
+
+    @Override
+    public Location getLocation(String s) {
+        return parent.getLocation(s);
+    }
+
+    @Override
+    public Location getLocation(String s, Location location) {
+        return parent.getLocation(s, location);
+    }
+
+    @Override
+    public boolean isLocation(String s) {
+        return parent.isLocation(s);
     }
 
     @Override
