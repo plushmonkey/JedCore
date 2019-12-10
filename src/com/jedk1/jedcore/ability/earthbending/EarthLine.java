@@ -19,6 +19,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -225,28 +226,21 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 		Vector push = new Vector(x1 - x0, 0.34999999999999998D, z1 - z0);
 		if (location.distance(sourceblock.getLocation()) < range) {
 			Material cloneType = location.getBlock().getType();
-			Location locationYUP = location.clone().add(0.0D, 0.1D, 0.0D);
+			Location locationYUP = location.getBlock().getLocation().clone().add(0.5, 0.1, 0.5);
 
 			playEarthbendingSound(location);
 
 			new RegenTempBlock(location.getBlock(), Material.AIR, Material.AIR.createBlockData(), 700L);
 
-			new TempFallingBlock(locationYUP, cloneType.createBlockData(), push, this);
+			new TempFallingBlock(locationYUP, cloneType.createBlockData(), new Vector(0.0, 0.35, 0.0), this);
 
 			location.add(looking.normalize());
-			if (!ElementalAbility.isAir(location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType()) && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
-				location.add(0.0D, 1.0D, 0.0D);
-				if (!isEarthbendable(player, location.getBlock()) || !ElementalAbility.isAir(location.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType()) && !isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) {
-					remove();
-					return;
-				}
-			} else if ((ElementalAbility.isAir(location.clone().getBlock().getType()) || isTransparent(location.clone().add(0.0D, 1.0D, 0.0D).getBlock())) && !ElementalAbility.isAir(location.clone().add(0.0D, -1D, 0.0D).getBlock().getType())) {
-				location.add(0.0D, -1D, 0.0D);
-				if (!isEarthbendable(player, location.clone().getBlock()) || ElementalAbility.isAir(location.clone().add(0.0D, -1D, 0.0D).getBlock().getType())) {
-					remove();
-					return;
-				}
+
+			if (!climb()) {
+				remove();
+				return;
 			}
+
 			if (hitted) {
 				if (goOnAfterHit != 0) {
 					goOnAfterHit--;
@@ -275,6 +269,27 @@ public class EarthLine extends EarthAbility implements AddonAbility {
 			return;
 		}
 		return;
+	}
+
+	private boolean climb() {
+		Block above = location.getBlock().getRelative(BlockFace.UP);
+
+		if (!isTransparent(above)) {
+			// Attempt to climb since the current location has a block above it.
+			location.add(0, 1, 0);
+			above = location.getBlock().getRelative(BlockFace.UP);
+
+			// The new location must be earthbendable and have something transparent above it.
+			return isEarthbendable(location.getBlock()) && isTransparent(above);
+		} else if (isTransparent(location.getBlock()) ) {
+			// Attempt to fall since the current location is transparent and the above block was transparent.
+			location.add(0, -1, 0);
+
+			// The new location must be earthbendable and we already know the block above it is transparent.
+			return isEarthbendable(location.getBlock());
+		}
+
+		return true;
 	}
 	
 	@Override
