@@ -116,8 +116,7 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 		Block source = getRandomSourceBlock(location, 3);
 		if (source != null) {
 			shots++;
-			Vector direction = GeneralMethods.getDirection(player.getLocation(),
-					GeneralMethods.getTargetedLocation(player, range, Material.WATER, Material.LAVA)).normalize();
+			Vector direction = player.getEyeLocation().getDirection().clone().normalize();
 			Location origin = source.getLocation().clone().add(0, 2, 0);
 			Location head = origin.clone();
 			head.setDirection(direction);
