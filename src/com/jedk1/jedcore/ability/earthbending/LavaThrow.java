@@ -27,7 +27,6 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LavaThrow extends LavaAbility implements AddonAbility {
-
 	private long cooldown;
 	private int range;
 	private double damage;
@@ -39,7 +38,7 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 	private Location location;
 	private int shots;
 
-	private ConcurrentHashMap<Location, Location> blasts = new ConcurrentHashMap<Location, Location>();
+	private ConcurrentHashMap<Location, Location> blasts = new ConcurrentHashMap<>();
 
 	public LavaThrow(Player player) {
 		super(player);
@@ -54,10 +53,13 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 		}
 
 		setFields();
+
 		location = player.getLocation();
 		location.setPitch(0);
 		location = location.toVector().add(location.getDirection().multiply(sourceRange)).toLocation(location.getWorld());
+
 		sourceRange = Math.round(sourceRange / 2);
+
 		if (prepare()) {
 			createBlast();
 			start();
@@ -82,45 +84,57 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 			remove();
 			return;
 		}
+
 		if (player.getWorld() != location.getWorld()) {
 			bPlayer.addCooldown(this);
 			remove();
 			return;
 		}
+
 		if (!bPlayer.canBendIgnoreCooldowns(this)) {
 			bPlayer.addCooldown(this);
 			remove();
 			return;
 		}
+
 		if (shots >= shotMax) {
 			bPlayer.addCooldown(this);
 		}
+
 		handleBlasts();
+
 		if (blasts.isEmpty()) {
 			bPlayer.addCooldown(this);
 			remove();
-			return;
 		}
-		return;
 	}
 
 	private boolean prepare() {
 		Block block = getRandomSourceBlock(location, 3);
+
 		if (block != null) {
 			return true;
 		}
+
 		return false;
 	}
 
 	public void createBlast() {
+		// TODO: This is just the worst. Fix it so it's not hidden distance selection.
 		Block source = getRandomSourceBlock(location, 3);
+
 		if (source != null) {
 			shots++;
-			Vector direction = player.getEyeLocation().getDirection().clone().normalize();
+
 			Location origin = source.getLocation().clone().add(0, 2, 0);
+			double viewRange = range + origin.distance(player.getEyeLocation());
+			Location viewTarget = GeneralMethods.getTargetedLocation(player, viewRange, Material.WATER, Material.LAVA);
+			Vector direction = viewTarget.clone().subtract(origin).toVector().normalize();
 			Location head = origin.clone();
+
 			head.setDirection(direction);
 			blasts.put(head, origin);
+
 			new RegenTempBlock(source.getRelative(BlockFace.UP), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 200);
 			new RegenTempBlock(source, Material.AIR, Material.AIR.createBlockData(), sourceRegen, false);
 		}
@@ -130,18 +144,22 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 		for (Location l : blasts.keySet()) {
 			Location head = l.clone();
 			Location origin = blasts.get(l);
+
 			if (l.distance(origin) > range) {
 				blasts.remove(l);
 				continue;
 			}
+
 			if(GeneralMethods.isRegionProtectedFromBuild(this, l)){
 				blasts.remove(l);
 				continue;
 			}
+
 			if(GeneralMethods.isSolid(l.getBlock())){
 				blasts.remove(l);
 				continue;
 			}
+
 			head = head.add(head.getDirection().multiply(1));
 			new RegenTempBlock(l.getBlock(), Material.LAVA, Material.LAVA.createBlockData(bd -> ((Levelled)bd).setLevel(0)), 200);
 			ParticleEffect.LAVA.display(head, 1, Math.random(), Math.random(), Math.random(), 0);
@@ -167,26 +185,34 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 
 	public static Block getRandomSourceBlock(Location location, int radius) {
 		Random rand = new Random();
-		List<Integer> checked = new ArrayList<Integer>();
+		List<Integer> checked = new ArrayList<>();
 		List<Block> blocks = GeneralMethods.getBlocksAroundPoint(location, radius);
+
 		for (int i = 0; i < blocks.size(); i++) {
 			int index = rand.nextInt(blocks.size());
+
 			while (checked.contains(index)) {
 				index = rand.nextInt(blocks.size());
 			}
+
 			checked.add(index);
+
 			Block block = blocks.get(index);
+
 			if (block == null || !LavaAbility.isLava(block)) {
 				continue;
 			}
+
 			return block;
 		}
+
 		return null;
 	}
 	
 	public static void createBlast(Player player) {
 		if (hasAbility(player, LavaThrow.class)) {
-			LavaThrow lt = (LavaThrow) getAbility(player, LavaThrow.class);
+			LavaThrow lt = getAbility(player, LavaThrow.class);
+
 			if (lt.shots < lt.shotMax) {
 				lt.createBlast();
 			}
@@ -236,12 +262,12 @@ public class LavaThrow extends LavaAbility implements AddonAbility {
 
 	@Override
 	public void load() {
-		return;
+
 	}
 
 	@Override
 	public void stop() {
-		return;
+
 	}
 
 	@Override
