@@ -23,8 +23,6 @@ public class FireSki extends FireAbility implements AddonAbility {
 	private Location location;
 	private long time;
 
-	private boolean couldFly = false, wasFlying = false;
-
 	private long cooldown;
 	private long duration;
 	private double speed;
@@ -54,8 +52,7 @@ public class FireSki extends FireAbility implements AddonAbility {
 			return;
 		}
 		
-		couldFly = player.getAllowFlight();
-		wasFlying = player.isFlying();
+		this.flightHandler.createInstance(player, this.getName());
 
 		time = System.currentTimeMillis();
 		location = player.getLocation();
@@ -206,10 +203,9 @@ public class FireSki extends FireAbility implements AddonAbility {
 	@Override
 	public void remove() {
 		removeFlight();
-		if (couldFly) {
-			player.setAllowFlight(couldFly);
-			player.setFlying(wasFlying);
-		}
+
+		this.flightHandler.removeInstance(player, this.getName());
+
 		super.remove();
 	}
 

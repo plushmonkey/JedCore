@@ -45,7 +45,6 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 	private Set<Block> ridingBlocks = new HashSet<>();
 	private CollisionDetector collisionDetector = new DefaultCollisionDetector();
 	private DoubleSmoother heightSmoother;
-	private boolean canFly;
 
 	public EarthSurf(Player player) {
 		super(player);
@@ -62,11 +61,11 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 		setFields();
 
 		location = player.getLocation();
-		// Only enable flying again if the player is in creative. This isn't perfect, but it fixes common problem.
-		this.canFly = player.getAllowFlight() && player.getGameMode() == GameMode.CREATIVE;
 
 		if (canStart()) {
 			prevHealth = player.getHealth();
+
+			this.flightHandler.createInstance(player, this.getName());
 			player.setAllowFlight(true);
 			player.setFlying(false);
 			start();
@@ -262,8 +261,7 @@ public class EarthSurf extends EarthAbility implements AddonAbility {
 
 	@Override
 	public void remove() {
-		player.setAllowFlight(this.canFly);
-		player.setFlying(false);
+		this.flightHandler.removeInstance(player, this.getName());
 
 		if (cooldownEnabled && player.isOnline()) {
 			long scaledCooldown = cooldown;
