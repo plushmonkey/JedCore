@@ -3,6 +3,25 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.9.2
+- Fix LavaThrow blast direction. (Simplicitee)
+- Fix no-volume AABB queries.
+- Use FlightHandler with FireSki and EarthSurf to hopefully reduce the frequency of flight bugs.
+- Improve MetalHook.
+  - Fix a bug with MetalHook where the player wouldn't be pulled toward an attached hook.
+  - Add config option to MetalHook for attaching to barriers.
+- Fix EarthKick bugs.
+  - Allow slot swapping once EarthKick is created. This fixes the bug where the falling blocks don't damage enemies if the player swapped slots before they get near an enemy.
+  - Fix an issue with EarthKick where the wrong FallingBlocks could be removed from the tracking list.
+  
+### 2.9.1
+- Fix AABB code so it works on Spigot 1.15.
+
+### 2.9.0
+- Add support for Spigot 1.14.4/ProjectKorra 1.8.9. It should continue to work with Spigot 1.13.2/ProjectKorra 1.8.8, but it hasn't been tested.
+- Fix EarthLine render issue that has existed for a long time where the falling blocks aren't spawned at the center of the block.
+- Improve EarthLine climbing/falling.
+
 ### 2.8.1
 - Refactor FrostBreath code.
   - Use waterbendable TempBlocks for the created snow. This should fix some reversion issues that could cause permanent blocks.
