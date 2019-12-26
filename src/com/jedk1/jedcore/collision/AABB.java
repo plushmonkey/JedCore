@@ -13,20 +13,33 @@ public class AABB implements Collider {
 
     private Vector min;
     private Vector max;
+    private boolean hasVolume;
 
     public AABB(Block block) {
         this.min = min(block);
         this.max = max(block);
+
+        this.hasVolume = max.clone().subtract(min).lengthSquared() > 0;
     }
 
     public AABB(Entity entity) {
         this.min = min(entity);
         this.max = max(entity);
+
+        this.hasVolume = max.clone().subtract(min).lengthSquared() > 0;
     }
 
     public AABB(Vector min, Vector max) {
         this.min = min;
         this.max = max;
+
+        if (min != null && max != null) {
+            this.hasVolume = max.clone().subtract(min).lengthSquared() > 0;
+        }
+    }
+
+    public boolean hasVolume() {
+        return this.hasVolume;
     }
 
     public AABB at(Vector pos) {
@@ -76,7 +89,7 @@ public class AABB implements Collider {
     }
 
     public boolean contains(Vector test) {
-        if (min == null || max == null) return false;
+        if (min == null || max == null || !hasVolume) return false;
 
         return (test.getX() >= min.getX() && test.getX() <= max.getX()) &&
                 (test.getY() >= min.getY() && test.getY() <= max.getY()) &&
@@ -84,7 +97,7 @@ public class AABB implements Collider {
     }
 
     public Optional<Double> intersects(Ray ray) {
-        if (min == null || max == null) return Optional.empty();
+        if (min == null || max == null || !hasVolume) return Optional.empty();
 
         double t1 = (min.getX() - ray.origin.getX()) * ray.directionReciprocal.getX();
         double t2 = (max.getX() - ray.origin.getX()) * ray.directionReciprocal.getX();
@@ -106,7 +119,7 @@ public class AABB implements Collider {
     }
 
     public boolean intersects(AABB other) {
-        if (min == null || max == null || other.min == null || other.max == null) {
+        if (min == null || max == null || other.min == null || other.max == null || !hasVolume || !other.hasVolume) {
             return false;
         }
 
@@ -119,6 +132,8 @@ public class AABB implements Collider {
     }
 
     public boolean intersects(Sphere sphere) {
+        if (!this.hasVolume) return false;
+
         return sphere.intersects(this);
     }
 
