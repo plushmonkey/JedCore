@@ -437,6 +437,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Earth.MetalHook.MaxHooks", 3);
 		config.addDefault("Abilities.Earth.MetalHook.TotalHooks", 0);
 		config.addDefault("Abilities.Earth.MetalHook.RequireItems", true);
+		config.addDefault("Abilities.Earth.MetalHook.BarrierHooking", true);
 		
 		config.addDefault("Abilities.Earth.MetalShred.Enabled", true);
 		config.addDefault("Abilities.Earth.MetalShred.Description", "MetalShred allows you to tear a metal surface allowing you to sneak in to the other side."

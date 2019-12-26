@@ -10,6 +10,7 @@ import com.projectkorra.projectkorra.ability.MetalAbility;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -31,9 +32,8 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 	private int totalHooks;
 	private int hooksUsed;
 	private boolean nosource;
+	private boolean barrierHooking;
 
-	private boolean canFly;
-	private boolean hasFly;
 	private boolean hasHook;
 	private boolean wasSprinting;
 	private long time;
@@ -62,8 +62,6 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 			return;
 		}
 
-		canFly = player.getAllowFlight();
-		hasFly = player.isFlying();
 		wasSprinting = player.isSprinting();
 		flightHandler.createInstance(player, this.getName());
 		player.setAllowFlight(true);
@@ -80,27 +78,25 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		maxhooks = config.getInt("Abilities.Earth.MetalHook.MaxHooks");
 		totalHooks = config.getInt("Abilities.Earth.MetalHook.TotalHooks");
 		nosource = config.getBoolean("Abilities.Earth.MetalHook.RequireItem");
+		barrierHooking = config.getBoolean("Abilities.Earth.MetalHook.BarrierHooking");
 	}
 
 	@Override
 	public void progress() {
 		if (player == null || !player.isOnline() || player.isDead()) {
 			removeAllArrows();
-			resetFlight();
 			remove();
 			return;
 		}
 
 		if (!bPlayer.canBendIgnoreBindsCooldowns(this) || hooks.isEmpty()) {
 			removeAllArrows();
-			resetFlight();
 			remove();
 			return;
 		}
 
 		if (!wasSprinting && player.isSprinting()) {
 			removeAllArrows();
-			resetFlight();
 			remove();
 			return;
 		}
@@ -112,7 +108,6 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 
 			if (System.currentTimeMillis() > (time + 1000)) {
 				removeAllArrows();
-				resetFlight();
 				remove();
 				return;
 			}
@@ -124,22 +119,18 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 
 		for (Arrow a : hooks.keySet()) {
 			if (a != null) {
-				if (a.isDead() || player.getWorld() != a.getWorld() || player.getLocation().add(0,1,0).distance(a.getLocation()) > range) {
+				if (!isActiveArrow(a)) {
 					hooks.remove(a);
 					hookIds.remove(a.getUniqueId());
 					a.remove();
 					continue;
 				}
 
-				Location loc = a.getLocation();
-				Vector vec = a.getVelocity();
-				Location loc2 = new Location(loc.getWorld(), loc.getX()+vec.getX(), loc.getY()+vec.getY(), loc.getZ()+vec.getZ());
-
-				if (!ElementalAbility.isAir(loc2.getBlock().getType())) {
+				if (a.getAttachedBlock() == null) {
+					hooks.replace(a, hooks.get(a), false);
+				} else {
 					hooks.replace(a, hooks.get(a), true);
 					hasHook = true;
-				} else {
-					hooks.replace(a, hooks.get(a), false);
 				}
 				
 				//Draws the particle lines.
@@ -148,7 +139,7 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 				}
 
 				if (hooks.get(a)) {
-					target.add(GeneralMethods.getDirection(player.getLocation().add(0, 1, 0), a.getLocation()));
+					target.add(GeneralMethods.getDirection(player.getEyeLocation(), a.getLocation()));
 				}
 			} else {
 				hooks.remove(a);
@@ -178,12 +169,25 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		}
 	}
 
+	private boolean isActiveArrow(Arrow arrow) {
+		if (arrow.isDead()) return false;
+		if (player.getWorld() != arrow.getWorld()) return false;
+
+		Block attached = arrow.getAttachedBlock();
+
+		if (!barrierHooking && attached != null && attached.getType() == Material.BARRIER) return false;
+
+		return player.getEyeLocation().distanceSquared(arrow.getLocation()) < range * range;
+	}
+
 	@Override
 	public void remove() {
 		if (player.isOnline()) {
 			bPlayer.addCooldown(this);
 		}
+
 		flightHandler.removeInstance(player, this.getName());
+
 		super.remove();
 	}
 
@@ -219,11 +223,6 @@ public class MetalHook extends MetalAbility implements AddonAbility {
 		for (Arrow a : hooks.keySet()) {
 			a.remove();
 		}
-	}
-
-	public void resetFlight() {
-		player.setAllowFlight(canFly);
-		player.setFlying(hasFly);
 	}
 
 	public boolean hasRequiredInv() {
