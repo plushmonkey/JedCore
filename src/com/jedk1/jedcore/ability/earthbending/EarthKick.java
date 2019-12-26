@@ -100,7 +100,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 			return;
 		}
 
-		if (!bPlayer.canBendIgnoreCooldowns(this)) {
+		if (!bPlayer.canBendIgnoreBindsCooldowns(this)) {
 			remove();
 			return;
 		}
@@ -149,13 +149,13 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 	}
 
 	public void track() {
-		List<Integer> ids = new ArrayList<>();
+		List<TempFallingBlock> destroy = new ArrayList<>();
 
 		for (TempFallingBlock tfb : temps) {
 			FallingBlock fb = tfb.getFallingBlock();
 
 			if (fb == null || fb.isDead()) {
-				ids.add(temps.indexOf(tfb));
+				destroy.add(tfb);
 				continue;
 			}
 
@@ -172,11 +172,7 @@ public class EarthKick extends EarthAbility implements AddonAbility {
 			});
 		}
 
-		for (int id : ids) {
-			if (id < temps.size()) {
-				temps.remove(id);
-			}
-		}
+		temps.removeAll(destroy);
 	}
 
 	@Override
