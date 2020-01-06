@@ -3,6 +3,9 @@ This is my fork of jedk1's JedCore addon for ProjectKorra.
 Download releases [here](https://github.com/plushmonkey/JedCore/releases).  
 
 ## Changelog
+### 2.9.3
+- Fix a crash with Bloodpuppet and Bloodbending when IgnoreWalls is enabled.
+  
 ### 2.9.2
 - Fix LavaThrow blast direction. (Simplicitee)
 - Fix no-volume AABB queries.
