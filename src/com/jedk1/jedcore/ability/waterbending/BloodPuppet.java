@@ -123,7 +123,7 @@ public class BloodPuppet extends BloodAbility implements AddonAbility {
 
 	private boolean grab() {
 		List<Entity> entities = new ArrayList<Entity>();
-		for (int i = 0; i < distance; i++) {
+		for (int i = 1; i < distance; i++) {
 			Location location = null;
 			if (bloodpuppetThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();

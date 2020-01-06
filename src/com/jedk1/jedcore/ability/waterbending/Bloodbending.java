@@ -99,7 +99,7 @@ public class Bloodbending extends BloodAbility implements AddonAbility {
 
 	private boolean grab() {
 		List<Entity> entities = new ArrayList<Entity>();
-		for (int i = 0; i < distance; i++) {
+		for (int i = 1; i < distance; i++) {
 			Location location;
 			if (bloodbendingThroughBlocks) {
 				location = player.getTargetBlock((HashSet<Material>) null, i).getLocation();
