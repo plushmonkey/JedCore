@@ -836,6 +836,7 @@ public class JedCoreConfig {
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.Speed", 2);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed", 3);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.PlantSource", true);
+		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.SnowSource", true);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants", true);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.BottleSource", false);
 		config.addDefault("Abilities.Water.WaterCombo.WaterGimbal.AbilityCollisionRadius", 1.6);

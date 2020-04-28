@@ -9,6 +9,7 @@ import com.jedk1.jedcore.util.RegenTempBlock;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.ComboAbility;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.WaterAbility;
 import com.projectkorra.projectkorra.ability.util.ComboManager.AbilityInformation;
 import com.projectkorra.projectkorra.util.BlockSource;
@@ -17,6 +18,8 @@ import com.projectkorra.projectkorra.util.TempBlock;
 import com.projectkorra.projectkorra.waterbending.OctopusForm;
 import com.projectkorra.projectkorra.waterbending.Torrent;
 
+import com.projectkorra.projectkorra.waterbending.ice.PhaseChange;
+import com.projectkorra.projectkorra.waterbending.plant.PlantRegrowth;
 import com.projectkorra.projectkorra.waterbending.util.WaterReturn;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,7 +48,8 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	private double damage;
 	private double speed;
 	private int animspeed;
-	private boolean plant;
+	private boolean plantSourcing;
+	private boolean snowSourcing;
 	private boolean requireAdjacentPlants;
 	private boolean canUseBottle;
 	private double abilityCollisionRadius;
@@ -106,7 +110,8 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 		damage = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Damage");
 		speed = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.Speed");
 		animspeed = config.getInt("Abilities.Water.WaterCombo.WaterGimbal.AnimationSpeed");
-		plant = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.PlantSource");
+		plantSourcing = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.PlantSource");
+		snowSourcing = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.SnowSource");
 		requireAdjacentPlants = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.RequireAdjacentPlants");
 		canUseBottle = config.getBoolean("Abilities.Water.WaterCombo.WaterGimbal.BottleSource");
 		abilityCollisionRadius = config.getDouble("Abilities.Water.WaterCombo.WaterGimbal.AbilityCollisionRadius");
@@ -167,20 +172,32 @@ public class WaterGimbal extends WaterAbility implements AddonAbility, ComboAbil
 	}
 
 	private boolean grabSource() {
-		sourceblock = BlockSource.getWaterSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN, true, true, plant);
+		sourceblock = BlockSource.getWaterSourceBlock(player, sourcerange, ClickType.SHIFT_DOWN, true, true, plantSourcing, snowSourcing, false);
 		if (sourceblock != null) {
-			if (isPlant(sourceblock)) {
-				if (!requireAdjacentPlants || JCMethods.isAdjacentToThreeOrMoreSources(sourceblock, sourceblock.getType())) {
+			// All of these extra checks need to be done because PK sourcing system is buggy.
+			boolean usingSnow = snowSourcing && (sourceblock.getType() == Material.SNOW_BLOCK || sourceblock.getType() == Material.SNOW);
+
+			if (isPlant(sourceblock) || usingSnow) {
+				if (usingSnow || !requireAdjacentPlants || JCMethods.isAdjacentToThreeOrMoreSources(sourceblock, sourceblock.getType())) {
 					playFocusWaterEffect(sourceblock);
 					sourceloc = sourceblock.getLocation();
+
+					new PlantRegrowth(this.player, sourceblock);
 					sourceblock.setType(Material.AIR);
+
 					return true;
 				}
-			} else {
-				if (GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock, false) || (TempBlock.isTempBlock(sourceblock) && WaterAbility.isBendableWaterTempBlock(sourceblock))) {
+			} else if (!ElementalAbility.isSnow(sourceblock)) {
+				boolean isTempBlock = TempBlock.isTempBlock(sourceblock);
+
+				if (GeneralMethods.isAdjacentToThreeOrMoreSources(sourceblock, false) || (isTempBlock && WaterAbility.isBendableWaterTempBlock(sourceblock))) {
 					playFocusWaterEffect(sourceblock);
 					sourceloc = sourceblock.getLocation();
-					sourceblock.setType(Material.AIR);
+
+					if (isTempBlock) {
+						PhaseChange.thaw(sourceblock);
+					}
+
 					return true;
 				}
 			}
